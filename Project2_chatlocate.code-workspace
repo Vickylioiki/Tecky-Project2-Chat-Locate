@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../hk-map-22-aug-22-sw-exercises-solution"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Project2_chatlocate"
+	}
+}

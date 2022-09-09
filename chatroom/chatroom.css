@@ -1,0 +1,15 @@
+.gradient-custom {
+    width: 100vw;
+    height: 100vh;
+    background-image: url(./image/morning.jpg);
+    background-size: cover;
+}
+
+.mask-custom {
+    background: rgba(24, 24, 16, .2);
+    border-radius: 2em;
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    background-clip: padding-box;
+    box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
+}
