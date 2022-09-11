@@ -30,3 +30,39 @@ VALUES (
         '99667897',
         NOW()
     );
+insert into facebook_profile (
+        fb_id,
+        name,
+        user_id,
+        profile_pic
+    )
+VALUES (
+        100004383902955,
+        'Peter',
+        1,
+        'https://www.facebook.com/profile.php?u=Peter'
+    ),
+    (
+        100004383902955,
+        'John',
+        3,
+        'https://www.facebook.com/profile.php?u=John'
+    )
+insert into instagram_profile (
+        ig_id,
+        name,
+        user_id,
+        profile_pic
+    )
+VALUES (
+        100004383902955,
+        'Peter',
+        1,
+        'https://www.instagram.com/profile.php?u=Peter'
+    ),
+    (
+        100004383902955,
+        'May',
+        2,
+        'https://www.instagram.com/profile.php?u=John'
+    )

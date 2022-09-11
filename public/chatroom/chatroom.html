@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+
+    <!-- bootstrap-icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="chatroom.css">
+    <title>Chat Room</title>
+</head>
+
+<body>
+    <section class="gradient-custom">
+        <div class="container py-5">
+            <div class="row">
+                <!-- User Profile -->
+                <div class="col-md-6 col-lg-5 col-xl-5 mb-4 mb-md-0">
+                    <div class="card mask-custom profile-container">
+                        <div class="card-body">
+                            <!-- profile content -->
+                            <div class="icon-wrapper"></div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+                <!-- User profile end -->
+
+                <!-- chatroom  -->
+                <div class="col-md-6 col-lg-7 col-xl-7">
+                    <div class="chat-container">
+
+                        <!-- self -->
+                        <div class="d-flex flex-row justify-content-end">
+                            <div>
+                                <div class="message-container-self">
+                                    <p class="small p-2 me-3 mb-1">HI I am Vicky</p>
+                                </div>
+                                <p class="small me-3 mb-3 rounded-3 time-self">12:00 PM | Aug 13</p>
+                            </div>
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-2.webp" alt="avatar"
+                                class="rounded-circle chat-icon">
+                        </div>
+
+                        <!-- other -->
+                        <div class="d-flex flex-row justify-content-start">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-1.webp" alt="avatar"
+                                class="rounded-circle chat-icon">
+                            <div>
+                                <div class="message-container-other">
+                                    <p class="small p-2 ms-3 mb-1">Cake or pie? I can tell a lot about you by which one
+                                        you pick. It may seem silly, but cake people and pie people are really
+                                        different.
+                                </div>
+                                </p>
+                                <p class="small ms-3 mb-3 rounded-3 float-end time-other">12:00 PM | Aug 13</p>
+                            </div>
+                        </div>
+
+                        <!-- self -->
+                        <div class="d-flex flex-row justify-content-end">
+                            <div>
+                                <div class="message-container-self">
+                                    <p class="small p-2 me-3 mb-1">The coin hovered in the air, spinning over
+                                        and over again. It reached its peak and began to descend. Both boys were
+                                        pleading with it to land a certain way but the coin had already made up its mind
+                                        on what it was going to do.</p>
+                                </div>
+                                <p class="small me-3 mb-3 rounded-3 time-self">12:00 PM | Aug 13</p>
+                            </div>
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-2.webp" alt="avatar"
+                                class="rounded-circle chat-icon">
+                        </div>
+
+                        <!-- other -->
+                        <div class="d-flex flex-row justify-content-start">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-1.webp" alt="avatar 1"
+                                class="rounded-circle chat-icon" style="width: 45px; height: 100%;">
+                            <div>
+                                <div class="message-container-other">
+                                    <p class="small p-2 ms-3 mb-1">It all started with a random letter. Several of those
+                                        were joined forces to create a random word.
+                                </div>
+                                </p>
+                                <p class="small ms-3 mb-3 rounded-3 float-end time-other">12:00 PM | Aug 13</p>
+                            </div>
+                        </div>
+
+                        <!-- self -->
+                        <div class="d-flex flex-row justify-content-end">
+                            <div>
+                                <div class="message-container-self">
+                                    <p class="small p-2 me-3 mb-1">The coin hovered in the air, spinning over
+                                        and over again. It reached its peak and began to descend. </p>
+                                </div>
+                                <p class="small me-3 mb-3 rounded-3 time-self">12:00 PM | Aug 13</p>
+                            </div>
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-2.webp" alt="avatar"
+                                class="rounded-circle chat-icon">
+                        </div>
+
+
+                    </div>
+                    <!-- typing area -->
+                    <li class="mb-3">
+                        <div class="form-outline form-white type-wrapper">
+                            <textarea class="form-control" id="textArea3"></textarea>
+                            <div class="button-group">
+                                <button class="file"><i class="bi bi-paperclip"></i></button>
+                                <button class="emoji"><i class="bi bi-emoji-smile"></i></button>
+                                <button type="submit" class="send"><i class="bi bi-send"></i></button>
+                            </div>
+                        </div>
+                    </li>
+
+
+                </div>
+                <!-- chatroom end -->
+
+            </div>
+
+        </div>
+    </section>
+    <script src="chatroom.js"></script>
+</body>
+
+</html>
