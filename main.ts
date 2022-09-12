@@ -15,6 +15,10 @@ app.use(
 )
 
 
+
+
+app.use(express.static("public"))
+
 declare module 'express-session' {
   interface SessionData {
     name?: string
