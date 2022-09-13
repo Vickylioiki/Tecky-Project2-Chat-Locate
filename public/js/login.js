@@ -54,12 +54,15 @@ window.fbAsyncInit = function () {
 function getStylesheet() {
     let currentTime = new Date().getHours();
     console.log(currentTime);
+    let backgroundWrapperImage = document.querySelector(".background-wrapper img");
     if (document.body) {
         if (7 <= currentTime && currentTime < 20) {
-            document.body.style.backgroundImage = "url('asset/DomeAM.jpg')";
+            // document.body.style.backgroundImage = "url('asset/DomeAM.jpg')";
+            backgroundWrapperImage.src = "./asset/DomeAM.jpg"
         }
         else {
-            document.body.style.backgroundImage = "url('asset/DomePM.jpg')";
+            // document.body.style.backgroundImage = "url('asset/DomePM.jpg')";
+            backgroundWrapperImage.src = "./asset/DomePM.jpg"
         }
     }
 }

@@ -10,9 +10,38 @@
 	font-family: 'Combo', cursive;
 }
 
+.background-wrapper {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	z-index: -1;
+	animation: kenburns-top 30s ease-out both;
+	/* margin: 10%; */
+	/* padding: -50%; */
+
+}
+
+.background-wrapper img {
+	object-fit: cover;
+	height: inherit;
+	width: inherit;
+}
+
+@keyframes kenburns-top {
+	0% {
+		transform: scale(1.25) translateY(0);
+		/* transform-origin: top; */
+	}
+
+	100% {
+		transform: scale(1.5) translateY(0);
+		/* transform-origin: top; */
+	}
+}
+
 body {
-	background-image: url('asset/DomeAM.jpg');
-	background-size: cover;
+	/* background-image: url('asset/DomeAM.jpg');
+	background-size: cover; */
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -69,7 +98,18 @@ button.signup_btn {
 .form-container {
 	display: flex;
 	align-items: center;
+}
 
+@keyframes scale-in-center {
+	0% {
+		transform: scale(0);
+		opacity: 1;
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
 }
 
 form {
@@ -102,6 +142,20 @@ input {
 	width: 768px;
 	max-width: 100%;
 	min-height: 480px;
+	animation: scale-in-center 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+
+@keyframes scale-in-center {
+	0% {
+		transform: scale(0);
+		opacity: 1;
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
 }
 
 .form {
