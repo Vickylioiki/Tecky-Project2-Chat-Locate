@@ -1,13 +1,28 @@
 body {
     width: 100vw;
     height: 100vh;
-    background-image: url(./image/night.jpg);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     font-family: 'M PLUS Rounded 1c', sans-serif;
-    ;
 
+}
+
+
+.day {
+    background-image: url(./image/late_afternoon.jpg);
+}
+
+.dusk {
+    background-image: url(./image/dusk.jpg);
+}
+
+.night {
+    background-image: url(./image/night.jpg);
+}
+
+.midnight {
+    background-image: url(./image/midnight.jpg);
 }
 
 body::-webkit-scrollbar {
@@ -49,8 +64,7 @@ li {
 
 .container {
     margin-top: -10px;
-    display: flex;
-    justify-content: center
+
 }
 
 /* chat area */
@@ -118,7 +132,7 @@ li {
 /* profile */
 .profile-container {
     align-items: center;
-    height: auto;
+    max-height: 600px;
     overflow-y: scroll;
     position: relative;
     z-index: -1;
@@ -152,10 +166,9 @@ li {
 }
 
 .card {
-    background: rgba(255, 255, 255, .25);
+    background: rgba(110, 120, 147, 0.425);
     border-radius: 10px;
     backdrop-filter: blur(3px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
     background-clip: padding-box;
     box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
     justify-content: space-around;
@@ -171,11 +184,24 @@ li {
     text-transform: capitalize;
     margin-top: 50px;
     margin-bottom: 10px;
-    color: rgb(206, 163, 234);
+    color: rgb(232, 170, 63);
+    text-shadow: 0 0 10px #5b5656,
+        0 0 20px #5a5757,
+        0 0 150px rgb(108, 105, 105);
+
+}
+
+
+.profile-occupation {
+    text-align: center;
+    color: #c3bdbd;
 }
 
 .profile-title {
-    color: rgb(246, 246, 246);
+    color: rgb(57, 194, 178);
+    text-shadow: 0 0 10px #726e6e,
+        0 0 20px #5a5757,
+        0 0 150px rgb(108, 105, 105);
     font-weight: bold;
     margin-top: 10px;
     margin-bottom: 2px;
@@ -183,9 +209,8 @@ li {
 
 }
 
-.profile-title>span {
-    color: #aca3a3;
-    padding-left: 5px;
+.profile-info>span {
+    color: #dedcdc;
     font-size: 1rem;
     font-weight: 400;
 }
@@ -202,9 +227,9 @@ li {
 }
 
 .social-icon-wrapper {
-    width: 45px;
-    height: 45px;
-    margin: 20px 10px 0 10px;
+    width: 40px;
+    height: 40px;
+    margin: 30px 10px -10px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
