@@ -10,20 +10,14 @@ body {
 
 
 .day {
-    background-image: url(./image/late_afternoon.jpg);
+    background-image: url(./image/day_mountain.jpg);
 }
 
-.dusk {
-    background-image: url(./image/dusk.jpg);
-}
 
 .night {
-    background-image: url(./image/night.jpg);
+    background-image: url(./image/night_mountain.jpg);
 }
 
-.midnight {
-    background-image: url(./image/midnight.jpg);
-}
 
 body::-webkit-scrollbar {
     display: none;
@@ -80,7 +74,7 @@ li {
 }
 
 .chat-container::-webkit-scrollbar-thumb {
-    background: linear-gradient(#5496FF, #8739E5);
+    background: linear-gradient(#317e98, #2682a1);
     border-radius: 6px;
 
 }
@@ -135,7 +129,6 @@ li {
     max-height: 600px;
     overflow-y: scroll;
     position: relative;
-    z-index: -1;
     overflow: visible;
 }
 
@@ -145,7 +138,7 @@ li {
     align-items: center;
     width: 150px;
     height: 150px;
-    background: linear-gradient(#38B8F2, #843CF7);
+    background: linear-gradient(#f6f8f9aa, #8c8890);
     position: absolute;
     top: 0;
     left: 50%;
@@ -176,6 +169,29 @@ li {
     color: white;
 
 }
+
+.placement {
+    position: absolute;
+    right: 8px;
+    top: 22px;
+}
+
+.heart {
+    width: 100px;
+    height: 100px;
+    background: url("https://cssanimation.rocks/images/posts/steps/heart.png") no-repeat;
+    background-position: 0 0;
+    cursor: pointer;
+    transition: background-position 1s steps(28);
+    transition-duration: 0s;
+}
+
+.is-active {
+    transition-duration: 1s;
+    background-position: -2800px 0;
+}
+
+
 
 .profile-name {
     text-align: center;
@@ -315,25 +331,19 @@ i:hover {
 
 .file {
     color: white;
-    text-shadow: 0 0 10px #e70aee,
-        0 0 20px #e70aee,
-        0 0 40px #e70aee,
-        0 0 800px #e70aee;
+    text-shadow: 0 0 10px rgb(100, 21, 161),
+        0 0 20px rgb(100, 21, 161)
 }
 
 .emoji {
     color: white;
     margin: 0 5px;
-    text-shadow: 0 0 10px yellow,
-        0 0 20px yellow,
-        0 0 40px yellow,
-        0 0 800px yellow;
+    text-shadow: 0 0 10px rgb(148, 135, 17),
+        0 0 20px rgb(197, 206, 28)
 }
 
 .send {
     color: white;
-    text-shadow: 0 0 10px cyan,
-        0 0 20px cyan,
-        0 0 40px cyan,
-        0 0 800px cyan;
+    text-shadow: 0 0 10px rgb(32, 120, 183),
+        0 0 20px rgb(42, 123, 181)
 }

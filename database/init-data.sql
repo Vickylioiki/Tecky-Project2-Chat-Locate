@@ -1,34 +1,42 @@
 insert into users (
+        name,
         username,
         password,
         gender,
         date_of_birth,
         contact_no,
-        created_at
+        latitude,
+        longitude
     )
 VALUES (
         'Peter',
+        'peter01',
         'dhakjd',
         'M',
         '1999-01-03',
         '99991234',
-        NOW()
+        22.352734,
+        114.1277
     ),
     (
         'May',
+        'may01',
         'dhadskjd',
         'F',
         '1998-02-03',
         '99884567',
-        NOW()
+        22.2872185,
+        114.1481511
     ),
     (
         'John',
+        'john01',
         'dhadsdadskjd',
         'M',
         '2000-10-07',
         '99667897',
-        NOW()
+        22.2875193,
+        114.1477337
     );
 insert into facebook_profile (
         fb_id,

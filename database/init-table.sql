@@ -9,10 +9,14 @@ CREATE TABLE users (
     date_of_birth date,
     description text,
     contact_no int,
-    payme_qr_code text,
+    latitude double precision,
+    longitude double precision,
+    geolocation geography(Point, 4326),
     created_at timestamp not null default now(),
     updated_at timestamp default now()
 );
+-- CREATE EXTENSION Postgis;
+-- update users set geolocation = ST_MakePoint(longitude, latitude);
 CREATE TABLE instagram_profile (
     id SERIAL primary key,
     ig_id int not null,
