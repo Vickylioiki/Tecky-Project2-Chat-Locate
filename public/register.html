@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./css/register.css" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
+  <title>register page</title>
+</head>
+
+<body>
+  <div class="background-wrapper"><img src="./asset/DomeAM.jpg" alt=""></div>
+  <div class="form_container">
+    <div class="container">
+
+      <div class="content">
+        <div class="welcome">
+          <h1>Welcome to Chatlocal</h1>
+          <div class="text">
+            Start for free & get <br />
+            attractive offers today !
+          </div>
+        </div>
+      </div>
+      <div id="form-container">
+        <form id="form">
+          <div class="social">
+            <div class="title">Get Started</div>
+            <div class="question">
+            </div>
+          </div>
+
+
+          <!-- /** 
+          * ! user name Input here
+         **/ -->
+
+          <div>
+            <label for="username">User Name</label>
+            <i class="fas fa-user"></i>
+            <input type="text" name="username" id="username" placeholder="Joy Shaheb" />
+            <i class="fas fa-exclamation-circle failure-icon"></i>
+            <i class="far fa-check-circle success-icon"></i>
+            <div class="error"></div>
+          </div>
+
+          <!-- /** 
+          * ! Name Input here
+         **/ -->
+
+          <div>
+            <label for="name">Name</label>
+            <i class="far fa-envelope"></i>
+            <input type="text" name="name" id="name" placeholder="your name" />
+            <i class="fas fa-exclamation-circle failure-icon"></i>
+            <i class="far fa-check-circle success-icon"></i>
+            <div class="error"></div>
+          </div>
+
+          <!-- /** 
+          * ! Password Input here
+         **/ -->
+
+          <div>
+            <label for="password">Password</label>
+            <i class="fas fa-lock"></i>
+            <input type="password" name="password" id="password" placeholder="Password here" />
+            <i class="fas fa-exclamation-circle failure-icon"></i>
+            <i class="far fa-check-circle success-icon"></i>
+            <div class="error"></div>
+          </div>
+
+          <button type="submit" id="submit">Submit</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</body>
+<script src="./js/register.js"></script>
+
+</html>

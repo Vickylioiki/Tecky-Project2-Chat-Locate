@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Login Page</title>
+  <link rel="stylesheet" type="text/css" href="css/login.css">
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="background-wrapper"><img src="./asset/DomeAM.jpg" alt=""></div>
+  <div class="container">
+    <div class="form sign-in-container">
+      <form id="login-form">
+        <h1>Sign in</h1>
+        <div class="social-container">
+          <a href="/connect/facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="/connect/google"><i class="fab fa-google-plus-g"></i></a>
+          <a href="/connect/instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+        <input type="text" name="username" placeholder="Username">
+        <input type="password" name="password" placeholder="Password">
+        <button>Sign In</button>
+      </form>
+    </div>
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-right">
+          <h1>Sign UP</h1>
+          <p>Sign up here if you don't have account.</p>
+          <a href="./register.html"><button class="signup_btn">Sign Up</button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="./js/login.js"></script>
+</body>
+
+</html>
