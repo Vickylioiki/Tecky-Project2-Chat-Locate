@@ -4,11 +4,15 @@ CREATE TABLE users (
     name varchar(255) not null,
     username varchar(255) not null,
     password varchar(255) not null,
+    aboutMe text,
+    hobby text,
+    country text,
+    occupation text,
     icon text,
     gender char null,
-    date_of_birth date,
-    description text,
+    dateofBirth date,
     contact_no int,
+    payme_qr_code text,
     created_at timestamp not null default now(),
     updated_at timestamp default now()
 );

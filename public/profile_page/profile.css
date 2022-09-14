@@ -498,3 +498,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-shadow: 0 0 40px -10px rgba(0, 0, 0, .4);
     
 }
+
+textarea.profile-session{
+	width: 300px;
+	height: 100px;
+
+}

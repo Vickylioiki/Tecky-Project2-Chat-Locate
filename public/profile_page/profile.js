@@ -1,7 +1,7 @@
 let friendsButton=document.querySelector(".friends-btn");
 let fds_list_session=document.querySelector(".friends-list-session");
 let editButton= document.querySelector(".edit-btn");
-let bioRow= document.querySelectorAll(".bio-row input");
+let bioRow= document.querySelectorAll(".bio-row .profile-session");
 
 friendsButton.addEventListener("click", function(event) {
     friend_board =`<div class="friends-list-session">
@@ -100,14 +100,24 @@ editButton.addEventListener("click",function(event){
     for(row of bioRow){
       row.disabled = true;
     }
-    let res= await fetch('/',{
+    aboutMe= document.querySelector("#about-me").value;
+    dateOfBirth= document.querySelector("#date-of-birth").value;
+    occupation=document.querySelector("#occupation").value;
+    hobby=document.querySelector("#hobby").value;
+    country=document.querySelector("#country").value;
+
+    let res= await fetch('/profile/update',{
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-          content: messageInput,
-          index: data_index
+        aboutMe: aboutMe,
+        dateofBirth: dateofBirth,
+        occupation: occupation,
+        hobby: hobby,
+        country: country
       })
   })
+
 
   }
 });
