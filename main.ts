@@ -7,6 +7,7 @@ import { userRoutes } from './routes/userRoute'
 import grant from 'grant'
 
 import dotenv from 'dotenv'
+import { matchRoutes } from './routes/matchRoute'
 dotenv.config()
 
 declare module 'express-session' {
@@ -39,6 +40,7 @@ app.use(
 )
 
 app.use('/user', userRoutes)
+app.use('/match', matchRoutes)
 app.use(express.static('public'))
 
 

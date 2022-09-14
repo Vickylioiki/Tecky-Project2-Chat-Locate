@@ -11,6 +11,16 @@ userRoutes.get('/', async (req, res) => {
     res.json(userResult.rows)
 })
 
+userRoutes.post('/friend-request', async (req, res) => {
+    let fromUserId = req.session['user'].id
+    let toUserId = req.body.toUserId
+    // let userResult = await client.query('insert into friends ')
+    // status = 'PENDING'
+    res.json({
+        message: 'Friend request sent.'
+    })
+})
+
 userRoutes.post('/register', async (req, res) => {
     try {
         const { username, password, name } = req.body
@@ -39,8 +49,8 @@ userRoutes.post('/register', async (req, res) => {
         let hashedPassword = await hashPassword(password)
         console.log('hashedPassword', hashedPassword)
         await client.query(
-            `insert into users (username, password) values ($1, $2)`,
-            [username, hashedPassword]
+            `insert into users (username, password, name) values ($1, $2, $3)`,
+            [username, hashedPassword, name]
         )
         res.json({ message: 'User created' })
     } catch (error) {

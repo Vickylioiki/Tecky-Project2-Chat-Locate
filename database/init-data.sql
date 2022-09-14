@@ -8,6 +8,26 @@ insert into users (
         latitude,
         longitude
     )
+values (
+        'JamesLam',
+        'james',
+        '1234',
+        'M',
+        '2000-10-07',
+        '99667897',
+        22.2873374,
+        114.1481932
+    );
+insert into users (
+        name,
+        username,
+        password,
+        gender,
+        date_of_birth,
+        contact_no,
+        latitude,
+        longitude
+    )
 VALUES (
         'Peter',
         'peter01',
@@ -37,6 +57,16 @@ VALUES (
         '99667897',
         22.2875193,
         114.1477337
+    ),
+    (
+        'JamesLam',
+        'james',
+        '1234',
+        'M',
+        '2000-10-07',
+        '99667897',
+        22.2873374,
+        114.1481932
     );
 insert into facebook_profile (
         fb_id,
