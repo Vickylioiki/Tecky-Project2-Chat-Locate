@@ -9,7 +9,6 @@ CREATE TABLE users (
     date_of_birth date,
     description text,
     contact_no int,
-    payme_qr_code text,
     created_at timestamp not null default now(),
     updated_at timestamp default now()
 );
@@ -34,4 +33,12 @@ CREATE TABLE google_profile (
     name varchar(255) not null,
     profile_pic text not null,
     user_id int
+);
+CREATE TABLE friends_list (
+    id SERIAL primary key,
+    from_user_id int,
+    to_user_id int,
+    status text,
+    created_at timestamp not null default now(),
+    updated_at timestamp not null default now()
 )

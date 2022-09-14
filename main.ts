@@ -7,6 +7,7 @@ import { userRoutes } from './routes/userRoute'
 import grant from 'grant'
 
 import dotenv from 'dotenv'
+import { matchRoutes } from './routes/matchRoute'
 dotenv.config()
 
 declare module 'express-session' {
@@ -39,8 +40,8 @@ app.use(
 )
 
 app.use('/user', userRoutes)
+app.use('/match', matchRoutes)
 app.use(express.static('public'))
-
 
 
 app.use(express.static("public"))
@@ -51,6 +52,9 @@ declare module 'express-session' {
 
   }
 }
+
+
+
 const grantExpress = grant.express({
   defaults: {
     origin: 'http://localhost:8080',
