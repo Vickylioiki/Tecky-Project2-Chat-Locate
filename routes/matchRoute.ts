@@ -1,36 +1,25 @@
 import express from 'express'
-import { client } from '../main'
+// import { client } from '../main'
+
+let readyUsers: any = [];
 
 export const matchRoutes = express.Router()
 
-matchRoutes.get('/', async (req, res) => {
-    try {
-        const userResult = await client.query('Select * from users')
-        res.status(200).json(userResult.rows)
-        return;
-    } catch (err) {
-        console.log(err)
-        res.status(500).send('internal error: ' + err.message)
-    }
-})
-
-
-matchRoutes.put('/', async (req, res) => {
-    try {
-        const lat = req.body.lat
-        const long = req.body.lon
-        const userId = req.session.id
-
-        await client.query(`UPDATE users SET latitude = $1, longitude = $2, geolocation = ST_MakePoint($1, $2) WHERE id = $3`, [lat, long, userId])
-        res.status(200).json('updated geolocation successfully')
-    } catch (err) {
-        res.status(400).json('fail to update')
-    }
-
-})
 
 matchRoutes.post('/', async (req, res) => {
     try {
+
+        const userid = req.session.id;
+        const latitude = req.body.latitude;
+        const longitude = req.body.longtitude;
+        const location = { lat: latitude, lng: longitude }
+
+        const userLocation = { userid: userid, location: location }
+        readyUsers.push(userLocation)
+
+
+
+
 
     } catch (err) {
         console.log(err)

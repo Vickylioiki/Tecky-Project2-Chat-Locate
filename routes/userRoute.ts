@@ -12,8 +12,8 @@ userRoutes.get('/', async (req, res) => {
 })
 
 userRoutes.post('/friend-request', async (req, res) => {
-    let fromUserId = req.session['user'].id
-    let toUserId = req.body.toUserId
+    // let fromUserId = req.session['user'].id
+    // let toUserId = req.body.toUserId
     // let userResult = await client.query('insert into friends ')
     // status = 'PENDING'
     res.json({
