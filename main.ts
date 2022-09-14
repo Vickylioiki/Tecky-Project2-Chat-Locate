@@ -42,7 +42,6 @@ app.use('/user', userRoutes)
 app.use(express.static('public'))
 
 
-
 app.use(express.static("public"))
 
 declare module 'express-session' {

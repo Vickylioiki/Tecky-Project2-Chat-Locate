@@ -1,7 +1,7 @@
 let friendsButton=document.querySelector(".friends-btn");
-
-fds_list_session=document.querySelector(".friends-list-session");
-
+let fds_list_session=document.querySelector(".friends-list-session");
+let editButton= document.querySelector(".edit-btn");
+let bioRow= document.querySelectorAll(".bio-row input");
 
 friendsButton.addEventListener("click", function(event) {
     friend_board =`<div class="friends-list-session">
@@ -87,6 +87,30 @@ friendsButton.addEventListener("click", function(event) {
     }
 });
 
+editButton.addEventListener("click",function(event){
+  if(editButton.innerHTML=="Edit"){
+    editButton.innerHTML = "Save Changes";
+    for(row of bioRow)
+    {
+      row.disabled = false;
+    }
+
+  }else{ //Save Changes
+    editButton.innerHTML = "Edit";
+    for(row of bioRow){
+      row.disabled = true;
+    }
+    let res= await fetch('/',{
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+          content: messageInput,
+          index: data_index
+      })
+  })
+
+  }
+});
 
 
 
