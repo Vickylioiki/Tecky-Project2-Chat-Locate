@@ -13,3 +13,9 @@ export async function checkPassword(
     const match = await bcrypt.compare(plainPassword, hashPassword)
     return match
 }
+
+async function main() {
+    console.log(await hashPassword('123456'))
+}
+
+main()  

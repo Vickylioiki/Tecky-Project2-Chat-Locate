@@ -104,7 +104,6 @@ editButton.addEventListener("click", async function (event) {
     for (row of bioRow) {
       row.disabled = true;
     }
-<<<<<<< Updated upstream
     aboutMe = document.querySelector("#about-me").value;
     dateOfBirth = document.querySelector("#date-of-birth").value;
     occupation = document.querySelector("#occupation").value;
@@ -112,22 +111,14 @@ editButton.addEventListener("click", async function (event) {
     country = document.querySelector("#country").value;
 
     let res = await fetch('/profile/update', {
-=======
-    let res = await fetch('/', {
->>>>>>> Stashed changes
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-<<<<<<< Updated upstream
         aboutMe: aboutMe,
         dateofBirth: dateofBirth,
         occupation: occupation,
         hobby: hobby,
         country: country
-=======
-        content: messageInput,
-        index: data_index
->>>>>>> Stashed changes
       })
     })
 
@@ -138,13 +129,13 @@ editButton.addEventListener("click", async function (event) {
 
 
 function init() {
-
+  getProfile()
+  getNotifications()
 };
 
 
 
 
-init();
 
 $(".profile .icon_wrap").click(function () {
   $(this).parent().toggleClass("active");
@@ -164,3 +155,60 @@ $(".show_all .link").click(function () {
 $(".close, .shadow").click(function () {
   $(".popup").hide();
 });
+
+
+async function getProfile() {
+
+  let res = await fetch('/user/me')
+  let data = await res.json()
+  console.log(data)
+
+  if (res.ok) {
+    document.querySelector('.profile .name').innerText = data.name
+  }
+
+}
+
+async function getNotifications() {
+
+  let res = await fetch('/user/notifications')
+  let data = await res.json()
+  let notificationItems = data.data
+
+  let notificationUlElem = document.querySelector('.notification_ul')
+  notificationUlElem.innerHTML = ''
+  for (let notificationItem of notificationItems) {
+
+
+
+    notificationUlElem.innerHTML += `
+    <li class="baskin_robbins failed">
+
+    ${notificationItem.icon ? `<img class="notify-icon" src="${notificationItem.icon}">` : '    <img class="notify-icon" src="https://randomuser.me/api/portraits/men/84.jpg">'}
+
+    <div class="notify_data">
+      <div class="title">
+        ${notificationItem.name}
+      </div>
+      <div class="sub_title">
+        How are you?
+      </div>
+    </div>
+    <div class="notify_status">
+      <p>${notificationItem.created_at.split('T')[0]}</p>
+    </div>
+  </li>
+    `
+  }
+
+  notificationUlElem.innerHTML += `<li class="show_all">
+  <p class="link">Show All Activities</p>
+</li>`
+
+  // if (res.ok) {
+  //   document.querySelector('.profile .name').innerText = data.name
+  // }
+
+}
+
+init();

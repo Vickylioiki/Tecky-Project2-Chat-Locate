@@ -9,7 +9,7 @@ insert into users (
 VALUES (
         'Peter',
         'peter01',
-        'dhakjd',
+        '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'M',
         '1999-01-03',
         '99991234'
@@ -17,7 +17,7 @@ VALUES (
     (
         'May',
         'may01',
-        'dhadskjd',
+        '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'F',
         '1998-02-03',
         '99884567'
@@ -25,7 +25,7 @@ VALUES (
     (
         'John',
         'john01',
-        'dhadsdadskjd',
+        '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'M',
         '2000-10-07',
         '99667897'
@@ -33,7 +33,7 @@ VALUES (
     (
         'JamesLam',
         'james',
-        '1234',
+        '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'M',
         '2000-10-07',
         '99667897'
@@ -76,4 +76,31 @@ VALUES (
         2,
         'https://www.instagram.com/profile.php?u=John',
         11
+    );
+insert into friends_list (from_user_id, to_user_id, status)
+values(
+        (
+            select id
+            from users
+            where username = 'peter01'
+        ),
+        (
+            select id
+            from users
+            where username = 'may01'
+        ),
+        'pending'
+    ),
+    (
+        (
+            select id
+            from users
+            where username = 'john01'
+        ),
+        (
+            select id
+            from users
+            where username = 'may01'
+        ),
+        'pending'
     );

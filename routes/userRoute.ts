@@ -11,7 +11,13 @@ userRoutes.get('/', async (req, res) => {
     res.json(userResult.rows)
 })
 
-userRoutes.post('/friend-request', async (req, res) => {
+userRoutes.get('/me', async (req, res) => {
+
+    res.json(req.session['user'])
+})
+
+
+userRoutes.get('/friend-request', async (req, res) => {
     // let fromUserId = req.session['user'].id
     // let toUserId = req.body.toUserId
     // let userResult = await client.query('insert into friends ')
@@ -20,6 +26,36 @@ userRoutes.post('/friend-request', async (req, res) => {
         message: 'Friend request sent.'
     })
 })
+
+userRoutes.get('/notifications', async (req, res) => {
+    let userId = req.session['user'].id
+    if (!userId) {
+        res.status(403).json({
+            message: 'You should login first'
+        })
+        return
+    }
+
+    let result = await client.query(`
+    select 
+    
+    users.id,
+    users.name,
+    users.username,
+    icon,
+    friends_list.created_at
+    
+    from friends_list  join users on friends_list.from_user_id =  users.id where to_user_id = $1;
+
+    `, [userId])
+    let notificationItems = result.rows
+    res.json({
+        data: notificationItems
+    })
+
+})
+
+
 
 userRoutes.post('/register', async (req, res) => {
     try {
@@ -95,7 +131,6 @@ userRoutes.post('/login', async (req, res) => {
 
     let {
         password: dbUserPassword,
-        id,
         created_at,
         updated_at,
         ...sessionUser
@@ -274,16 +309,16 @@ async function logininstagram(req: express.Request, res: express.Response) {
 
 userRoutes.put('/profile/update', updateProfile);
 
-async function updateProfile(req: express.Request, res: express.Response){
-    const id= req.session.id;
-    const aboutMe= req.body.aboutMe;
-    const dateofBirth= req.body.dateofBirth;
-    const occupation= req.body.occupation;
-    const hobby= req.body.hobby;
-    const country= req.body.country;
+async function updateProfile(req: express.Request, res: express.Response) {
+    const id = req.session.id;
+    const aboutMe = req.body.aboutMe;
+    const dateofBirth = req.body.dateofBirth;
+    const occupation = req.body.occupation;
+    const hobby = req.body.hobby;
+    const country = req.body.country;
 
 
     await client.query(`UPDATE users SET aboutMe = $1, dateofBirth= $2, occupation= $3, hobby=$4, country=$5 WHERE id = $6,
-    `, [aboutMe,dateofBirth,occupation,hobby,country,id])
-    
+    `, [aboutMe, dateofBirth, occupation, hobby, country, id])
+
 }
