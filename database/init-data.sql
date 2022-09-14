@@ -4,9 +4,7 @@ insert into users (
         password,
         gender,
         date_of_birth,
-        contact_no,
-        latitude,
-        longitude
+        contact_no
     )
 values (
         'JamesLam',
@@ -48,9 +46,7 @@ VALUES (
         'dhadsdadskjd',
         'M',
         '2000-10-07',
-        '99667897',
-        22.2875193,
-        114.1477337
+        '99667897'
     ),
     (
         'JamesLam',
@@ -58,9 +54,7 @@ VALUES (
         '1234',
         'M',
         '2000-10-07',
-        '99667897',
-        22.2873374,
-        114.1481932
+        '99667897'
     );
 insert into facebook_profile (
         fb_id,
