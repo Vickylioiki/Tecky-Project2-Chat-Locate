@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node-dev main.ts"
+    "start": "ts-node main.ts"
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/formidable": "^2.0.5",
     "@types/jsonfile": "^6.1.0",
-    "@types/node": "^18.7.16",
+    "@types/node": "^18.7.18",
     "@types/pg": "^8.6.5",
     "bcryptjs": "^2.4.3",
     "cross-fetch": "^3.1.5",
@@ -33,6 +33,7 @@
     "formidable": "^2.0.1",
     "grant": "^5.4.21",
     "jsonfile": "^6.1.0",
+    "node-fetch": "^3.2.10",
     "pg": "^8.8.0",
     "picmo": "^5.7.0",
     "socket.io": "^4.5.2",

@@ -45,4 +45,4 @@ CREATE TABLE friends_list (
     status text,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
-)
+);

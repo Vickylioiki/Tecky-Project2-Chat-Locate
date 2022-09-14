@@ -1,10 +1,15 @@
-let friendsButton=document.querySelector(".friends-btn");
-let fds_list_session=document.querySelector(".friends-list-session");
-let editButton= document.querySelector(".edit-btn");
-let bioRow= document.querySelectorAll(".bio-row .profile-session");
+let friendsButton = document.querySelector(".friends-btn");
+let fds_list_session = document.querySelector(".friends-list-session");
+let editButton = document.querySelector(".edit-btn");
+let bioRow = document.querySelectorAll(".bio-row .profile-session");
+// let friendsButton = document.querySelector(".friends-btn");
+// let fds_list_session = document.querySelector(".friends-list-session");
+// let editButton = document.querySelector(".edit-btn");
+// let bioRow = document.querySelectorAll(".bio-row input");
 
-friendsButton.addEventListener("click", function(event) {
-    friend_board =`<div class="friends-list-session">
+friendsButton.addEventListener("click", function (event) {
+  console.log('friendsButton clk=icked')
+  friend_board = `<div class="friends-list-session">
     <article class="leaderboard">
         <header>
       
@@ -75,48 +80,56 @@ friendsButton.addEventListener("click", function(event) {
         </main>
       </div>
       </div>`
-    
-    console.log("Clicked friends")
-    console.log(fds_list_session.contains(document.querySelector("article.leaderboard")));
-    //console.log(fds_list_session.querySelector("article.leaderboard"));
-    if(!fds_list_session.contains(document.querySelector("article.leaderboard"))){
-        fds_list_session.innerHTML=friend_board;
 
-    }else{
-        fds_list_session.querySelector("article.leaderboard").remove();
-    }
+  console.log("Clicked friends")
+  console.log(fds_list_session.contains(document.querySelector("article.leaderboard")));
+  //console.log(fds_list_session.querySelector("article.leaderboard"));
+  if (!fds_list_session.contains(document.querySelector("article.leaderboard"))) {
+    fds_list_session.innerHTML = friend_board;
+
+  } else {
+    fds_list_session.querySelector("article.leaderboard").remove();
+  }
 });
 
-editButton.addEventListener("click",function(event){
-  if(editButton.innerHTML=="Edit"){
+editButton.addEventListener("click", async function (event) {
+  if (editButton.innerHTML == "Edit") {
     editButton.innerHTML = "Save Changes";
-    for(row of bioRow)
-    {
+    for (row of bioRow) {
       row.disabled = false;
     }
 
-  }else{ //Save Changes
+  } else { //Save Changes
     editButton.innerHTML = "Edit";
-    for(row of bioRow){
+    for (row of bioRow) {
       row.disabled = true;
     }
-    aboutMe= document.querySelector("#about-me").value;
-    dateOfBirth= document.querySelector("#date-of-birth").value;
-    occupation=document.querySelector("#occupation").value;
-    hobby=document.querySelector("#hobby").value;
-    country=document.querySelector("#country").value;
+<<<<<<< Updated upstream
+    aboutMe = document.querySelector("#about-me").value;
+    dateOfBirth = document.querySelector("#date-of-birth").value;
+    occupation = document.querySelector("#occupation").value;
+    hobby = document.querySelector("#hobby").value;
+    country = document.querySelector("#country").value;
 
-    let res= await fetch('/profile/update',{
+    let res = await fetch('/profile/update', {
+=======
+    let res = await fetch('/', {
+>>>>>>> Stashed changes
       method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+<<<<<<< Updated upstream
         aboutMe: aboutMe,
         dateofBirth: dateofBirth,
         occupation: occupation,
         hobby: hobby,
         country: country
+=======
+        content: messageInput,
+        index: data_index
+>>>>>>> Stashed changes
       })
-  })
+    })
 
 
   }
@@ -124,11 +137,30 @@ editButton.addEventListener("click",function(event){
 
 
 
-function init(){
-   
+function init() {
+
 };
 
 
 
 
 init();
+
+$(".profile .icon_wrap").click(function () {
+  $(this).parent().toggleClass("active");
+  $(".notifications").removeClass("active");
+});
+
+$(".notifications .icon_wrap").click(function () {
+  $(this).parent().toggleClass("active");
+  $(".profile").removeClass("active");
+});
+
+$(".show_all .link").click(function () {
+  $(".notifications").removeClass("active");
+  $(".popup").show();
+});
+
+$(".close, .shadow").click(function () {
+  $(".popup").hide();
+});
