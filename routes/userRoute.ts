@@ -3,6 +3,7 @@ import { client } from '../main'
 import { checkPassword, hashPassword } from '../hash'
 import fetch from 'cross-fetch'
 import crypto from 'crypto'
+import moment from 'moment';
 
 export const userRoutes = express.Router()
 
@@ -29,6 +30,7 @@ userRoutes.get('/friend-request', async (req, res) => {
 
 userRoutes.get('/notifications', async (req, res) => {
     let userId = req.session['user'].id
+    console.log("/notifications req.session['user']", userId)
     if (!userId) {
         res.status(403).json({
             message: 'You should login first'
@@ -48,13 +50,62 @@ userRoutes.get('/notifications', async (req, res) => {
     from friends_list  join users on friends_list.from_user_id =  users.id where to_user_id = $1;
 
     `, [userId])
-    let notificationItems = result.rows
+
+    console.log('result.rows:', result.rows)
+
+    let notificationItems = result.rows.map((notification) => {
+        return { ...notification, created_at: moment(notification.created_at).startOf('hour').fromNow() }
+    })
+    console.log('notificationItems: ', notificationItems)
     res.json({
         data: notificationItems
     })
 
 })
 
+
+/** 
+ * when current user click "Chat" button, trigger this API call
+ * to save the opponent he/she is going to talk to, in request session
+ * */
+userRoutes.post('/start-chat', async (req, res) => {
+    // the opponent user id
+    try {
+        let userId = req.body.userId;
+        // sql save/initiate chat history?
+
+        // save into request session
+        req.session['chat_user'] = userId;
+
+        console.log("/start-chat saved req.session['chat_user']", req.session['chat_user'])
+
+        // res.redirect('/chatroom/chatroom.html')
+        res.json({ status: "ok" })
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+
+})
+
+/**
+ * after enter chatroom, call this function to get chat opponent,
+ * or chat history
+ */
+userRoutes.get('get-chat', async (req, res) => {
+    let opponent = req.session['chat_user']
+
+    // if opponent exists
+    if (!opponent) {
+        res.json({ message: 'opponent not found' })
+    }
+
+    // sql query for chat history?
+
+    res.json({ userId: opponent })
+
+})
 
 
 userRoutes.post('/register', async (req, res) => {
@@ -133,9 +184,9 @@ userRoutes.post('/login', async (req, res) => {
         password: dbUserPassword,
         created_at,
         updated_at,
-        ...sessionUser
+        ...filterUserProfile
     } = dbUser
-    req.session['user'] = sessionUser
+    req.session['user'] = filterUserProfile
 
     // console.log(sessionUser)
     res.status(200).json({

@@ -47,6 +47,7 @@ body {
 
 .navbar .navbar_right img {
 	width: 35px;
+	border-radius: 50px;
 }
 
 .navbar .navbar_right .icon_wrap {

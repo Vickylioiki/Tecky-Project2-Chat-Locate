@@ -1,6 +1,51 @@
+<<<<<<< HEAD
 const { response } = require("express");
 
 function initMap() {
+=======
+async function init() {
+    await main();
+}
+
+
+function getPosition() {
+    // Simple wrapper
+    return new Promise((res, rej) => {
+        navigator.geolocation.getCurrentPosition(res, rej);
+    });
+}
+
+async function main() {
+    const position = await getPosition();  // wait for getPosition to complete
+    const res = await fetch('/match/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            latitude: position.coords.latitude,
+            longtitude: position.coords.longitude
+        })
+    })
+}
+
+init();
+
+
+// async function getReadyUsers() {
+//     const res = await fetch('/match');
+//     const readyUsers = await res.json();
+//     console.log(readyUsers);
+// }
+
+
+async function initMap() {
+    const res = await fetch('/match');
+    const readyUsers = await res.json();
+
+
+    //NO USE//
+>>>>>>> 0b35d334d793a7b2aaaac75b8414d727d72caf6d
     // const bounds = new google.maps.LatLngBounds();
     // const markersArray = [];
 
@@ -16,7 +61,9 @@ function initMap() {
     const geocoder = new google.maps.Geocoder();
     const service = new google.maps.DistanceMatrixService();
 
+
     // build request
+<<<<<<< HEAD
     const origin1 = "7-11";
     const origin2 = "東華醫院";
     const origin3 = "西港城"
@@ -27,6 +74,17 @@ function initMap() {
     const request = {
         origins: [origin1,origin2,origin3],
         destinations: [destinationA, destinationB, destinationC],
+=======
+
+    // const origin1 = { lat: 55.93, lng: -3.118 };
+    // const origin2 = "Greenwich, England";
+    // const destinationA = "Stockholm, Sweden";
+    // const destinationB = { lat: 50.087, lng: 14.421 };
+
+    const request = {
+        origins: [readyUsers[0].location],
+        destinations: [readyUsers[1].location, readyUsers[2].location],
+>>>>>>> 0b35d334d793a7b2aaaac75b8414d727d72caf6d
         travelMode: google.maps.TravelMode.WALKING,
         unitSystem: google.maps.UnitSystem.METRIC,
     };
@@ -42,9 +100,14 @@ function initMap() {
         //     JSON.stringify(response, null, 2);
 
         // show on map
-        const originList = response.originAddresses;
-        const destinationList = response.destinationAddresses;
-        console.log(response.rows);
+        // const originList = response.originAddresses;
+        // const destinationList = response.destinationAddresses;
+        const userAdistance = response.rows[0].elements[0].distance
+
+        console.log(userAdistance)
+        console.log(response.rows[0])
+
+
         // deleteMarkers(markersArray);
 
         // const showGeocodedAddressOnMap = (asDestination) => {
@@ -78,6 +141,7 @@ function initMap() {
     });
 }
 
+<<<<<<< HEAD
 function findDistance(readyUsers){
     // initialize services
     const geocoder = new google.maps.Geocoder();
@@ -124,3 +188,6 @@ main();
 // }
 
 // distance=findDistance(userA,userB);
+=======
+initMap();
+>>>>>>> 0b35d334d793a7b2aaaac75b8414d727d72caf6d
