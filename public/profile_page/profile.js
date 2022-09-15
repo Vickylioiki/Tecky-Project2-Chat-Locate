@@ -211,4 +211,33 @@ async function getNotifications() {
 
 }
 
+async function addStartChatFormEvent() {
+  const startChatForm = document.querySelector('#start-chat-form')
+
+  startChatForm.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const form = e.target
+    const userId = form.userId.value
+    console.log("userId: " + userId)
+    const res = await fetch('/user/start-chat', {
+      method: 'POST',
+      body: JSON.stringify({
+        userId,
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    if (res.ok) {
+      console.log('start chat')
+      window.location.href = "/chatroom/chatroom.html"
+    } else {
+      let { message } = await res.json()
+      alert(message)
+    }
+  })
+}
+
+addStartChatFormEvent();
+
 init();
