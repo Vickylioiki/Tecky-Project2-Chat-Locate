@@ -15,6 +15,7 @@ declare module 'express-session' {
   interface SessionData {
     name?: string
     isloggedin?: boolean
+    user?: any
   }
 }
 
@@ -37,6 +38,7 @@ app.use(
     secret: 'Tecky Academy teaches typescript',
     resave: true, //Auto save session 
     saveUninitialized: true,
+    // cookies: {secure : false}
   }),
 )
 
@@ -48,12 +50,12 @@ app.use(express.static('public'))
 
 app.use(express.static("public"))
 
-declare module 'express-session' {
-  interface SessionData {
-    name?: string
+// declare module 'express-session' {
+//   interface SessionData {
+//     name?: string
 
-  }
-}
+//   }
+// }
 
 
 

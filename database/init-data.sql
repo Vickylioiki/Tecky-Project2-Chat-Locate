@@ -3,7 +3,7 @@ insert into users (
         username,
         password,
         gender,
-        date_of_birth,
+        dateofBirth,
         contact_no
     )
 VALUES (

@@ -1,18 +1,36 @@
 import express from 'express'
 // import { client } from '../main'
 
-let readyUsers: any = [{ userId: 1, location: { lat: 22.285170575820224, lng: 114.14665642394633 } }, { userId: 2, location: { lat: 22.283651333323313, lng: 114.15176410872265 } }, { userId: 3, location: { lat: 22.28601222944395, lng: 114.14757727141927 } }, { userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }];
+
+let readyUsers: any = [];
+
+// { userId: 1, location: { lat: 22.285170575820224, lng: 114.14665642394633 } }, { userId: 2, location: { lat: 22.283651333323313, lng: 114.15176410872265 } }, { userId: 3, location: { lat: 22.28601222944395, lng: 114.14757727141927 } }, { userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }
 //     // const x = [22.285170575820224, 114.14665642394633] // 東華醫院 (12 Po Yan St, Sai Wan, Hong Kong)
 //     // const y = [22.2836612609074, 114.15163536268929] // 元創方 (H211 Block B PMQ, 35 Aberdeen St, Central, Hong Kong)
-//     // const y = [22.28601222944395, 114.14757727141927] // 荷李活道公園 (Hong Kong, Tai Ping Shan, 荷李活道228號B)
+//     // const y = df[22.28601222944395, 114.14757727141927] // 荷李活道公園 (Hong Kong, Tai Ping Shan, 荷李活道228號B)
 //     // const y = [22.286290196846565, 114.14976595398261] 上環文娛中心 (345 Queen's Road Central, Sheung Wan, Hong Kong)
 
 export const matchRoutes = express.Router()
 
 matchRoutes.post('/startChat', (req, res) => {
+    const currentUserId = req.body.currentUserId;
     const userId = req.body.userId
-    console.log({ startChat: userId })
-    res.json({ userId })
+    console.log(`startChat:${currentUserId}, ${userId} `)
+    // res.json({ userId })[]
+
+    //put users into room
+
+
+
+    //delete from ready users
+    const currentUser = readyUsers.findIndex((obj: { userId: any; }) => obj.userId == currentUserId);
+    readyUsers.splice(currentUser, 1);
+    const currentUser2 = readyUsers.findIndex((obj: { userId: any; }) => obj.userId == userId);
+    readyUsers.splice(currentUser2, 1);
+
+    console.log(readyUsers)
+
+
 })
 
 matchRoutes.get('/geMe', async (req, res) => {
@@ -23,16 +41,15 @@ matchRoutes.get('/geMe', async (req, res) => {
 
 matchRoutes.post('/', async (req, res) => {
     try {
-
-        const userid = req.session['user'].id;
+        const userId = req.session['user'].id;
         const latitude = req.body.latitude;
         const longitude = req.body.longtitude;
         const location = { lat: latitude, lng: longitude }
 
-        const userLocation = { userid: userid, location: location }
+        const userLocation = { userId: userId, location: location }
         readyUsers.push(userLocation)
 
-        console.log(userLocation)
+        console.log(readyUsers)
         res.status(200).json('update successful')
 
 
@@ -46,6 +63,7 @@ matchRoutes.post('/', async (req, res) => {
 
 matchRoutes.get('/', async (req, res) => {
     try {
+        console.log(readyUsers)
         res.status(200).json(readyUsers)
     } catch (err) {
         console.log(err)
@@ -53,6 +71,7 @@ matchRoutes.get('/', async (req, res) => {
     }
 
 })
+
 //     let userResult = await client.query('select * from users')
 //     const users = userResult.rows
 

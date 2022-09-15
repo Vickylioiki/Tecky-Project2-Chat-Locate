@@ -120,6 +120,9 @@
       </div>
     </div>
     <div class="profile-card js-profile-card">
+      <div class="text-box">
+        <a href="../matching/matching.html" class="btn btn-white btn-animate">Start Matching</a>
+      </div>
       <div class="profile-card__img">
         <img src="https://m.media-amazon.com/images/I/61BxjnyB7cL._AC_.jpg" alt="profile card">
       </div>
@@ -141,9 +144,11 @@
 
         <div class="panel-body bio-graph-info">
           <!-- <h1>Bio Graph</h1> -->
+
           <div class="row">
             <div class="bio-row">
-              <p><span>First Name </span> <input type="text" value="Camila" disabled></input></p>
+              <p><span class="input-info">About Me</span><br><textarea type="text" id="about-me" class="profile-session"
+                  disabled>I am Curtis. I go to school by bus.</textarea></p>
             </div>
             <br>
 
@@ -155,41 +160,38 @@
                         <p><span>Gender </span> <input type="text" value="M" disabled></input></p>
                     </div> -->
                 <div class="bio-row">
-                  <p><span>About Me</span><br><textarea type="text" id="about-me" class="profile-session"
-                      disabled>I am Curtis. I go to school by bus.</textarea></p>
+                  <p><span class="input-info">Name&nbsp;</span> <input type="text" value="Camila Smith"
+                      disabled></input></p>
                 </div>
+
 
                 <!-- <div class="bio-row">
                       <p><span>Name </span> <input type="text" value="Camila Smith" class="profile-session" disabled></input></p>
                     </div> -->
 
                 <div class="bio-row">
-                  <p><span>Date of Birth</span> <input type="text" value="2010-10-14" id="date-of-birth"
-                      class="profile-session" onfocus="(this.type='date')" onblur="(this.type='text')" disabled></input>
+                  <p><span class="input-info">Date of Birth&nbsp;</span> <input type="text" value="2010-10-14"
+                      id="date-of-birth" class="profile-session" onfocus="(this.type='date')"
+                      onblur="(this.type='text')" disabled></input>
                   </p>
                 </div>
 
                 <div class="bio-row">
-                  <p><span>Occupation </span> <input type="text" value="Software Engineer" class="profile-session"
-                      id="occupation" disabled></input></p>
+                  <p><span class="input-info">Occupation &nbsp;</span> <input type="text" value="Software Engineer"
+                      class="profile-session" id="occupation" disabled></input></p>
                 </div>
 
                 <div class="bio-row">
-                  <p><span>Hobby</span> <input type="text" class="profile-session" value="Smoke weed" id="hobby"
-                      disabled></input></p>
+                  <p><span class="input-info">Hobby&nbsp;</span> <input type="text" class="profile-session"
+                      value="Smoke weed" id="hobby" disabled></input></p>
                 </div>
 
                 <div class="bio-row">
-                  <p><span>Country </span> <input type="text" value="Australia" class="profile-session" id="country"
-                      disabled></input></p>
+                  <p><span class="input-info">Country&nbsp;</span> <input type="text" value="Australia"
+                      class="profile-session" id="country" disabled></input></p>
                 </div>
-
-
-
-
-
               </div>
-              <div class="bio-row">
+              <!-- <div class="bio-row">
                 <p><span>Last Name </span> <input type="text" value="Smith" disabled></input></p>
               </div>
               <div class="bio-row">
@@ -207,7 +209,7 @@
               </div>
               <div class="bio-row">
                 <p><span>Mobile </span> <input type="text" value="852 12345678" disabled></input></p>
-              </div>
+              </div> -->
 
             </div>
           </div>

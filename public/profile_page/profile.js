@@ -2,6 +2,8 @@ let friendsButton = document.querySelector(".friends-btn");
 let fds_list_session = document.querySelector(".friends-list-session");
 let editButton = document.querySelector(".edit-btn");
 let bioRow = document.querySelectorAll(".bio-row .profile-session");
+// let startMatching = document.querySelector(""
+
 // let friendsButton = document.querySelector(".friends-btn");
 // let fds_list_session = document.querySelector(".friends-list-session");
 // let editButton = document.querySelector(".edit-btn");
