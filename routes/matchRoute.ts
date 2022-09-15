@@ -1,7 +1,11 @@
 import express from 'express'
 // import { client } from '../main'
 
-let readyUsers: any = [];
+let readyUsers: any = [{ userId: 1, location: { lat: 22.2873374, lng: 114.1481932 } }, { userId: 2, location: { lat: 22.2864781, lng: 114.1518819 } }, { userId: 3, location: { lat: 22.2856939, lng: 114.146828 } }, { userId: 4, location: { lat: 22.283593, lng: 114.1328556 } }];
+//     // const x = [22.2873374, 114.1481932] // tecky
+//     // const y = [22.2864781, 114.1518819] // MTR
+//     // const y = [22.2856939, 114.146828] // 東華醫院
+//     // const y = [22.283593, 114.1328556] // U
 
 export const matchRoutes = express.Router()
 
@@ -9,7 +13,7 @@ export const matchRoutes = express.Router()
 matchRoutes.post('/', async (req, res) => {
     try {
 
-        const userid = req.session.id;
+        const userid = req.session['user'].id;
         const latitude = req.body.latitude;
         const longitude = req.body.longtitude;
         const location = { lat: latitude, lng: longitude }
@@ -17,7 +21,8 @@ matchRoutes.post('/', async (req, res) => {
         const userLocation = { userid: userid, location: location }
         readyUsers.push(userLocation)
 
-
+        console.log(userLocation)
+        res.status(200).json('update successful')
 
 
 
@@ -25,6 +30,17 @@ matchRoutes.post('/', async (req, res) => {
         console.log(err)
         res.status(400).json('fail to update')
     }
+})
+
+
+matchRoutes.get('/', async (req, res) => {
+    try {
+        res.status(200).json(readyUsers)
+    } catch (err) {
+        console.log(err)
+        res.status(400).json('fail to get data')
+    }
+
 })
 //     let userResult = await client.query('select * from users')
 //     const users = userResult.rows
