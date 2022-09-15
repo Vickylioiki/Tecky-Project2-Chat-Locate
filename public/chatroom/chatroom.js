@@ -1,3 +1,4 @@
+const io =require('socket.io')
 const emojiBtn = document.querySelector('.emoji');
 
 const picker = new EmojiButton();

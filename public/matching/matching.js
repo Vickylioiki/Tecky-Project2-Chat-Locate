@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-const { response } = require("express");
-
-function initMap() {
-=======
 async function init() {
     await getLocation();
 }
@@ -17,7 +12,7 @@ function getPosition() {
 
 async function getLocation() {
     const position = await getPosition();  // wait for getPosition to complete
-    const res = await fetch('/match/', {
+    const res = await fetch('/match', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -29,7 +24,7 @@ async function getLocation() {
     })
 }
 
-init();
+
 
 
 // async function getReadyUsers() {
@@ -39,13 +34,12 @@ init();
 // }
 
 
-async function initMap() {
+async function initMap(){
     const res = await fetch('/match');
     const readyUsers = await res.json();
 
 
     //NO USE//
->>>>>>> 0b35d334d793a7b2aaaac75b8414d727d72caf6d
     // const bounds = new google.maps.LatLngBounds();
     // const markersArray = [];
 
@@ -60,21 +54,20 @@ async function initMap() {
     // initialize services
     const geocoder = new google.maps.Geocoder();
     const service = new google.maps.DistanceMatrixService();
+    const origins = [];
+    const destinations=[];
 
+    console.log("hello1")
+
+    for(let userIndex in readyUsers){
+        if(userIndex==0){
+            origins.push(readyUsers[userIndex]);
+        }else{
+            destinations.push(readyUsers[userIndex]);
+        }
+    }
 
     // build request
-<<<<<<< HEAD
-    const origin1 = "7-11";
-    const origin2 = "東華醫院";
-    const origin3 = "西港城"
-    const destinationA = "中環街市";
-    const destinationB = "西港城";
-    const destinationC = "Tecky Sheung Wan"
-
-    const request = {
-        origins: [origin1,origin2,origin3],
-        destinations: [destinationA, destinationB, destinationC],
-=======
 
     // const origin1 = { lat: 55.93, lng: -3.118 };
     // const origin2 = "Greenwich, England";
@@ -82,9 +75,8 @@ async function initMap() {
     // const destinationB = { lat: 50.087, lng: 14.421 };
 
     const request = {
-        origins: [readyUsers[0].location],
-        destinations: [readyUsers[1].location, readyUsers[2].location],
->>>>>>> 0b35d334d793a7b2aaaac75b8414d727d72caf6d
+        origins: origins,   //[readyUsers[0].location],
+        destinations: destinations, //[readyUsers[1].location, readyUsers[2].location],
         travelMode: google.maps.TravelMode.WALKING,
         unitSystem: google.maps.UnitSystem.METRIC,
     };
@@ -102,11 +94,9 @@ async function initMap() {
         // show on map
         // const originList = response.originAddresses;
         // const destinationList = response.destinationAddresses;
-        const userAdistance = response.rows[0].elements[0].distance
+        const userA_Distance = response.rows[0].elements[0].distance
 
-
-
-        console.log(userAdistance)
+        console.log(userA_Distance)
         console.log(response.rows[0])
 
 
@@ -141,55 +131,7 @@ async function initMap() {
         //     }
         // }
     });
-}
+};
 
-<<<<<<< HEAD
-function findDistance(readyUsers){
-    // initialize services
-    const geocoder = new google.maps.Geocoder();
-    const service = new google.maps.DistanceMatrixService();
-    const locationObject = readyUsers.location;
-    let locationArray=[];
-    for(let location of locationObject){
-        locationArray.push(location);
-    }
-
-    // // build request
-    // const origin1 = { lat: 55.93, lng: -3.118 };
-    // const origin2 = "Greenwich, England";
-    // const destinationA = "Stockholm, Sweden";
-    // const destinationB = { lat: 50.087, lng: 14.421 };
-
-    const request = {
-        origins: locationArray,//[origin1, origin2],
-        destinations: locationArray,//[destinationA, destinationB],
-        travelMode: google.maps.TravelMode.WALKING,
-        unitSystem: google.maps.UnitSystem.METRIC,
-    };
-
-    service.getDistanceMatrix(request).then((response) => {
-        return response.rows;
-})
-}
-
-
-function main(){
-    const res = await fetch("/getReadyUsers")
-    const readyUsers = await res.json();
-    findDistance(readyUsers);
-}
-
-main();
-
-// async function matchUsers(){
-//     for(let user of readyUsers){
-
-
-
-//     }
-// }
-
-// distance=findDistance(userA,userB);
-=======
-initMap();
->>>>>>> 0b35d334d793a7b2aaaac75b8414d727d72caf6d
+init();
+// initMap();

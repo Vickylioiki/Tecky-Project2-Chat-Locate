@@ -14,6 +14,7 @@ declare module 'express-session' {
   interface SessionData {
     name?: string
     isloggedin?: boolean
+    id?: number
   }
 }
 
