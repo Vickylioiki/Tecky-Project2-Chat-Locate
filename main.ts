@@ -8,6 +8,7 @@ import grant from 'grant'
 
 import dotenv from 'dotenv'
 import { matchRoutes } from './routes/matchRoute'
+import { chatRoutes } from './routes/chatRoute'
 dotenv.config()
 
 declare module 'express-session' {
@@ -42,6 +43,7 @@ app.use(
 
 app.use('/user', userRoutes)
 app.use('/match', matchRoutes)
+app.use('/chatroom', chatRoutes)
 app.use(express.static('public'))
 
 

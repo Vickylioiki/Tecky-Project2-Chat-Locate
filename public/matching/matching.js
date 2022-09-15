@@ -1,5 +1,6 @@
 async function init() {
     await getLocation();
+    // initMap()
 }
 
 
@@ -24,7 +25,7 @@ async function getLocation() {
     })
 }
 
-
+// init();
 
 
 // async function getReadyUsers() {
@@ -34,11 +35,18 @@ async function getLocation() {
 // }
 
 
-async function initMap(){
+async function initMap() {
+    const geMeRes = await fetch('/match/geMe');
+    const getMeData = await geMeRes.json();
+    const userId = getMeData.userId
+    
     const res = await fetch('/match');
-    const readyUsers = await res.json();
+    let readyUsers = await res.json();
 
-
+    let owner = readyUsers.filter(readyUser => {
+        return readyUser.userId == userId
+    })[0]
+    console.log(owner)
     //NO USE//
     // const bounds = new google.maps.LatLngBounds();
     // const markersArray = [];
@@ -54,18 +62,7 @@ async function initMap(){
     // initialize services
     const geocoder = new google.maps.Geocoder();
     const service = new google.maps.DistanceMatrixService();
-    const origins = [];
-    const destinations=[];
-
-    console.log("hello1")
-
-    for(let userIndex in readyUsers){
-        if(userIndex==0){
-            origins.push(readyUsers[userIndex]);
-        }else{
-            destinations.push(readyUsers[userIndex]);
-        }
-    }
+    console.log(readyUsers);
 
     // build request
 
@@ -73,20 +70,68 @@ async function initMap(){
     // const origin2 = "Greenwich, England";
     // const destinationA = "Stockholm, Sweden";
     // const destinationB = { lat: 50.087, lng: 14.421 };
+    // for (let i = 0; i < readyUsers.length; i++) {
+    //     let originUser = readyUsers[i].location;
+    let distances = []
+        for (let j = 0; j < readyUsers.length; j++) {
+            if (readyUsers[j].userId == owner.userId) {
+                continue;
+            }
+            console.log("j :" + j);
 
-    const request = {
-        origins: origins,   //[readyUsers[0].location],
-        destinations: destinations, //[readyUsers[1].location, readyUsers[2].location],
-        travelMode: google.maps.TravelMode.WALKING,
-        unitSystem: google.maps.UnitSystem.METRIC,
-    };
+            let destinationUser = readyUsers[j].location;
+            // console.log(`destinationUser${j}`, destinationUser)
+            const request = {
+                origins: [owner.location],
+                destinations: [destinationUser],
+                travelMode: google.maps.TravelMode.WALKING,
+               
+            }
+
+            const response = await service.getDistanceMatrix(request)
+            console.log(`response${j}`, response)
+            distances.push({
+                userId: readyUsers[j].userId,
+                distance: response.rows[0].elements[0].distance.value
+            })
+            // .then((response) => {
+            //     console.log(`response${j}`, destinationUser)
+
+            //     // const result = response.rows[0]
+            //     console.log(response);
+            // })
+        }
+        distances = distances.sort((a, b) => {
+            return a.distance - b.distance
+        })
+        console.log(`distances`, distances)
+        const startChatRes = await fetch('/match/startChat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: distances[0].userId
+            })
+        })
+        const startData = await startChatRes.json()
+        console.log(`startChatRes`, startData)
+        
+    // }
+}
+    // const request = {
+    //     origins: [readyUsers[0].location],
+    //     destinations: [readyUsers[1].location, readyUsers[2].location],
+    //     travelMode: google.maps.TravelMode.WALKING,
+    //     unitSystem: google.maps.UnitSystem.METRIC
+    // };
 
     // put request on page
     // document.getElementById("request").innerText =
     //     JSON.stringify(request, null, 2);
 
     // get distance matrix response
-    service.getDistanceMatrix(request).then((response) => {
+    // service.getDistanceMatrix(request).then((response) => {
         // put response
         // document.getElementById("response").innerText =
         //     JSON.stringify(response, null, 2);
@@ -94,11 +139,13 @@ async function initMap(){
         // show on map
         // const originList = response.originAddresses;
         // const destinationList = response.destinationAddresses;
-        const userA_Distance = response.rows[0].elements[0].distance
+        // const userAdistance = ('sender:', response.originAddresses)
 
-        console.log(userA_Distance)
-        console.log(response.rows[0])
 
+
+
+        // console.log(response)
+ 
 
         // deleteMarkers(markersArray);
 
@@ -130,8 +177,5 @@ async function initMap(){
         //             .then(showGeocodedAddressOnMap(true));
         //     }
         // }
-    });
-};
 
-init();
-// initMap();
+
