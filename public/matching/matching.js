@@ -4,7 +4,7 @@ const { response } = require("express");
 function initMap() {
 =======
 async function init() {
-    await main();
+    await getLocation();
 }
 
 
@@ -15,7 +15,7 @@ function getPosition() {
     });
 }
 
-async function main() {
+async function getLocation() {
     const position = await getPosition();  // wait for getPosition to complete
     const res = await fetch('/match/', {
         method: 'POST',
@@ -103,6 +103,8 @@ async function initMap() {
         // const originList = response.originAddresses;
         // const destinationList = response.destinationAddresses;
         const userAdistance = response.rows[0].elements[0].distance
+
+
 
         console.log(userAdistance)
         console.log(response.rows[0])
