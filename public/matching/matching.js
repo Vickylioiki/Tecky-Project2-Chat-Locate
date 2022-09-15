@@ -1,3 +1,5 @@
+const { response } = require("express");
+
 function initMap() {
     // const bounds = new google.maps.LatLngBounds();
     // const markersArray = [];
@@ -15,18 +17,18 @@ function initMap() {
     const service = new google.maps.DistanceMatrixService();
 
     // build request
-    const origin1 = { lat: 55.93, lng: -3.118 };
-    const origin2 = "Greenwich, England";
-    const destinationA = "Stockholm, Sweden";
-    const destinationB = { lat: 50.087, lng: 14.421 };
+    const origin1 = "7-11";
+    const origin2 = "東華醫院";
+    const origin3 = "西港城"
+    const destinationA = "中環街市";
+    const destinationB = "西港城";
+    const destinationC = "Tecky Sheung Wan"
 
     const request = {
-        origins: [origin1, origin2],
-        destinations: [destinationA, destinationB],
-        travelMode: google.maps.TravelMode.DRIVING,
+        origins: [origin1,origin2,origin3],
+        destinations: [destinationA, destinationB, destinationC],
+        travelMode: google.maps.TravelMode.WALKING,
         unitSystem: google.maps.UnitSystem.METRIC,
-        avoidHighways: false,
-        avoidTolls: false,
     };
 
     // put request on page
@@ -76,3 +78,49 @@ function initMap() {
     });
 }
 
+function findDistance(readyUsers){
+    // initialize services
+    const geocoder = new google.maps.Geocoder();
+    const service = new google.maps.DistanceMatrixService();
+    const locationObject = readyUsers.location;
+    let locationArray=[];
+    for(let location of locationObject){
+        locationArray.push(location);
+    }
+
+    // // build request
+    // const origin1 = { lat: 55.93, lng: -3.118 };
+    // const origin2 = "Greenwich, England";
+    // const destinationA = "Stockholm, Sweden";
+    // const destinationB = { lat: 50.087, lng: 14.421 };
+
+    const request = {
+        origins: locationArray,//[origin1, origin2],
+        destinations: locationArray,//[destinationA, destinationB],
+        travelMode: google.maps.TravelMode.WALKING,
+        unitSystem: google.maps.UnitSystem.METRIC,
+    };
+
+    service.getDistanceMatrix(request).then((response) => {
+        return response.rows;
+})
+}
+
+
+function main(){
+    const res = await fetch("/getReadyUsers")
+    const readyUsers = await res.json();
+    findDistance(readyUsers);
+}
+
+main();
+
+// async function matchUsers(){
+//     for(let user of readyUsers){
+
+
+
+//     }
+// }
+
+// distance=findDistance(userA,userB);
