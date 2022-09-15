@@ -184,9 +184,9 @@ userRoutes.post('/login', async (req, res) => {
         password: dbUserPassword,
         created_at,
         updated_at,
-        ...sessionUser
+        ...filterUserProfile
     } = dbUser
-    req.session['user'] = sessionUser
+    req.session['user'] = filterUserProfile
 
     // console.log(sessionUser)
     res.status(200).json({
