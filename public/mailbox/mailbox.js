@@ -16,3 +16,19 @@ $(".show_all .link").click(function () {
 $(".close, .shadow").click(function () {
     $(".popup").hide();
 });
+
+function getStylesheet() {
+    let currentTime = new Date().getHours();
+    console.log(currentTime);
+    let backgroundWrapperImage = document.querySelector(".background-wrapper img");
+    if (document.body) {
+        if (7 <= currentTime && currentTime < 20) {
+            // document.body.style.backgroundImage = "url('asset/DomeAM.jpg')";
+            backgroundWrapperImage.src = "./asset/akumanoko_AM.jpg"
+        }
+        else {
+            // document.body.style.backgroundImage = "url('asset/DomePM.jpg')";
+            backgroundWrapperImage.src = "./asset/akumanoko_PM.jpg"
+        }
+    }
+}

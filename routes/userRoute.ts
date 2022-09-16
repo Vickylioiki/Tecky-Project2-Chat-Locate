@@ -4,6 +4,7 @@ import { checkPassword, hashPassword } from '../hash'
 import fetch from 'cross-fetch'
 import crypto from 'crypto'
 import moment from 'moment';
+import { request } from 'http'
 
 export const userRoutes = express.Router()
 
@@ -29,7 +30,8 @@ userRoutes.get('/friend-request', async (req, res) => {
 })
 
 userRoutes.get('/notifications', async (req, res) => {
-    let userId = req.session['user'].id
+    let userId = req.session['user']?.id
+    let limit = req.query.limit
     console.log("/notifications req.session['user']", userId)
     if (!userId) {
         res.status(403).json({
@@ -38,20 +40,27 @@ userRoutes.get('/notifications', async (req, res) => {
         return
     }
 
-    let result = await client.query(`
-    select 
-    
-    users.id,
-    users.name,
-    users.username,
-    icon,
-    friends_list.created_at
-    
-    from friends_list  join users on friends_list.from_user_id =  users.id where to_user_id = $1;
+    // let result = await client.query(`
+    // select 
 
-    `, [userId])
+    // users.id,
+    // users.name,
+    // users.username,
+    // icon,
+    // friends_list.created_at
 
-    console.log('result.rows:', result.rows)
+    // from friends_list  join users on friends_list.from_user_id =  users.id where to_user_id = $1 ${limit ? ` limit ${limit}` : ''};
+
+    // `, [userId])
+
+    let result = await client.query(
+        `select notifications.*, users.name from notifications 
+         inner join users on users.id = notifications.user_id
+         where notifications.opponent_user_id = $1 ORDER BY notifications.created_at DESC;
+        `, [userId]
+    )
+
+    // console.log('result.rows:', result.rows)
 
     let notificationItems = result.rows.map((notification) => {
         return { ...notification, created_at: moment(notification.created_at).startOf('hour').fromNow() }
@@ -62,7 +71,33 @@ userRoutes.get('/notifications', async (req, res) => {
     })
 
 })
+userRoutes.post('/update-relation', async (req, res) => {
+    let { notificationId, status } = req.body;
 
+    if (['approved', 'rejected'].indexOf(status) === -1) {
+        res.status(400).json({ message: 'Invalid status' })
+        return
+    }
+
+    console.log('notificationId: ', notificationId);
+
+    // disable notification
+    let result = await client.query(
+        `update notifications set status = $1 where id = $2 returning *`, [status, notificationId]
+    )
+
+    console.log('result.rows: ', result.rows)
+
+    if (result.rows.length > 0) {
+        res.json({
+            status: "ok"
+        })
+    } else {
+        res.status(400).end();
+    }
+
+
+})
 
 /** 
  * when current user click "Chat" button, trigger this API call
@@ -93,7 +128,7 @@ userRoutes.post('/start-chat', async (req, res) => {
  * after enter chatroom, call this function to get chat opponent,
  * or chat history
  */
-userRoutes.get('get-chat', async (req, res) => {
+userRoutes.get('/get-chat', async (req, res) => {
     let opponent = req.session['chat_user']
 
     // if opponent exists
@@ -105,6 +140,10 @@ userRoutes.get('get-chat', async (req, res) => {
 
     res.json({ userId: opponent })
 
+})
+
+userRoutes.get('/show-all-activities', async (req, res) => {
+    res.end('ok')
 })
 
 
@@ -187,6 +226,7 @@ userRoutes.post('/login', async (req, res) => {
         ...filterUserProfile
     } = dbUser
     req.session['user'] = filterUserProfile
+    // req.session.save()
 
     // console.log(sessionUser)
     res.status(200).json({

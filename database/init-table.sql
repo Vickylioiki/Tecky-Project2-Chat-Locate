@@ -1,4 +1,4 @@
-create database chat_locate;
+-- create database chat_locate;
 CREATE TABLE users (
     id SERIAL primary key,
     name varchar(255) not null,
@@ -10,7 +10,7 @@ CREATE TABLE users (
     occupation text,
     icon text,
     gender char null,
-    dateofBirth date,
+    date_of_birth date,
     contact_no int,
     payme_qr_code text,
     created_at timestamp not null default now(),
@@ -43,6 +43,17 @@ CREATE TABLE friends_list (
     from_user_id int,
     to_user_id int,
     status text,
+    created_at timestamp not null default now(),
+    updated_at timestamp not null default now()
+);
+CREATE TABLE notifications (
+    id SERIAL PRIMARY KEY,
+    user_id int not null,
+    opponent_user_id int not null,
+    message text,
+    icon text,
+    status varchar(255) not null default 'pending',
+    --pending / approved / rejected
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );

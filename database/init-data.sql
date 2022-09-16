@@ -3,7 +3,7 @@ insert into users (
         username,
         password,
         gender,
-        date_of_birth,
+        dateofBirth,
         contact_no
     )
 VALUES (
@@ -103,4 +103,60 @@ values(
             where username = 'may01'
         ),
         'pending'
+    );
+INSERT INTO notifications (
+        user_id,
+        opponent_user_id,
+        message,
+        icon,
+        created_at,
+        updated_at
+    )
+VALUES(
+        (
+            select id
+            from users
+            where username = 'peter01'
+        ),
+        (
+            select id
+            from users
+            where username = 'may01'
+        ),
+        'hello, can I add you?',
+        'https://randomuser.me/api/portraits/men/84.jpg',
+        now(),
+        now()
+    ),
+    (
+        (
+            select id
+            from users
+            where username = 'john01'
+        ),
+        (
+            select id
+            from users
+            where username = 'may01'
+        ),
+        'good morning!',
+        'https://randomuser.me/api/portraits/men/84.jpg',
+        now(),
+        now()
+    ),
+    (
+        (
+            select id
+            from users
+            where username = 'james'
+        ),
+        (
+            select id
+            from users
+            where username = 'may01'
+        ),
+        'good morning!',
+        'https://randomuser.me/api/portraits/men/84.jpg',
+        now(),
+        now()
     );
