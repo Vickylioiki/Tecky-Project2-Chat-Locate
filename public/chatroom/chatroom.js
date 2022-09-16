@@ -1,7 +1,19 @@
-const io =require('socket.io')
+const io =require('socket.io') //(port NUMBER)
 const emojiBtn = document.querySelector('.emoji');
 
 const picker = new EmojiButton();
+
+io.on("connection"), socket =>{
+    socket.emit('chat-message','Hello World');
+
+    socket.on('goToChatPage', (data) => {
+        window.location = data;
+        //"./chatRoom.html?roomId=userA_userB" 
+    })
+    socket.on('getMessage', (data) => {
+
+    })
+}
 
 
 // Emoji selection  
