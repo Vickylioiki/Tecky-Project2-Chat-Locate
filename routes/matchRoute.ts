@@ -1,8 +1,21 @@
+console.log("match Route 1")
+import { v4 as uuid } from 'uuid';
 import express from 'express'
+console.log("match Route 2")
+import { io } from '../utils/socket';
+import { RoomInfomation } from '../main';
+
+console.log("match Route 3")
+
+
+
 // import { client } from '../main'
 
-
-let readyUsers: any = [];
+const createdRooms: RoomInfomation[] = []
+let readyUsers: any = [{
+    userId: 3,
+    location: { lat: 22.28726577515597, lng: 114.14805219203407 }
+}];
 // { userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }, { userId: 1, location: { lat: 22.285170575820224, lng: 114.14665642394633 } }, { userId: 2, location: { lat: 22.30933514419831, lng: 114.23787345976665 } }
 // { userId: 1, location: { lat: 22.285170575820224, lng: 114.14665642394633 } }, { userId: 2, location: { lat: 22.30933514419831, lng: 114.23787345976665} }, { userId: 3, location: { lat: 22.28601222944395, lng: 114.14757727141927 } }, { userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }
 //     // const x = [22.30933514419831, 114.23787345976665] // Lam Tin 
@@ -10,9 +23,8 @@ let readyUsers: any = [];
 //     // const y = [22.28601222944395, 114.14757727141927] // 荷李活道公園 (Hong Kong, Tai Ping Shan, 荷李活道228號B)
 //     // const y = [22.286290196846565, 114.14976595398261] 上環文娛中心 (345 Queen's Road Central, Sheung Wan, Hong Kong)
 
-export const matchRoutes = express.Router()
 
-
+export const matchRoutes = express.Router();
 
 
 //Matched Users
@@ -21,19 +33,51 @@ matchRoutes.post('/startChat', (req, res) => {
         const currentUserId = req.body.currentUserId;
         const userId = req.body.userId
         console.log(`startChat:${currentUserId}, ${userId} `)
-        // res.json({ userId })[]
-
-        //put users into room
-
 
         //delete from ready users
-        const currentUser = readyUsers.findIndex((obj: { userId: any; }) => obj.userId == currentUserId);
-        readyUsers.splice(currentUser, 1);
-        const currentUser2 = readyUsers.findIndex((obj: { userId: any; }) => obj.userId == userId);
-        readyUsers.splice(currentUser2, 1);
+
 
         console.log('rd_m:', readyUsers)
-        res.status(200).json('updated array')
+
+        const currentSessionInfo = req.session['user']
+
+        const roomId: string = uuid();
+
+        const roomInfomation: RoomInfomation = {
+            userIdA: currentUserId,
+            userIdB: userId,
+            roomId
+        }
+
+        createdRooms.push(roomInfomation)
+        console.log({ roomInfomation })
+        // io.emit('roomInfomation', roomInfomation)
+        // io.on('connection', function (socket) {
+        //     console.log(currentSessionInfo)
+        //     if (currentSessionInfo.id === currentUserId || currentSessionInfo.id === userId) {
+        //         socket.join('1');
+        //     }
+        // })
+
+
+        // io.to(roomId).emit('redirect', `./chatroom/chatroom.html`)
+        io.sockets.socketsJoin(roomId)
+
+        io.in(roomId).emit('getMessage', `${currentSessionInfo.name} has joined the chat.`)
+
+
+        // io.to("room_userIdA_userIdB").emit("getMessage")
+        req.session.roomInfomation = roomInfomation
+        console.log("roomInfomation: ", req.session.roomInfomation)
+
+        // const currentUser = readyUsers.findIndex((obj: { userId: any; }) => obj.userId == currentUserId);
+        // readyUsers.splice(currentUser, 1);
+        // const currentUser2 = readyUsers.findIndex((obj: { userId: any; }) => obj.userId == userId);
+        // readyUsers.splice(currentUser2, 1);
+
+        res.status(200).json({
+            roomInfomation
+        })
     } catch (err) {
         res.status(400).json('fail to update')
     }
@@ -66,16 +110,10 @@ matchRoutes.post('/', async (req, res) => {
         const location = { lat: latitude, lng: longitude }
 
         const userLocation = { userId: userId, location: location }
-
-
-
         readyUsers.push(userLocation)
-
-        console.log(readyUsers)
+        console.log('[Post] - /match : ', readyUsers)
         res.status(200).json('update successful')
-
-
-
+        return
     } catch (err) {
         console.log(err)
         res.status(400).json('fail to update')
@@ -85,7 +123,7 @@ matchRoutes.post('/', async (req, res) => {
 //get readyUsers Array
 matchRoutes.get('/', async (req, res) => {
     try {
-        console.log('ru: ', readyUsers)
+        // console.log('[Get] - /match : ', readyUsers)
         res.status(200).json(readyUsers)
     } catch (err) {
         console.log(err)

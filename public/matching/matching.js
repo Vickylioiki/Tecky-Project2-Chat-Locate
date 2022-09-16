@@ -1,10 +1,6 @@
 async function init() {
-    console.log(1.1);
     await getLocation();
-    console.log(1.2);
     await initMap();
-    console.log(1.3);
-    await getNewUser()
 
 }
 
@@ -45,13 +41,11 @@ async function initMap() {
     const getMeData = await geMeRes.json();
     const userId = getMeData.userId
 
-    const res = await fetch('/match');
-    let readyUsers = await res.json();
+    let readyUsers = await getNewUser()
 
     let owner = readyUsers.filter(readyUser => {
         return readyUser.userId == userId
     })[0]
-
 
     console.log('owner:', owner)
 
@@ -83,7 +77,10 @@ async function initMap() {
 
         })
     }
-
+    if (distances.length == 0) {
+        alert("no user matching")
+        return
+    }
     distances = distances.sort((a, b) => {
         return a.distance - b.distance
     })
@@ -99,26 +96,21 @@ async function initMap() {
             userId: distances[0].userId
         })
     })
-    const startData = await startChatRes.json()
-    console.log(`startChatRes`, startData)
-
-
-
-
+    const roomInfomation = await startChatRes.json()
+    console.log(`roomInfomation`, roomInfomation)
+    if (startChatRes.ok) {
+        window.location.href = `../chatroom/chatroom.html?userIdB=${roomInfomation.userIdB}`
+    }
 }
 
 
 
 
 async function getNewUser() {
-    console.log(4);
     const checkRemainUsers = await fetch('/match');
     let readyUsers = await checkRemainUsers.json();
-    console.log(`readyUsers2`, readyUsers)
+    return readyUsers
 }
 
-console.log(1);
 init();
-console.log(2);
 // getNewUser();
-console.log(3);

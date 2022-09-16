@@ -14,8 +14,8 @@ export async function checkPassword(
     return match
 }
 
-async function main() {
-    console.log(await hashPassword('123456'))
-}
+// async function main() {
+//     console.log(await hashPassword('123456'))
+// }
 
-main()  
+// main()  

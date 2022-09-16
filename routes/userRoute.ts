@@ -1,10 +1,11 @@
 import express from 'express'
-import { client } from '../main'
+import { client, a } from '../main'
 import { checkPassword, hashPassword } from '../hash'
 import fetch from 'cross-fetch'
 import crypto from 'crypto'
 import moment from 'moment';
 import { request } from 'http'
+// console.log('client : ' + client)
 
 export const userRoutes = express.Router()
 

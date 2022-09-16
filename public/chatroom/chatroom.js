@@ -1,8 +1,20 @@
+const socket = io.connect();
+
 const emojiBtn = document.querySelector('.emoji');
 
 const picker = new EmojiButton();
 
+const messageForm = document.querySelector("#messageForm")
+console.log(messageForm)
 
+messageForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+    const form = e.target
+    const input = form.textArea3.value
+    socket.emit("sendMessage", input)
+
+
+})
 // Emoji selection  
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -31,3 +43,18 @@ $(function () {
         $(this).toggleClass("is-active");
     });
 });
+
+socket.on("connection", function () {
+    socket.on("roomInfomation", ({ userIdA, userIdB, roomId }) => {
+        console.log({ roomId })
+    })
+    socket.on("getMessage", (data) => {
+
+        console.log({ messgae: data })
+
+    })
+    socket.emit("sendMessage", "sendMessage")
+    console.log('Connected to server');
+});
+
+socket.emit('join', '1');
