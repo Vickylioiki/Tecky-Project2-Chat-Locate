@@ -12,10 +12,7 @@ console.log("match Route 3")
 // import { client } from '../main'
 
 const createdRooms: RoomInfomation[] = []
-let readyUsers: any = [{
-    userId: 3,
-    location: { lat: 22.28726577515597, lng: 114.14805219203407 }
-}];
+let readyUsers: any = [];
 // { userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }, { userId: 1, location: { lat: 22.285170575820224, lng: 114.14665642394633 } }, { userId: 2, location: { lat: 22.30933514419831, lng: 114.23787345976665 } }
 // { userId: 1, location: { lat: 22.285170575820224, lng: 114.14665642394633 } }, { userId: 2, location: { lat: 22.30933514419831, lng: 114.23787345976665} }, { userId: 3, location: { lat: 22.28601222944395, lng: 114.14757727141927 } }, { userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }
 //     // const x = [22.30933514419831, 114.23787345976665] // Lam Tin 

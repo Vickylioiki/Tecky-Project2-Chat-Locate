@@ -57,4 +57,3 @@ socket.on("connection", function () {
     console.log('Connected to server');
 });
 
-socket.emit('join', '1');

@@ -78,7 +78,7 @@ async function initMap() {
         })
     }
     if (distances.length == 0) {
-        alert("no user matching")
+        alert('no user now')
         return
     }
     distances = distances.sort((a, b) => {
@@ -99,8 +99,9 @@ async function initMap() {
     const roomInfomation = await startChatRes.json()
     console.log(`roomInfomation`, roomInfomation)
     if (startChatRes.ok) {
-        window.location.href = `../chatroom/chatroom.html?userIdB=${roomInfomation.userIdB}`
+        window.location.href = `../chatroom/chatroom.html?userIdB=${roomInfomation.userId}`
     }
+
 }
 
 
