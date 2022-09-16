@@ -9,9 +9,18 @@
     font-family: 'Montserrat';
 }
 
-body {
-    background: #dfecff;
-    color: #7f8db0;
+.background-wrapper {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    /* margin: 10%; */
+    /* padding: -50%; */
+
+}
+
+.body {
+    background-color: linear-gradient(-20deg, #ff2846 0%, #6944ff 100%);
 }
 
 a {
@@ -45,6 +54,7 @@ a {
 
 .navbar .navbar_right img {
     width: 35px;
+    border-radius: 50%;
 }
 
 .navbar .navbar_right .icon_wrap {
@@ -78,6 +88,7 @@ a {
     border-radius: 3px;
     box-shadow: 10px 10px 35px rgba(0, 0, 0, 0.125),
         -10px -10px 35px rgba(0, 0, 0, 0.125);
+    z-index: 10;
 }
 
 .navbar .profile .profile_dd:before,

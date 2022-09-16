@@ -128,10 +128,6 @@ editButton.addEventListener("click", async function (event) {
 
 
 
-function init() {
-  getProfile()
-  getNotifications()
-};
 
 
 
@@ -157,59 +153,7 @@ $(".close, .shadow").click(function () {
 });
 
 
-async function getProfile() {
 
-  let res = await fetch('/user/me')
-  let data = await res.json()
-  console.log(data)
-
-  if (res.ok) {
-    document.querySelector('.profile .name').innerText = data.name
-  }
-
-}
-
-async function getNotifications() {
-
-  let res = await fetch('/user/notifications')
-  let data = await res.json()
-  let notificationItems = data.data
-
-  let notificationUlElem = document.querySelector('.notification_ul')
-  notificationUlElem.innerHTML = ''
-  for (let notificationItem of notificationItems) {
-
-
-
-    notificationUlElem.innerHTML += `
-    <li class="baskin_robbins failed">
-
-    ${notificationItem.icon ? `<img class="notify-icon" src="${notificationItem.icon}">` : '    <img class="notify-icon" src="https://randomuser.me/api/portraits/men/84.jpg">'}
-
-    <div class="notify_data">
-      <div class="title">
-        ${notificationItem.name}
-      </div>
-      <div class="sub_title">
-        How are you?
-      </div>
-    </div>
-    <div class="notify_status">
-      <p>${notificationItem.created_at.split('T')[0]}</p>
-    </div>
-  </li>
-    `
-  }
-
-  notificationUlElem.innerHTML += `<li class="show_all">
-  <p class="link">Show All Activities</p>
-</li>`
-
-  // if (res.ok) {
-  //   document.querySelector('.profile .name').innerText = data.name
-  // }
-
-}
 
 async function addStartChatFormEvent() {
   const startChatForm = document.querySelector('#start-chat-form')
@@ -239,5 +183,3 @@ async function addStartChatFormEvent() {
 }
 
 addStartChatFormEvent();
-
-init();
