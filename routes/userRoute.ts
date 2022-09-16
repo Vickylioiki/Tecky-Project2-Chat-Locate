@@ -226,6 +226,7 @@ userRoutes.post('/login', async (req, res) => {
         ...filterUserProfile
     } = dbUser
     req.session['user'] = filterUserProfile
+    // req.session.save()
 
     // console.log(sessionUser)
     res.status(200).json({

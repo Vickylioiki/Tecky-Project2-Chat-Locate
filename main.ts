@@ -8,12 +8,14 @@ import grant from 'grant'
 
 import dotenv from 'dotenv'
 import { matchRoutes } from './routes/matchRoute'
+import { chatRoutes } from './routes/chatRoute'
 dotenv.config()
 
 declare module 'express-session' {
   interface SessionData {
     name?: string
     isloggedin?: boolean
+    user?: any
   }
 }
 
@@ -36,22 +38,24 @@ app.use(
     secret: 'Tecky Academy teaches typescript',
     resave: true, //Auto save session 
     saveUninitialized: true,
+    // cookies: {secure : false}
   }),
 )
 
 app.use('/user', userRoutes)
 app.use('/match', matchRoutes)
+app.use('/chatroom', chatRoutes)
 app.use(express.static('public'))
 
 
 app.use(express.static("public"))
 
-declare module 'express-session' {
-  interface SessionData {
-    name?: string
+// declare module 'express-session' {
+//   interface SessionData {
+//     name?: string
 
-  }
-}
+//   }
+// }
 
 
 
