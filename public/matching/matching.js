@@ -99,7 +99,7 @@ async function initMap() {
     const roomInfomation = await startChatRes.json()
     console.log(`roomInfomation`, roomInfomation)
     if (startChatRes.ok) {
-        window.location.href = `../chatroom/chatroom.html?userIdB=${roomInfomation.userId}`
+        window.location.href = `../chatroom/chatroom.html?userId=${roomInfomation.userId}`
     }
 
 }
