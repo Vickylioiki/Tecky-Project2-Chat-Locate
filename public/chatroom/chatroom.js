@@ -44,16 +44,20 @@ $(function () {
     });
 });
 
-socket.on("connection", function () {
-    socket.on("roomInfomation", ({ userIdA, userIdB, roomId }) => {
-        console.log({ roomId })
-    })
-    socket.on("getMessage", (data) => {
 
-        console.log({ messgae: data })
 
-    })
-    socket.emit("sendMessage", "sendMessage")
-    console.log('Connected to server');
-});
+
+
+// socket.on("connection", function () {
+//     socket.on("roomInfomation", ({ userIdA, userIdB, roomId }) => {
+//         console.log({ roomId })
+//     })
+//     socket.on("getMessage", (data) => {
+
+//         console.log({ messgae: data })
+
+//     })
+//     socket.emit("sendMessage", "sendMessage")
+//     console.log('Connected to server');
+// });
 

@@ -103,10 +103,11 @@ matchRoutes.post('/', async (req, res) => {
         const userLocation = { userId: userId, location: location }
         readyUsers.push(userLocation)
 
-        let ownerId = req.session['user'].id
-        let ownerLocation = req.session['user'].location
+        //Current User Info from session
+        const ownerId = req.session['user'].id
+        const ownerName = req.session['user'].name
+        const ownerLocation = req.session['user'].location
 
-        // console.log('owner: ', ownerId)
         console.log('readyUsers in server: ', readyUsers)
         console.log('ownerId: ', ownerId)
         console.log('ownerLocation: ', ownerLocation)
@@ -120,7 +121,6 @@ matchRoutes.post('/', async (req, res) => {
             console.log("i :" + i);
 
             let destinationUser = readyUsers[i].location;
-            // console.log(`destinationUser${j}`, destinationUser)
             const request = {
                 origins: [ownerLocation],
                 destinations: [destinationUser],
@@ -149,19 +149,24 @@ matchRoutes.post('/', async (req, res) => {
         console.log(`Pair up result: `, pairUpResult)
 
         const roomId: string = uuid();
+        const userIdA = ownerId;
+        const userIdB = distances[0].userId
 
-        const roomInfomation: RoomInfomation = {
-            userIdA: ownerId,
-            userIdB: distances[0].userId,
+        const roomInformation: RoomInfomation = {
+            userIdA,
+            userIdB,
             roomId
         }
 
 
+        io.sockets.emit('toChatroom', `../chatroom/chatroom.html?${roomId}`)
 
+
+        res.status(200).json(roomInformation)
 
     } catch (err) {
         console.log(err)
-        res.status(400).json('fail to update')
+        res.status(400).json('fail to match')
     }
 })
 

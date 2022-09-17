@@ -1,3 +1,5 @@
+const socket = io.connect();
+
 async function init() {
     await getLocation();
     // await initMap();
@@ -30,3 +32,7 @@ async function getLocation() {
 
 init();
 
+
+socket.on("toChatroom", chatroomUrl => {
+    window.location = chatroomUrl;
+})
