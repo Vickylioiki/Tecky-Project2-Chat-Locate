@@ -5,7 +5,9 @@ import expressSession from 'express-session'
 import http from 'http'
 import grant from 'grant'
 import { userRoutes } from './routes/userRoute'
-
+import { matchRoutes } from './routes/matchRoute'
+import { chatRoutes } from './routes/chatRoute'
+import { initialSocket } from './utils/socket'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -32,9 +34,7 @@ app.use(express.urlencoded({ extended: true }))
 // import { initialSocket } from './utils/socket'
 export let a = "James"
 export const server = new http.Server(app)
-import { matchRoutes } from './routes/matchRoute'
-import { chatRoutes } from './routes/chatRoute'
-import { initialSocket } from './utils/socket'
+
 
 export const client = new Client({
   database: process.env.DB_NAME,
@@ -63,7 +63,7 @@ app.use('/chatroom', chatRoutes)
 app.use(express.static('public'))
 
 
-app.use(express.static("public"))
+// app.use(express.static("public"))
 
 // declare module 'express-session' {
 //   interface SessionData {

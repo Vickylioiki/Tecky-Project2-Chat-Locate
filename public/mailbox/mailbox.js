@@ -82,7 +82,7 @@ async function getNotifications() {
                 ${notificationItem.icon ? `<img class="notify-icon" src="${notificationItem.icon}">` : '    <img class="notify-icon" src="https://randomuser.me/api/portraits/men/84.jpg">'}
                 <div class="notification-list_detail">
                     <div class="notification-message-list">
-                        <p style="padding-right: 2px; font-weight: bold;">${notificationItem.name}</p>
+                        <p style="padding-right: 2px; font-weight: bold; width: 80px">${notificationItem.name}</p>
                         <p style="text-align: center;">${notificationItem.message}</p>
                     </div>
                     <p class="text-muted"><small>${notificationItem.created_at}</small></p>
@@ -94,7 +94,7 @@ async function getNotifications() {
                   <button type="submit" class="btn btn-success">Chat</button>
                 </form>
                 
-                <button type="button" class="btn btn-light close-button">X</button>
+                <button type="button" class="btn btn-light close-button" data-notification-id="${notificationItem.id}">X</button>
             </div>
         </div>
         `
@@ -102,7 +102,7 @@ async function getNotifications() {
             // do nothing
         }
 
-        return true;
+
     }
 
     console.log('get notification after for loop')
@@ -149,12 +149,25 @@ async function getNotifications() {
     let closeBtns = document.querySelectorAll('.notification-list .close-button');
     for (let closeBtn of closeBtns) {
         closeBtn.addEventListener('click', async (e) => {
+            let notificationId = closeBtn.dataset.notificationId;
+            console.log('onClick notificationId: ', notificationId)
+            await fetch('/user/notifications', {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    notificationId,
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
             closeBtn.parentNode.parentNode.parentNode.remove();
         })
     }
 
     console.log('get notification after close button click event listener')
 
+    return true;
 }
 
 async function addStartChatFormEvent() {
