@@ -57,3 +57,13 @@ CREATE TABLE notifications (
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );
+ALTER TABLE notifications
+ADD "type" varchar(255) NOT NULL;
+ALTER TABLE notifications
+ALTER COLUMN "status" DROP NOT NULL;
+ALTER TABLE notifications
+ALTER COLUMN status DROP DEFAULT;
+ALTER TABLE notifications
+ADD enabled boolean NULL DEFAULT true;
+ALTER TABLE facebook_profile
+ALTER COLUMN fb_id TYPE bigint USING fb_id::bigint;
