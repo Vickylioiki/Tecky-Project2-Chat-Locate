@@ -19,6 +19,7 @@ declare module 'express-session' {
   interface SessionData {
     name?: string
     isloggedin?: boolean
+    location?: any
     user?: any
     roomInfomation: RoomInfomation
   }
@@ -70,7 +71,6 @@ app.use(express.static("public"))
 
 //   }
 // }
-
 
 
 const grantExpress = grant.express({
