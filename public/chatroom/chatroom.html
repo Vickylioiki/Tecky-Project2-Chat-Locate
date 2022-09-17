@@ -165,13 +165,14 @@
                     <!-- typing area -->
                     <li class="mb-3">
                         <div class="form-outline form-white type-wrapper">
-                            <textarea class="form-control" id="textArea3"></textarea>
-                            <div class="button-group">
-                                <button class="file"><i class="bi bi-paperclip"></i></button>
-                                <button class="emoji"><i class="bi bi-emoji-smile"></i></button>
-                                <button type="submit" class="send"><i class="bi bi-send"></i></button>
-
-                            </div>
+                            <form id="messageForm">
+                                <textarea name="textArea3" class="form-control" id="textArea3"></textarea>
+                                <div class="button-group">
+                                    <button class="file"><i class="bi bi-paperclip"></i></button>
+                                    <button class="emoji"><i class="bi bi-emoji-smile"></i></button>
+                                    <button type="submit" class="send"><i class="bi bi-send"></i></button>
+                                </div>
+                            </form>
 
 
 
@@ -187,6 +188,7 @@
 
         </div>
     </section>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://kit.fontawesome.com/523306d2c7.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.1.1/dist/index.min.js"></script>
     <script src="chatroom.js"></script>

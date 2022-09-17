@@ -1,45 +1,60 @@
+
 import { Client } from 'pg'
 import express from 'express'
 import expressSession from 'express-session'
 import http from 'http'
-import { Server as SocketIO } from 'socket.io'
-import { userRoutes } from './routes/userRoute'
 import grant from 'grant'
+import { userRoutes } from './routes/userRoute'
 
 import dotenv from 'dotenv'
-import { matchRoutes } from './routes/matchRoute'
-import { chatRoutes } from './routes/chatRoute'
+
 dotenv.config()
 
+export interface RoomInfomation {
+  userIdA: number,
+  userIdB: number,
+  roomId: string
+}
 declare module 'express-session' {
   interface SessionData {
     name?: string
     isloggedin?: boolean
+    location?: any
     user?: any
+    roomInfomation: RoomInfomation
   }
 }
 
 const app = express()
-
-const server = new http.Server(app)
-export const io = new SocketIO(server)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
+
+// import { initialSocket } from './utils/socket'
+export let a = "James"
+export const server = new http.Server(app)
+import { matchRoutes } from './routes/matchRoute'
+import { chatRoutes } from './routes/chatRoute'
+import { initialSocket } from './utils/socket'
+
 export const client = new Client({
   database: process.env.DB_NAME,
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD
 })
+
+
 client.connect()
 
 //Session
+export const sessionMiddleware = expressSession({
+  secret: 'Tecky Academy teaches typescript',
+  resave: true, //Auto save session 
+  saveUninitialized: true,
+  // cookies: {secure : false}
+})
+
 app.use(
-  expressSession({
-    secret: 'Tecky Academy teaches typescript',
-    resave: true, //Auto save session 
-    saveUninitialized: true,
-    // cookies: {secure : false}
-  }),
+  sessionMiddleware
 )
 
 app.use('/user', userRoutes)
@@ -56,7 +71,6 @@ app.use(express.static("public"))
 
 //   }
 // }
-
 
 
 const grantExpress = grant.express({
@@ -96,8 +110,10 @@ app.use(grantExpress as express.RequestHandler)
 
 
 
-app.listen(8080, () => {
+server.listen(8080, () => {
+  a = "Tom"
 
   console.log('Server is listening http://localhost:8080');
+  initialSocket()
 
 })
