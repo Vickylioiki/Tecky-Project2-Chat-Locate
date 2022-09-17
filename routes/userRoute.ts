@@ -29,6 +29,8 @@ userRoutes.get('/friend-request', async (req, res) => {
     })
 })
 
+
+
 userRoutes.get('/notifications', async (req, res) => {
     let userId = req.session['user']?.id
     let limit = req.query.limit
@@ -55,8 +57,9 @@ userRoutes.get('/notifications', async (req, res) => {
 
     let result = await client.query(
         `select notifications.*, users.name from notifications 
-         inner join users on users.id = notifications.user_id
-         where notifications.opponent_user_id = $1 ORDER BY notifications.created_at DESC;
+         inner join users on users.id = notifications.opponent_user_id
+         where notifications.user_id = $1 and enabled = true
+        ORDER BY notifications.created_at DESC;
         `, [userId]
     )
 
@@ -71,6 +74,13 @@ userRoutes.get('/notifications', async (req, res) => {
     })
 
 })
+
+userRoutes.post('/notifications', async (req, res) => {
+    try {
+
+    }
+})
+
 userRoutes.post('/update-relation', async (req, res) => {
     let { notificationId, status } = req.body;
 
