@@ -10,18 +10,13 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-export interface RoomInfomation {
-  userIdA: number,
-  userIdB: number,
-  roomId: string
-}
 declare module 'express-session' {
   interface SessionData {
     name?: string
     isloggedin?: boolean
     location?: any
     user?: any
-    roomInfomation: RoomInfomation
+
   }
 }
 

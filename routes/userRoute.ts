@@ -1,5 +1,5 @@
 import express from 'express'
-import { client, a } from '../main'
+import { client } from '../main'
 import { checkPassword, hashPassword } from '../hash'
 import fetch from 'cross-fetch'
 import crypto from 'crypto'

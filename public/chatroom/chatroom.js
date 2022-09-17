@@ -4,17 +4,24 @@ const emojiBtn = document.querySelector('.emoji');
 
 const picker = new EmojiButton();
 
-const messageForm = document.querySelector("#messageForm")
-console.log(messageForm)
-
-messageForm.addEventListener('submit', (e) => {
-    e.preventDefault()
-    const form = e.target
-    const input = form.textArea3.value
-    socket.emit("sendMessage", input)
+async function init() {
+    await getRoomInfo();
 
 
-})
+}
+
+
+// const messageForm = document.querySelector("#messageForm")
+// console.log(messageForm)
+
+// messageForm.addEventListener('submit', (e) => {
+//     e.preventDefault()
+//     const form = e.target
+//     const input = form.textArea3.value
+//     socket.emit("sendMessage", input)
+
+
+// })
 // Emoji selection  
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -44,6 +51,18 @@ $(function () {
     });
 });
 
+
+async function getRoomInfo() {
+    const res = await fetch('/chatroom/getRoomInfo');
+    const roomInfo = await res.json();
+    console.log(roomInfo)
+
+
+
+
+}
+
+init();
 
 
 

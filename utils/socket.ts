@@ -19,20 +19,21 @@ export const initialSocket = async () => {
         socket.emit('connection', socketId)
         const req = socket.request as express.Request;
         const user_id = req.session?.user?.id
-        const roomInfomation = req.session?.roomInfomation!
-        const roomId = roomInfomation ? roomInfomation.roomId! : null
+        // const roomInfomation = req.session?.roomInfomation!
+        // const roomId = roomInfomation ? roomInfomation.roomId! : null
 
-        if (roomId) {
-            console.log({ user_id })
-            console.log({ roomId })
-            socket.join(roomId)
+        // if (roomId) {
+        //     console.log({ user_id })
+        //     console.log({ roomId })
+        //     socket.join(roomId)
 
-            io.sockets.to(roomId).emit('roomInfomation', roomInfomation)
+        //     io.sockets.to(roomId).emit('roomInfomation', roomInfomation)
 
-            socket.on("sendMessage", (data) => {
-                io.to(roomId).emit('getMessage', data)
-            })
-        }
+        //     socket.on("sendMessage", (data) => {
+        //         io.to(roomId).emit('getMessage', data)
+        //     })
+    })
+}
 
         // socket.on('createRoom', () => {
         //     // console.log("user_id: " + user_id)
@@ -47,5 +48,3 @@ export const initialSocket = async () => {
         //     socket.join('1')
 
         // }
-    });
-}
