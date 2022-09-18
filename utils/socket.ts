@@ -1,6 +1,6 @@
 import express from 'express'
 import { Server as SocketIO } from 'socket.io'
-import { server, a, sessionMiddleware } from '../main'
+import { server, sessionMiddleware } from '../main'
 export const io = new SocketIO(server)
 export const initialSocket = async () => {
     // console.log("io 4: ", server)

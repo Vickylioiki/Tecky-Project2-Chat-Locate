@@ -2,13 +2,13 @@ console.log("match Route 1")
 import { v4 as uuid } from 'uuid';
 import express from 'express'
 console.log("match Route 2")
-import { io } from '../utils/socket';
+import { io } from '../main';
 import { DistanceMatrixService } from "distance-matrix-2";
 
 console.log("match Route 3")
 const service = new DistanceMatrixService(process.env.GOOGLE_MATRIX_API_KEY);
 
-
+service.setKey('AIzaSyBLLtLmB3NIKUrPq6vwFSz7IRrdL8pVUNA');
 
 // import { client } from '../main's
 

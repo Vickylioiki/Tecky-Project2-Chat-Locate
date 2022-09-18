@@ -7,8 +7,11 @@ import grant from 'grant'
 import { userRoutes } from './routes/userRoute'
 import { matchRoutes } from './routes/matchRoute'
 import { chatRoutes } from './routes/chatRoute'
-import { initialSocket } from './utils/socket'
+// import { initialSocket } from './utils/socket'
+import { Server as SocketIO } from 'socket.io';
+
 import dotenv from 'dotenv'
+
 
 dotenv.config()
 
@@ -29,7 +32,7 @@ app.use(express.urlencoded({ extended: true }))
 // import { initialSocket } from './utils/socket'
 export let a = "James"
 export const server = new http.Server(app)
-
+export const io = new SocketIO(server); //io and server connect
 
 export const client = new Client({
   database: process.env.DB_NAME,
@@ -109,6 +112,6 @@ server.listen(8080, () => {
   a = "Tom"
 
   console.log('Server is listening http://localhost:8080');
-  initialSocket()
+  // initialSocket()
 
 })
