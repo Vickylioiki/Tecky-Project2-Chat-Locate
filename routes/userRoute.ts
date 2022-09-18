@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { response } from 'express'
 import { client } from '../main'
 import { checkPassword, hashPassword } from '../hash'
 import fetch from 'cross-fetch'
@@ -308,10 +308,19 @@ userRoutes.post('/login', async (req, res) => {
 })
 
 userRoutes.get('/logout', (req, res) => {
-    req.session.destroy(() => {
-        console.log('user logged out')
-    })
-    res.redirect('/')
+    try {
+        let destroyedSession = req.session.destroy(() => {
+            console.log('user logged out')
+        })
+
+        console.log('/logout destroyedSession', destroyedSession);
+
+        // res.redirect('/login.html')
+        res.json({ status: "ok" })
+    } catch (e) {
+        res.status(500).end('logout failed')
+    }
+
 })
 
 userRoutes.get('/login/google', loginGoogle);

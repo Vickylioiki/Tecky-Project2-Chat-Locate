@@ -108,7 +108,7 @@ async function getNotifications() {
     console.log('get notification after for loop')
 
     notificationUlElem.innerHTML += `<li class="show_all">
-    <a href="/mailbox/mailbox.html"><p class="link">Show All Activities</p></a>
+
     </li>`
 
     // if (res.ok) {
@@ -198,12 +198,12 @@ async function addStartChatFormEvent() {
     })
 }
 
-let initPromise = new Promise(function (resolve, reject) {
+let mailBoxInitPromise = new Promise(function (resolve, reject) {
     resolve();
     reject();
 })
 
-initPromise
+mailBoxInitPromise
     .then(getNotifications, null)
     .then(addStartChatFormEvent, null)
     .catch((e) => console.log('initPromise catch error: ', e))

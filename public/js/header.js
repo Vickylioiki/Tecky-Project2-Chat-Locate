@@ -1,4 +1,4 @@
-function initHeader() {
+async function initHeader() {
   let headerElm = document.querySelector('.header')
 
 
@@ -121,7 +121,6 @@ function initHeader() {
 }
 
 
-
 async function getProfile() {
 
   let res = await fetch('/user/me')
@@ -239,6 +238,30 @@ async function getNotifications() {
   console.log('getNotification after reject friend form event listener')
 }
 
+async function logout() {
+  let response = await fetch('/user/logout');
+  console.log('header button triggered logout API call!', response)
+}
+
+async function logout() {
+  const logoutBtn = document.querySelector('.logout')
+  console.log(logout)
+  logoutBtn.addEventListener('click', async (e) => {
+    e.preventDefault()
+    let res = await fetch('/user/logout')
+    if (res.ok) {
+      console.log('logout successful')
+      window.location.href = "/login.html"
+    } else {
+      let { message } = await res.json()
+      alert(message)
+    }
+  })
+
+}
+
+
+
 async function getNotifications() {
 
   let res = await fetch('/user/notifications?limit=2')
@@ -323,10 +346,13 @@ async function getNotifications() {
 //   return false;
 // }
 
-function init() {
-  initHeader()
-  getProfile()
-  getNotifications()
+let initPromise = new Promise(function (resolve, reject) {
+  resolve();
+  reject();
+})
 
-};
-init()
+initPromise
+  .then(initHeader, null)
+  .then(getProfile, null)
+  .then(getNotifications, null)
+  .then(logout)
