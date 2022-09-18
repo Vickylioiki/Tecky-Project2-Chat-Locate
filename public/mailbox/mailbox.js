@@ -27,8 +27,8 @@ function getStatusHTML(notificationItem) {
         //   <button type="submit" class="btn btn-light">Accept</button>
         // </form>
         return `
-       <button type="button" class="btn btn-light status" data-status='approved'>O</button>
-       <button type="button" class="btn btn-light status" data-status='rejected'>X</button>
+       <button type="button" class="btn btn-light status" data-status='approved' data-notification-id=${notificationItem.id}>O</button>
+       <button type="button" class="btn btn-light status" data-status='rejected' data-notification-id=${notificationItem.id}>X</button>
       `
     }
     if (status === 'approved') {
@@ -59,7 +59,7 @@ async function getNotifications() {
     console.log('getNotifications before for loop', notificationItems)
     for (let notificationItem of notificationItems) {
         if (notificationItem.type === 'invitation') {
-            notificationUlElem.innerHTML += `
+            notificationUlElem.innerHTML += /* HTML */`
             <div class="notification-list notification-list--unread">
                 <div class="notification-list_content">
                     <div class="notification-list_img">
@@ -75,7 +75,7 @@ async function getNotifications() {
             </div>
             `
         } else if (notificationItem.type === 'message') {
-            notificationUlElem.innerHTML += `
+            notificationUlElem.innerHTML += /* HTML */`
         <div class="notification-list notification-list--unread">
             <div class="notification-list_content">
                 <div class="notification-list_img">
@@ -107,44 +107,9 @@ async function getNotifications() {
 
     console.log('get notification after for loop')
 
-    notificationUlElem.innerHTML += `<li class="show_all">
+    notificationUlElem.innerHTML += /* HTML */`<li class="show_all">
 
     </li>`
-
-    // if (res.ok) {
-    //   document.querySelector('.profile .name').innerText = data.name
-    // }
-
-    let statusBtns = document.querySelectorAll('button.status');
-    for (let statusBtn of statusBtns) {
-        statusBtn.addEventListener('click', async (e) => {
-            e.preventDefault()
-
-            const notificationId = statusBtn.closest('li').dataset.notificationId
-            const status = statusBtn.dataset.status
-            console.log('clicking :', notificationId, status)
-
-            const res = await fetch('/user/update-relation', {
-                method: 'POST',
-                body: JSON.stringify({
-                    status,
-                    notificationId
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            if (res.ok) {
-                console.log(status, ' friend success')
-                getNotifications()
-                // window.location.href = "/chatroom/chatroom.html"
-            } else {
-                let { message } = await res.json()
-                alert(message)
-            }
-        })
-    }
-    console.log('getNotification after reject friend form event listener')
 
     let closeBtns = document.querySelectorAll('.notification-list .close-button');
     for (let closeBtn of closeBtns) {

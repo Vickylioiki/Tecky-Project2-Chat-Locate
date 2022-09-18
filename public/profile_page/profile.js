@@ -10,7 +10,7 @@ let bioRow = document.querySelectorAll(".bio-row .profile-session");
 // let bioRow = document.querySelectorAll(".bio-row input");
 
 friendsButton.addEventListener("click", function (event) {
-  console.log('friendsButton clk=icked')
+  console.log('friendsButton clicked')
   friend_board = `<div class="friends-list-session">
     <article class="leaderboard">
         <header>

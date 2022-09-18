@@ -2,13 +2,13 @@ console.log("match Route 1")
 import { v4 as uuid } from 'uuid';
 import express from 'express'
 console.log("match Route 2")
-import { io } from '../utils/socket';
+import { io } from '../main';
 import { DistanceMatrixService } from "distance-matrix-2";
 
 console.log("match Route 3")
 const service = new DistanceMatrixService(process.env.GOOGLE_MATRIX_API_KEY);
 
-
+service.setKey('AIzaSyBLLtLmB3NIKUrPq6vwFSz7IRrdL8pVUNA');
 
 // import { client } from '../main's
 
@@ -21,8 +21,6 @@ let readyUsers: any = [];
 //     // const y = [22.286290196846565, 114.14976595398261] 上環文娛中心 (345 Queen's Road Central, Sheung Wan, Hong Kong)
 
 export const matchRoutes = express.Router();
-
-
 
 
 //Matched Users
@@ -83,7 +81,6 @@ matchRoutes.get('/geMe', async (req, res) => {
     } catch (err) {
         res.status(400).json('fail to get current user')
     }
-
 })
 
 //Update user location
@@ -170,7 +167,6 @@ matchRoutes.get('/', async (req, res) => {
         console.log(err)
         res.status(400).json('fail to get data')
     }
-
 })
 
 //     let userResult = await client.query('select * from users')

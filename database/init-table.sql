@@ -1,20 +1,20 @@
 -- create database chat_locate;
 CREATE TABLE users (
     id SERIAL primary key,
-    name varchar(255) not null,
-    username varchar(255) not null,
-    password varchar(255) not null,
-    aboutMe text,
-    hobby text,
-    country text,
-    occupation text,
-    icon text,
-    gender char null,
-    date_of_birth date,
-    contact_no int,
-    payme_qr_code text,
-    created_at timestamp not null default now(),
-    updated_at timestamp default now()
+    name varchar(255) NOT NULL,
+    username varchar(255) NOT NULL,
+    password varchar(255) NOT NULL,
+    aboutme text NULL,
+    hobby text NULL,
+    country text NULL,
+    occupation text NULL,
+    icon text NULL,
+    gender bpchar(1) NULL,
+    date_of_birth date NULL,
+    contact_no int4 NULL,
+    payme_qr_code text NULL,
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp NULL DEFAULT now()
 );
 CREATE TABLE instagram_profile (
     id SERIAL primary key,
@@ -57,6 +57,7 @@ CREATE TABLE notifications (
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );
+-- 2022-09-17 Catherine update
 ALTER TABLE notifications
 ADD "type" varchar(255) NOT NULL;
 ALTER TABLE notifications
@@ -67,3 +68,14 @@ ALTER TABLE notifications
 ADD enabled boolean NULL DEFAULT true;
 ALTER TABLE facebook_profile
 ALTER COLUMN fb_id TYPE bigint USING fb_id::bigint;
+-- 2022-09-18 Catherine update
+ALTER TABLE facebook_profile
+ADD CONSTRAINT fk_users_facebook_profile FOREIGN KEY (user_id) REFERENCES users (id);
+ALTER TABLE google_profile
+ADD CONSTRAINT fk_users_google_profile FOREIGN KEY (user_id) REFERENCES users (id);
+ALTER TABLE instagram_profile
+ADD CONSTRAINT fk_users_instagram_profile FOREIGN KEY (user_id) REFERENCES users (id);
+ALTER TABLE friends_list
+ADD CONSTRAINT fk_users_friends_list_from FOREIGN KEY (from_user_id) REFERENCES users (id);
+ALTER TABLE friends_list
+ADD CONSTRAINT fk_users_friends_list_to FOREIGN KEY (to_user_id) REFERENCES users (id);
