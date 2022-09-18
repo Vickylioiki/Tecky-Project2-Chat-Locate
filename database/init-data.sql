@@ -55,7 +55,7 @@ VALUES (
         NULL
     ),
     (
-        'JamesLam',
+        'James Lam',
         'james',
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'I go by bus',

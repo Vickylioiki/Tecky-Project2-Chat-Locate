@@ -21,6 +21,7 @@ declare module 'express-session' {
     isloggedin?: boolean
     location?: any
     user?: any
+    roomInfomation?: any
 
   }
 }
@@ -57,7 +58,7 @@ app.use(
 
 app.use('/user', userRoutes)
 app.use('/match', matchRoutes)
-app.use('/chatroom', chatRoutes)
+app.use('/chat', chatRoutes)
 app.use(express.static('public'))
 
 

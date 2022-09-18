@@ -12,7 +12,7 @@ service.setKey('AIzaSyBLLtLmB3NIKUrPq6vwFSz7IRrdL8pVUNA');
 
 // import { client } from '../main's
 
-let readyUsers: any = [];
+let readyUsers: any = [{ userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }];
 // { userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }, { userId: 1, location: { lat: 22.285170575820224, lng: 114.14665642394633 } }, { userId: 2, location: { lat: 22.30933514419831, lng: 114.23787345976665 } }
 // { userId: 1, location: { lat: 22.285170575820224, lng: 114.14665642394633 } }, { userId: 2, location: { lat: 22.30933514419831, lng: 114.23787345976665} }, { userId: 3, location: { lat: 22.28601222944395, lng: 114.14757727141927 } }, { userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }
 //     // const x = [22.30933514419831, 114.23787345976665] // Lam Tin 
@@ -147,10 +147,23 @@ matchRoutes.post('/', async (req, res) => {
         const userIdA = ownerId;
         const userIdB = distances[0].userId
 
-        io.sockets.emit('toChatroom', `../chatroom/chatroom.html?userA=${userIdA}&userB=${userIdB}&roomId=${roomId}`)
+        const roomInfomation = {
+            userIdA,
+            userIdB,
+            roomId
+
+        }
+
+        req.session['user'].roomInfomation = roomInfomation;
+
+        console.log(req.session['user'].roomInfomation)
+
+        let chatUrl = `../chatroom/chatroom.html?userA=${userIdA}&userB=${userIdB}&roomId=${roomId}`
+
+        io.sockets.emit('toChatroom', chatUrl)
 
 
-        res.status(200).json('match successful')
+        res.status(200).json('match success')
 
     } catch (err) {
         console.log(err)
