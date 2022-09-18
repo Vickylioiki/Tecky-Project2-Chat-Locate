@@ -8,55 +8,60 @@ insert into users (
         dateofBirth,
         occupation,
         hobby,
-        country
+        country,
+        icon
     )
 VALUES (
         'Peter',
         'peter01',
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
-        'M',
+        'male',
         '99991234',
         'I go by bus',
         '2010-10-10',
-        'student',
+        'Techer',
         'badminton',
-        'Australia'
+        'Japan',
+        'https://www.biography.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cg_face%2Cq_auto:good%2Cw_300/MTE5NTU2MzE2NTMzMzI3Mzcx/peter-dinklage-20787107-1-402.jpg'
     ),
     (
         'May',
         'may01',
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
-        'F',
+        'female',
         '99884567',
-        'I go by bus',
+        'I like play football',
         '2010-10-10',
-        'student',
-        'badminton',
-        'Australia'
+        'Programmer',
+        'reading, football',
+        'Hong Kong',
+        'https://s.ws.pho.to/76eeee/img/index/toonme/1-1.jpg'
     ),
     (
         'John',
         'john01',
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
-        'M',
+        'male',
         '99667897',
-        'I go by bus',
+        'I am single.',
         '2010-10-10',
         'student',
-        'badminton',
-        'Australia'
+        'swimming, cooking',
+        'Australia',
+        'https://globalnews.ca/wp-content/uploads/2018/08/peter-headshot_on-wht.jpg?quality=85&strip=all&w=220'
     ),
     (
-        'JamesLam',
+        'James Lam',
         'james',
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
-        'M',
+        'male',
         '99667897',
-        'I go by bus',
+        'I like make friends.',
         '2010-10-10',
-        'student',
-        'badminton',
-        'Australia'
+        'Doctor',
+        'movie, travel',
+        'Singapore',
+        'https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/staff_profile/public/thumbnails/image/gen58729Peter_Headshot.jpeg?itok=bZuw6-v_'
     );
 insert into facebook_profile (
         fb_id,

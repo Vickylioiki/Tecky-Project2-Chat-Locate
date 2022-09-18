@@ -1,3 +1,5 @@
+
+
 const socket = io.connect();
 
 // const emojiBtn = document.querySelector('.emoji');
@@ -20,7 +22,7 @@ const addFriendsButton = document.querySelector('.add-friends');
 // }
 
 async function init() {
-    await getRoomInfo();
+    await updateProfile();
 
 
 }
@@ -84,10 +86,63 @@ if (addFriendsButton) {
 }
 
 
-async function getRoomInfo() {
-    const res = await fetch('/chatroom/getRoomInfo');
+
+
+async function updateProfile() {
+    const res = await fetch('/chat/getchatroom');
     const roomInfo = await res.json();
-    console.log(roomInfo)
+    const userAId = roomInfo.userA.id;
+    const userA = roomInfo.userA;
+    const userBId = roomInfo.userB.id;
+    const userB = roomInfo.userB;
+    const currentUser = roomInfo.currentUser;
+    console.log('userA :', userAId, 'userB :', userBId, 'currentUser :', currentUser)
+
+
+    const profileData = currentUser === userAId ? userB : userA;
+    const profile = document.querySelector('.profile-info')
+    profile.innerHTML = ' '
+    profile.innerHTML += `
+        <div class="placement">
+                                <div class="heart add-friends-btn"></div>
+                            </div>
+                            <h2 class="profile-name">${profileData.name}</h2>
+                            <div class="profile-occupation">${profileData.occupation}, ${profileData.country}</div>
+                            <label class="profile-title">DOB: </label>
+                            <span class="date-of-birth">1994-03-01&ensp;</span>
+                            <label class="profile-title">Age: </label>
+                            <span class="age">28<i class="bi bi-gender-male"></i></span>
+                            <br>
+                            <label class="profile-title">My Hobbies: </label>
+                            <br>
+                            <span class="hobbies">Cooking, Hiking,
+                                Reading</span>
+                            <br>
+                            <label class="profile-title">About Me: </label>
+                            <br>
+                            <span class="about-me">
+                                Bieber achieved commercial success with his teen pop-driven debut studio album,
+                                My World
+                                2.0 (2010), which debuted atop the US Billboard 200, making him the youngest
+                                solo male
+                                act to top the chart in 47 years. </span>
+                            <div class="social-media">
+                                <div class="social-icon-wrapper instagram">
+                                    <i class="fa fa-instagram"></i>
+                                </div>
+                                <div class="social-icon-wrapper facebook">
+                                    <i class=" fa fa-facebook-f"></i>
+                                </div>
+                                <div class="social-icon-wrapper twitter">
+                                    <i class="fa fa-twitter"></i>
+                                </div>
+                            </div>
+        
+        
+        
+        
+        
+        `
 
 
 
