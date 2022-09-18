@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { response } from 'express'
 import { client } from '../main'
 import { checkPassword, hashPassword } from '../hash'
 import fetch from 'cross-fetch'
@@ -74,6 +74,9 @@ userRoutes.get('/notifications', async (req, res) => {
 userRoutes.post('/update-relation', async (req, res) => {
     let { notificationId, status } = req.body;
 
+
+
+
     if (['approved', 'rejected'].indexOf(status) === -1) {
         res.status(400).json({ message: 'Invalid status' })
         return
@@ -81,10 +84,23 @@ userRoutes.post('/update-relation', async (req, res) => {
 
     console.log('notificationId: ', notificationId);
 
+
+
     // disable notification
     let result = await client.query(
         `update notifications set status = $1 where id = $2 returning *`, [status, notificationId]
     )
+
+
+    if (status === 'approved') {
+        await client.query(`INSERT INTO friends_list (from_user_id, to_user_id)
+    VALUES ($1, $2)`,
+            [result.rows[0].user_id, result.rows[0].opponent_user_id]);
+
+    }
+
+
+
 
     console.log('result.rows: ', result.rows)
 
@@ -409,7 +425,49 @@ async function updateProfile(req: express.Request, res: express.Response) {
     const country = req.body.country;
 
 
-    await client.query(`UPDATE users SET aboutMe = $1, dateofBirth= $2, occupation= $3, hobby=$4, country=$5 WHERE id = $6,
+    await client.query(`UPDATE users SET aboutMe = $1, dateofBirth= $2, occupation= $3, hobby=$4, country=$5 WHERE id = $6
     `, [aboutMe, dateofBirth, occupation, hobby, country, id])
 
 }
+
+
+userRoutes.post("/friend-request", addFriends);
+
+async function addFriends(req: express.Request, res: express.Response) {
+    const id = req.session.user.id;
+    const opponent_user_id = req.body.opponentUserId;
+    const message = req.body.message;
+    const iconResult = (await client.query("SELECT icon FROM users WHERE id=$1", [id])).rows[0];
+
+
+    await client.query(`INSERT INTO notifications 
+    (user_id, opponent_user_id, message, icon) 
+    VALUES ($1, $2, $3, $4)`,
+        [id, opponent_user_id, message, iconResult.icon]);
+    res.json({
+        message: "Sent friend request"
+    })
+
+}
+
+// userRoutes.post("/acceptFriends",acceptFriends);
+
+// async function acceptFriends(req: express.Request, res: express.Response) {
+//     const from_user_id = req.session.id;
+//     const to_user_id=req.body.to_user_id;
+//     const status= req.body.status;
+
+//     await client.query(`INSERT INTO friends_list (from_user_id, to_user_id, status) VALUES ($1, $2, $3)`,[from_user_id,to_user_id,status]);
+
+// }
+
+// userRoutes.post("/rejectFriends",rejectFriends);
+
+// async function rejectFriends(req: express.Request, res: express.Response) {
+//     const id = req.session.id;
+//     const opponent_user_id= req.body.opponent_user_id;
+//     const status= req.body.status;
+
+//     await client.query(`UPDATE notifications SET status=$1 WHERE user_id=$2, opponent_user_id=$3`,[id,opponent_user_id,status]);
+
+// }

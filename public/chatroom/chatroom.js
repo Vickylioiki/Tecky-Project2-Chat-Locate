@@ -1,19 +1,22 @@
-const io =require('socket.io') //(port NUMBER)
+
 const emojiBtn = document.querySelector('.emoji');
-
 const picker = new EmojiButton();
+const addFriendsButton= document.querySelector('.add-friends');
 
-io.on("connection"), socket =>{
-    socket.emit('chat-message','Hello World');
 
-    socket.on('goToChatPage', (data) => {
-        window.location = data;
-        //"./chatRoom.html?roomId=userA_userB" 
-    })
-    socket.on('getMessage', (data) => {
 
-    })
-}
+
+// io.on("connection"), socket =>{
+//     socket.emit('chat-message','Hello World');
+
+//     socket.on('goToChatPage', (data) => {
+//         window.location = data;
+//         //"./chatRoom.html?roomId=userA_userB" 
+//     })
+//     socket.on('getMessage', (data) => {
+
+//     })
+// }
 
 
 // Emoji selection  
@@ -44,3 +47,21 @@ $(function () {
         $(this).toggleClass("is-active");
     });
 });
+
+if (addFriendsButton){
+    addFriendsButton.addEventListener("click",async (event)=>{
+        event.preventDefault();
+    
+        let res=await fetch('/addFriends',{
+            method:"POST", 
+            body: JSON.stringify({
+                opponent_user_id: "2",   //HARD CODING NEEDA EDIT BEFORE DEPLOYMENT
+                message: "hello can i add you?",  
+    
+            })
+        })
+    })
+}else{
+    console.log('cannot find addFriendsButton')
+}
+

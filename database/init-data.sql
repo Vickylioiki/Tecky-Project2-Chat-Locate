@@ -3,40 +3,60 @@ insert into users (
         username,
         password,
         gender,
+        contact_no,
+        aboutMe,
         dateofBirth,
-        contact_no
+        occupation,
+        hobby,
+        country
     )
 VALUES (
         'Peter',
         'peter01',
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'M',
-        '1999-01-03',
-        '99991234'
+        '99991234',
+        'I go by bus',
+        '2010-10-10',
+        'student',
+        'badminton',
+        'Australia'
     ),
     (
         'May',
         'may01',
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'F',
-        '1998-02-03',
-        '99884567'
+        '99884567',
+        'I go by bus',
+        '2010-10-10',
+        'student',
+        'badminton',
+        'Australia'
     ),
     (
         'John',
         'john01',
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'M',
-        '2000-10-07',
-        '99667897'
+        '99667897',
+        'I go by bus',
+        '2010-10-10',
+        'student',
+        'badminton',
+        'Australia'
     ),
     (
         'JamesLam',
         'james',
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'M',
-        '2000-10-07',
-        '99667897'
+        '99667897',
+        'I go by bus',
+        '2010-10-10',
+        'student',
+        'badminton',
+        'Australia'
     );
 insert into facebook_profile (
         fb_id,

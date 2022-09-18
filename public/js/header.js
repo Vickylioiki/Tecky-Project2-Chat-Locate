@@ -1,3 +1,4 @@
+
 function initHeader() {
   let headerElm = document.querySelector('.header')
 
@@ -194,8 +195,39 @@ async function getNotifications() {
       </div>
       ${getStatusHTML(notificationItem)}
     </li>
-      `
+      `;
   }
+
+  //add event listeners to accept and reject buttons
+
+  let acceptButtons = document.querySelectorAll("[data-status='approved']");
+  let rejectButtons = document.querySelectorAll("[data-status='rejected']");
+  //ACCEPTED and REJECTED
+  for (let buttonIndex = 0; buttonIndex < acceptButtons.length; buttonIndex++) {
+    acceptButtons[buttonIndex].addEventListener("click", async (event) => {
+      event.preventDefault();
+      let res_accept = await fetch('/acceptFriends', {
+        method: "POST",
+        body: JSON.stringify({
+          to_user_id: "2",   //HARD CODING NEEDA EDIT BEFORE DEPLOYMENT
+          status: "approved"
+        })
+      })
+
+      rejectButtons[buttonIndex].addEventListener("click", async (event) => {
+        eventNames.preventDefault();
+        let res_reject = await fetch('/rejectFriends', {
+          method: "POST",
+          body: JSON.stringify({
+            to_user_id: "2",   //HARD CODING NEEDA EDIT BEFORE DEPLOYMENT
+            status: "rejected"
+          })
+        })
+      })
+    })
+
+  }
+
 
   console.log('get notification after for loop')
 
@@ -221,6 +253,8 @@ async function getNotifications() {
         body: JSON.stringify({
           status,
           notificationId
+
+
         }),
         headers: {
           'Content-Type': 'application/json'
@@ -241,15 +275,19 @@ async function getNotifications() {
 
 
 
+
 function remove() {
   var elem = document.getElementById('remove');
   elem.parentNode.removeChild(elem);
   return false;
 }
 
+
+
 function init() {
   initHeader()
   getProfile()
   getNotifications()
+
 };
 init()
