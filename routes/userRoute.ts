@@ -5,6 +5,7 @@ import fetch from 'cross-fetch'
 import crypto from 'crypto'
 import moment from 'moment';
 import { request } from 'http'
+// import { request } from 'http'
 
 export const userRoutes = express.Router()
 
@@ -28,6 +29,8 @@ userRoutes.get('/friend-request', async (req, res) => {
         message: 'Friend request sent.'
     })
 })
+
+
 
 userRoutes.get('/notifications', async (req, res) => {
     let userId = req.session['user']?.id
@@ -55,8 +58,9 @@ userRoutes.get('/notifications', async (req, res) => {
 
     let result = await client.query(
         `select notifications.*, users.name from notifications 
-         inner join users on users.id = notifications.user_id
-         where notifications.opponent_user_id = $1 ORDER BY notifications.created_at DESC;
+         inner join users on users.id = notifications.opponent_user_id
+         where notifications.user_id = $1 and enabled = true
+        ORDER BY notifications.created_at DESC;
         `, [userId]
     )
 
@@ -71,6 +75,75 @@ userRoutes.get('/notifications', async (req, res) => {
     })
 
 })
+
+userRoutes.post('/notifications', async (req, res) => {
+    try {
+        const { user_id, message, type } = req.body
+        console.log('req.body', req.body)
+        if (!user_id || !message || !type) {
+            res.status(400).json({
+                message: 'Invalid user_id or message or type'
+            })
+            return
+        }
+        console.log('req.session: ', req.session['user'])
+
+        let currentUserId = req.session['user']['id'];
+
+        if (!currentUserId) {
+            res.status(400).json({
+                message: 'Invalid login session, current user info not found'
+            })
+            return
+        }
+
+        // if current user id exists, find its icon from db
+        let selectResult = (await client.query(
+            `
+            select u.icon, fb.profile_pic as fb_profile_pic, ggl.profile_pic as ggl_profile_pic
+            from users u
+            left join facebook_profile fb on fb.user_id = u.id
+            left join google_profile ggl on ggl.user_id = u.id
+            where u.id = $1
+            `, [currentUserId]
+        )).rows[0]
+
+        console.log('user icon selectResult:', selectResult)
+
+        // if user icon is null, use facebook icon, else use google icon
+        let currentUserIcon = selectResult.icon ?? selectResult.fb_profile_pic ?? selectResult.ggl_profile_pic;
+
+        // create notification record
+        let insertResult = (await client.query(
+            `INSERT INTO notifications (user_id, opponent_user_id, message, icon, status, type)
+            VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+            [user_id, currentUserId, message, currentUserIcon, 'pending', type]
+        )).rows[0]
+
+        console.log('insertResult: ', insertResult)
+
+        res.json({ status: "ok" })
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+
+})
+
+
+userRoutes.patch('/notifications', async (req, res) => {
+
+    const notificationId = req.body.notificationId;
+    console.log('patch /user/notifications notificationId: ' + notificationId)
+
+    // disable notifications, so that they will not display on login afterwards
+    await client.query(`UPDATE notifications SET enabled = false WHERE id = ${notificationId}
+    `)
+
+    res.json({ status: "ok" })
+})
+
 userRoutes.post('/update-relation', async (req, res) => {
     let { notificationId, status } = req.body;
 
@@ -111,7 +184,7 @@ userRoutes.post('/update-relation', async (req, res) => {
     } else {
         res.status(400).end();
     }
-
+    console.log('username and password checking passed!!')
 
 })
 
@@ -289,9 +362,9 @@ async function loginGoogle(req: express.Request, res: express.Response) {
 
         user = (
             await client.query(
-                `INSERT INTO users (username,password)
-                VALUES ($1, $2) RETURNING *`,
-                [googleProfile.email, hashedPassword]
+                `INSERT INTO users (name,username,password)
+                VALUES ($1, $2, $3) RETURNING *`,
+                [googleProfile.name, googleProfile.email, hashedPassword]
             )
         ).rows[0]
         console.log(user)
@@ -343,16 +416,16 @@ async function loginfacebook(req: express.Request, res: express.Response) {
 
         user = (
             await client.query(
-                `INSERT INTO users (username,password)
-                VALUES ($1, $2) RETURNING *`,
-                [facebookProfile.email, hashedPassword]
+                `INSERT INTO users (name,username,password)
+                VALUES ($1, $2, $3) RETURNING *`,
+                [facebookProfile.name, facebookProfile.email, hashedPassword]
             )
         ).rows[0]
         console.log(user)
         await client.query(
-            `INSERT INTO facebook_profile(user_id,profile_pic,fb_id,name)
+            `INSERT INTO facebook_profile (user_id,profile_pic,fb_id,name)
             VALUES ($1, $2, $3, $4) RETURNING *`,
-            [user.id, facebookProfile.picture, facebookProfile.id, facebookProfile.name]
+            [user.id, facebookProfile.picture.data.url, facebookProfile.id, facebookProfile.name]
         )
     }
     if (req.session) {

@@ -129,8 +129,10 @@ INSERT INTO notifications (
         opponent_user_id,
         message,
         icon,
+        status,
         created_at,
-        updated_at
+        updated_at,
+        type
     )
 VALUES(
         (
@@ -145,8 +147,10 @@ VALUES(
         ),
         'hello, can I add you?',
         'https://randomuser.me/api/portraits/men/84.jpg',
+        'pending',
         now(),
-        now()
+        now(),
+        'invitation'
     ),
     (
         (
@@ -161,8 +165,10 @@ VALUES(
         ),
         'good morning!',
         'https://randomuser.me/api/portraits/men/84.jpg',
+        NULL,
         now(),
-        now()
+        now(),
+        'message'
     ),
     (
         (
@@ -177,6 +183,8 @@ VALUES(
         ),
         'good morning!',
         'https://randomuser.me/api/portraits/men/84.jpg',
+        NULL,
         now(),
-        now()
+        now(),
+        'message'
     );

@@ -1,45 +1,58 @@
+
 import { Client } from 'pg'
 import express from 'express'
 import expressSession from 'express-session'
 import http from 'http'
-import { Server as SocketIO } from 'socket.io'
-import { userRoutes } from './routes/userRoute'
 import grant from 'grant'
-
-import dotenv from 'dotenv'
+import { userRoutes } from './routes/userRoute'
 import { matchRoutes } from './routes/matchRoute'
 import { chatRoutes } from './routes/chatRoute'
+// import { initialSocket } from './utils/socket'
+import { Server as SocketIO } from 'socket.io';
+
+import dotenv from 'dotenv'
+
+
 dotenv.config()
 
 declare module 'express-session' {
   interface SessionData {
     name?: string
     isloggedin?: boolean
+    location?: any
     user?: any
+
   }
 }
 
 const app = express()
-
-const server = new http.Server(app)
-export const io = new SocketIO(server)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
+
+// import { initialSocket } from './utils/socket'
+export let a = "James"
+export const server = new http.Server(app)
+export const io = new SocketIO(server); //io and server connect
+
 export const client = new Client({
   database: process.env.DB_NAME,
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD
 })
+
+
 client.connect()
 
 //Session
+export const sessionMiddleware = expressSession({
+  secret: 'Tecky Academy teaches typescript',
+  resave: true, //Auto save session 
+  saveUninitialized: true,
+  // cookies: {secure : false}
+})
+
 app.use(
-  expressSession({
-    secret: 'Tecky Academy teaches typescript',
-    resave: true, //Auto save session 
-    saveUninitialized: true,
-    // cookies: {secure : false}
-  }),
+  sessionMiddleware
 )
 
 app.use('/user', userRoutes)
@@ -48,7 +61,7 @@ app.use('/chatroom', chatRoutes)
 app.use(express.static('public'))
 
 
-app.use(express.static("public"))
+// app.use(express.static("public"))
 
 // declare module 'express-session' {
 //   interface SessionData {
@@ -56,7 +69,6 @@ app.use(express.static("public"))
 
 //   }
 // }
-
 
 
 const grantExpress = grant.express({
@@ -96,8 +108,10 @@ app.use(grantExpress as express.RequestHandler)
 
 
 
-app.listen(8080, () => {
+server.listen(8080, () => {
+  a = "Tom"
 
   console.log('Server is listening http://localhost:8080');
+  // initialSocket()
 
 })
