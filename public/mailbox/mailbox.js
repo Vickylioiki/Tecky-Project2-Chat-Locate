@@ -17,48 +17,47 @@ $(".close, .shadow").click(function () {
     $(".popup").hide();
 });
 
-function getStatusHTML(notificationItem) {
-    let status = notificationItem.status
-    if (status === 'pending') {
+// function getStatusHTML(notificationItem) {
+//     let status = notificationItem.status
+//     if (status === 'pending') {
 
-        //   <form class="accept-friend-form">
-        //   <input type="text" hidden name="opponentUserId" value="${notificationItem.opponent_user_id}">
-        //   <input type="text" hidden name="notificationId" value="${notificationItem.id}">
-        //   <button type="submit" class="btn btn-light">Accept</button>
-        // </form>
-        return `
-       <button type="button" class="btn btn-light status" data-status='approved' data-notification-id=${notificationItem.id}>O</button>
-       <button type="button" class="btn btn-light status" data-status='rejected' data-notification-id=${notificationItem.id}>X</button>
-      `
-    }
-    if (status === 'approved') {
-        return `
-      <div>Approved</div>
+//         //   <form class="accept-friend-form">
+//         //   <input type="text" hidden name="opponentUserId" value="${notificationItem.opponent_user_id}">
+//         //   <input type="text" hidden name="notificationId" value="${notificationItem.id}">
+//         //   <button type="submit" class="btn btn-light">Accept</button>
+//         // </form>
+//         return `
+//        <button type="button" class="btn btn-light status" data-status='approved' data-notification-id=${notificationItem.id}>O</button>
+//        <button type="button" class="btn btn-light status" data-status='rejected' data-notification-id=${notificationItem.id}>X</button>
+//       `
+//     }
+//     if (status === 'approved') {
+//         return `
+//       <div>Approved</div>
       
-      `
-    }
-    if (status === 'rejected') {
-        return `
-     <div>Rejected</div>
+//       `
+//     }
+//     if (status === 'rejected') {
+//         return `
+//      <div>Rejected</div>
       
-      `
-    }
+//       `
+//     }
 
-}
-async function getNotifications() {
+// }
+async function getNotificationsMainbox() {
 
     let res = await fetch('/user/notifications')
     let data = await res.json()
     let notificationItems = data.data
-
-    console.log('notificationItems: ', notificationItems)
 
     let notificationUlElem = document.querySelector('#notification-list-parent')
     notificationUlElem.innerHTML = ''
 
     console.log('getNotifications before for loop', notificationItems)
     for (let notificationItem of notificationItems) {
-        if (notificationItem.type === 'invitation') {
+        console.log(notificationItem.type )
+        if (notificationItem.type == 'invitation') {
             notificationUlElem.innerHTML += /* HTML */`
             <div class="notification-list notification-list--unread">
                 <div class="notification-list_content">
@@ -74,43 +73,56 @@ async function getNotifications() {
                 </div>
             </div>
             `
-        } else if (notificationItem.type === 'message') {
-            notificationUlElem.innerHTML += /* HTML */`
-        <div class="notification-list notification-list--unread">
-            <div class="notification-list_content">
-                <div class="notification-list_img">
-                ${notificationItem.icon ? `<img class="notify-icon" src="${notificationItem.icon}">` : '    <img class="notify-icon" src="https://randomuser.me/api/portraits/men/84.jpg">'}
-                <div class="notification-list_detail">
-                    <div class="notification-message-list">
-                        <p style="padding-right: 2px; font-weight: bold; width: 80px">${notificationItem.name}</p>
-                        <p style="text-align: center;">${notificationItem.message}</p>
+        } else if (notificationItem.type == 'message') {
+                notificationUlElem.innerHTML += /* HTML */`
+                <div class="notification-list notification-list--unread">
+                    <div class="notification-list_content">
+                        <div class="notification-list_img">
+                        ${notificationItem.icon ? `<img class="notify-icon" src="${notificationItem.icon}">` : '    <img class="notify-icon" src="https://randomuser.me/api/portraits/men/84.jpg">'}
+                        <div class="notification-list_detail">
+                            <div class="notification-message-list">
+                                <p style="padding-right: 2px; font-weight: bold; width: 80px">${notificationItem.name}</p>
+                                <p style="text-align: center;">${notificationItem.message}</p>
+                            </div>
+                            <p class="text-muted"><small>${notificationItem.created_at}</small></p>
+                        </div>
                     </div>
-                    <p class="text-muted"><small>${notificationItem.created_at}</small></p>
-                </div>
-            </div>
-            <div class="notification-list_feature-img">
-                <form id="start-chat-form" style="padding-bottom: 7px;">
-                  <input type="text" hidden value="${notificationItem.opponent_user_id}" name="userId">
-                  <button type="submit" class="btn btn-success">Chat</button>
-                </form>
-                
-                <button type="button" class="btn btn-light close-button" data-notification-id="${notificationItem.id}">X</button>
-            </div>
-        </div>
-        `
-        } else {
-            // do nothing
+                    <div class="notification-list_feature-img">
+                        <form id="start-chat-form-${notificationItem.id}"  class="start-chat-form" form-id="${notificationItem.id}" style="padding-bottom: 7px;">
+                        <div class="notification-list_feature-img" id="status-${notificationItem.id}">
+                        ${displayStatus(notificationItem)}
+                        </div>
+                        </form >
+                    </div >
+                </div >
+            `
+            } else {
+                // do nothing
+            }
+
+        function displayStatus(notificationItem) {
+            let enabled = notificationItem.enabled
+            let text = enabled ? "<button> O </button>"
+            : "<div>Read</div>"
+            return text
         }
+        // function getStatusHTML(notificationItem) {
+        //     let enabled = notificationItem.enabled
+        //     console.log("enabled: " + enabled)
+        //     let text = !enabled ? "O" : "Read"
+        //     console.log(text)
 
-
+        //     return `
+        //         <button type = "button" class="btn btn-light status" data - status='approved' data - notification - id=${notificationItem.id}> ${text}</button>`
+        // }
     }
-
+    const forms = document.querySelectorAll(".start-chat-form")
+    forms.forEach(async (form, index) => {
+        const formId = form.getAttribute("form-id")
+        await updateRelation(formId)
+    })
+    // forms
     console.log('get notification after for loop')
-
-    notificationUlElem.innerHTML += /* HTML */`<li class="show_all">
-
-    </li>`
-
     let closeBtns = document.querySelectorAll('.notification-list .close-button');
     for (let closeBtn of closeBtns) {
         closeBtn.addEventListener('click', async (e) => {
@@ -135,19 +147,19 @@ async function getNotifications() {
     return true;
 }
 
-async function addStartChatFormEvent() {
-    const startChatForm = document.querySelector('#start-chat-form')
-    console.log('startChatForm: ', startChatForm)
-
+async function updateRelation(notificationId) {
+    const startChatForm = document.querySelector(`#start-chat-form-${notificationId}`)
     startChatForm.addEventListener('submit', async (e) => {
         e.preventDefault()
         const form = e.target
-        const userId = form.userId.value
-        console.log("userId: " + userId)
-        const res = await fetch('/user/start-chat', {
+        // const userId = form.userId.value
+        // console.log(from)
+
+        // console.log("userId: " + userId)
+        const res = await fetch('/user/update-relation', {
             method: 'POST',
             body: JSON.stringify({
-                userId,
+                notificationId,
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -155,20 +167,25 @@ async function addStartChatFormEvent() {
         })
         if (res.ok) {
             console.log('start chat')
-            window.location.href = "/chatroom/chatroom.html"
+            const statusNotificationId = document.querySelector(`#status-${notificationId}`)
+            statusNotificationId.innerHTML = "Read"
+            // window.location.href = "/chatroom/chatroom.html"
         } else {
             let { message } = await res.json()
             alert(message)
         }
     })
 }
+getNotificationsMainbox()
 
-let mailBoxInitPromise = new Promise(function (resolve, reject) {
-    resolve();
-    reject();
-})
+// let mailBoxInitPromise = new Promise(function (resolve, reject) {
+//     resolve();
+//     reject();
+// })
 
-mailBoxInitPromise
-    .then(getNotifications, null)
-    .then(addStartChatFormEvent, null)
-    .catch((e) => console.log('initPromise catch error: ', e))
+// mailBoxInitPromise
+//     .then(getNotifications, null)
+//     // .then(addStartChatFormEvent, null)
+// //     .catch((e) => console.log('initPromise catch error: ', e))
+// getNotifications()
+// addStartChatFormEvent()

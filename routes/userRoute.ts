@@ -4,8 +4,6 @@ import { checkPassword, hashPassword } from '../hash'
 import fetch from 'cross-fetch'
 import crypto from 'crypto'
 import moment from 'moment';
-import { request } from 'http'
-// import { request } from 'http'
 
 export const userRoutes = express.Router()
 
@@ -46,7 +44,7 @@ userRoutes.get('/notifications', async (req, res) => {
     let result = await client.query(
         `select notifications.*, users.name from notifications 
          inner join users on users.id = notifications.opponent_user_id
-         where notifications.user_id = $1 and enabled = true
+         where notifications.user_id = $1 
         ORDER BY notifications.created_at DESC;
         `, [userId]
     )
@@ -133,49 +131,48 @@ userRoutes.patch('/notifications', async (req, res) => {
 
 userRoutes.post('/update-relation', async (req, res) => {
     try {
-        let { notificationId, status } = req.body;
+        let { notificationId } = req.body;
 
         // throw error if status is neither approved nor rejected
-        if (['approved', 'rejected'].indexOf(status) === -1) {
-            res.status(400).json({ message: 'Invalid status' })
-            return
-        }
+        // if (['', 'approved', 'rejected'].indexOf(status) === -1) {
+        //     res.status(400).json({ message: 'Invalid status 123' })
+        //     return
+        // }
 
         console.log('notificationId: ', notificationId);
 
         // disable notification
         let updateResult = (await client.query(
-            `update notifications set status = $1, enabled = false where id = $2 and type = $3 and enabled = $4 returning *`, [status, notificationId, 'invitation', true]
-        )).rows[0];
+            `update notifications set enabled = false where id = $1 returning * `, [notificationId])).rows[0];
 
         console.log('/update-relation updateResult: ', updateResult);
 
         // throw error if notification is currently not enabled, or not invitation
-        if (!updateResult) {
-            res.status(400).json({ message: 'Invalid notification update' })
-            return
-        }
+        // if (!updateResult) {
+        //     res.status(400).json({ message: 'Invalid notification update' })
+        //     return
+        // }
 
         // throw error if identical user id for friend request
-        if (updateResult.user_id === updateResult.opponent_user_id) {
-            res.status(400).json({ message: 'Error: identical user friend add request' })
-            return
-        }
+        // if (updateResult.user_id === updateResult.opponent_user_id) {
+        //     res.status(400).json({ message: 'Error: identical user friend add request' })
+        //     return
+        // }
 
         // check if friend relationship exists
-        let friendRelationship = (await client.query(`
-            select * from friends_list
-            where (from_user_id = $1 and to_user_id = $2)
-            or (from_user_id = $2 and to_user_id = $1)
-            `, [updateResult.user_id, updateResult.opponent_user_id])).rows;
+        // let friendRelationship = (await client.query(`
+        //     select * from friends_list
+        //     where (from_user_id = $1 and to_user_id = $2)
+        //     or (from_user_id = $2 and to_user_id = $1)
+        //     `, [updateResult.user_id, updateResult.opponent_user_id])).rows;
 
-        if (status === 'approved' && friendRelationship.length == 0) {
-            await client.query(`INSERT INTO friends_list (from_user_id, to_user_id)
-        VALUES ($1, $2)`,
-                [updateResult.opponent_user_id, updateResult.user_id]);
-        }
+        // if (status === 'approved' && friendRelationship.length == 0) {
+        //     await client.query(`INSERT INTO friends_list (from_user_id, to_user_id)
+        // VALUES ($1, $2)`,
+        //         [updateResult.opponent_user_id, updateResult.user_id]);
+        // }
 
-        res.json({ status: "ok" })
+        res.json({ status: updateResult})
     } catch (e) {
         res.status(400).json({ message: e })
     }
@@ -187,26 +184,26 @@ userRoutes.post('/update-relation', async (req, res) => {
  * when current user click "Chat" button, trigger this API call
  * to save the opponent he/she is going to talk to, in request session
  * */
-userRoutes.post('/start-chat', async (req, res) => {
-    // the opponent user id
-    try {
-        let userId = req.body.userId;
-        // sql save/initiate chat history?
+// userRoutes.post('/start-chat', async (req, res) => {
+//     // the opponent user id
+//     try {
+//         let userId = req.body.userId;
+//         // sql save/initiate chat history?
 
-        // save into request session
-        req.session['chat_user'] = userId;
+//         // save into request session
+//         req.session['chat_user'] = userId;
 
-        console.log("/start-chat saved req.session['chat_user']", req.session['chat_user'])
+//         console.log("/start-chat saved req.session['chat_user']", req.session['chat_user'])
 
-        // res.redirect('/chatroom/chatroom.html')
-        res.json({ status: "ok" })
-    }
-    catch (error) {
-        console.log(error)
-        res.status(500).json({ message: 'Internal server error' })
-    }
+//         // res.redirect('/chatroom/chatroom.html')
+//         res.json({ status: "ok" })
+//     }
+//     catch (error) {
+//         console.log(error)
+//         res.status(500).json({ message: 'Internal server error' })
+//     }
 
-})
+// })
 
 /**
  * after enter chatroom, call this function to get chat opponent,
