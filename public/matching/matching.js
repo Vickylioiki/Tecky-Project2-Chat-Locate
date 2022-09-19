@@ -36,7 +36,7 @@ async function getLocation() {
 init();
 
 
-socket.on("toChatroom", chatroomUrl => {
-    window.location = chatroomUrl;
+socket.on("to-chatroom", () => {
+    window.location = '/chatroom/chatroom.html';
 })
 

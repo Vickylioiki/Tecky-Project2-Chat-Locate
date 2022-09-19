@@ -86,7 +86,7 @@
                     <div class="chat-container">
 
                         <!-- self -->
-                        <div class="d-flex flex-row justify-content-end">
+                        <!-- <div class="d-flex flex-row justify-content-end">
                             <div>
                                 <div class="message-container-self">
                                     <p class="small p-2 me-3 mb-1">HI I am Vicky</p>
@@ -95,10 +95,10 @@
                             </div>
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-2.webp" alt="avatar"
                                 class="rounded-circle chat-icon">
-                        </div>
+                        </div> -->
 
                         <!-- other -->
-                        <div class="d-flex flex-row justify-content-start">
+                        <!-- <div class="d-flex flex-row justify-content-start">
                             <img src="https://m.media-amazon.com/images/I/61BxjnyB7cL._AC_.jpg" alt="avatar"
                                 class="rounded-circle chat-icon">
                             <div>
@@ -111,32 +111,30 @@
                                 </p>
                                 <p class="small ms-3 mb-3 rounded-3 float-end time-other">12:00 PM | Aug 13</p>
                             </div>
-                        </div>
+                        </div> -->
 
 
 
 
                     </div>
                     <!-- typing area -->
-                    <li class="mb-3">
+                    <div class="mb-3">
                         <div class="form-outline form-white type-wrapper">
-                            <form id="messageForm">
-                                <textarea name="textArea3" class="form-control" id="textArea3"></textarea>
+                            <form action="/chat" method="POST" id="messageForm" enctype="multipart/form-data">
+                                <textarea name="content" class="form-control" id="textArea3"></textarea>
                                 <div class="button-group">
-                                    <div class="file"><i class="bi bi-paperclip"></i></div>
+                                    <input type="file" class="file" name="image"></input>
                                     <div class="emoji"><i class="bi bi-emoji-smile"></i></div>
-                                    <button type="submit" class="send"><i class="bi bi-send"></i></button>
+                                    <input type="submit" class="send"><i class="bi bi-send"></i></input>
                                 </div>
                             </form>
-
-
-
                         </div>
-                    </li>
+                    </div>
 
 
 
                 </div>
+
                 <!-- chatroom end -->
 
             </div>

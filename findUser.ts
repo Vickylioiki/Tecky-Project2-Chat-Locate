@@ -1,24 +1,23 @@
-let rooms = {
-    'rmD': { userIdA: 2, userIdB: 1 },
-    'rmC': { userIdA: 3, userIdB: 8 },
-    'rmA': { userIdA: 4, userIdB: 7 },
-    'rmB': { userIdA: 5, userIdB: 6 },
-
-}
+let rooms = [
+    { roomId: 'rmD', userIdA: 2, userIdB: 1 },
+    { roomId: 'rmC', userIdA: 3, userIdB: 8 },
+    { roomId: 'rmA', userIdA: 4, userIdB: 7 },
+    { roomId: 'rmB', userIdA: 5, userIdB: 6 }
+]
 
 import moment from 'moment';
 let myUserId = 2
 
-export function getOpponentUserId() {
+// export function getOpponentUserId() {
 
-    for (let roomId in rooms) {
-        let roomInfo = rooms[roomId]
-        let opponentUserId = roomInfo.userIdA == myUserId ? roomInfo.userIdB : roomInfo.userIdA
-        if (opponentUserId) {
-            return opponentUserId
-        }
-    }
-}
+//     for (let roomId in rooms) {
+//         let roomInfo = rooms[roomId]
+//         let opponentUserId = roomInfo.userIdA == myUserId ? roomInfo.userIdB : roomInfo.userIdA
+//         if (opponentUserId) {
+//             return opponentUserId
+//         }
+//     }
+// }
 // console.log(getOpponentUserId())
 
 
@@ -31,8 +30,16 @@ export function parseDate() {
 
 }
 
-function getRoomIdByUserId(userId: number): string {
+// userId: number
+
+function getRoomIdByUserId(userId: number): any {
+    let room: any = rooms.find(room => room.userIdA == userId || room.userIdB == userId)
+    return room.roomId
 
 
-    return ''
 }
+
+
+console.log('user', getRoomIdByUserId(8))
+
+

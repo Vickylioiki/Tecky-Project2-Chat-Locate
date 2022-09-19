@@ -1,53 +1,75 @@
-import express from 'express';
-import { chatRooms, client } from '../main';
-import moment from 'moment';
+import express from "express";
 export const chatRoutes = express.Router();
+import { Files } from "formidable";
+import { form } from "../utils/formidable";
+import { io } from "../utils/socket";
+import { Chatroom } from "../class/Chatroom";
+import {
+  getChatRoomByUserId,
+  getOpponentProfileInsideChatroom,
+} from "../utils/chatroom-helper";
 
-function getOpponentUserId(myUserId: number) {
+chatRoutes.get("/getchatroom", async (req, res) => {
+  try {
+    const userId = req.session["user"].id;
+    let chatRoom: Chatroom = getChatRoomByUserId(userId);
+    const opponentUserInfo = getOpponentProfileInsideChatroom(chatRoom, userId);
 
-    for (let roomId in chatRooms) {
-        let roomInfo = chatRooms[roomId]
-        let opponentUserId = roomInfo.userIdA == myUserId ? roomInfo.userIdB : roomInfo.userIdA
-        if (opponentUserId) {
-            return opponentUserId
-        }
+    let returnObj = {
+      opponentUserInfo,
+      myUserInfo: req.session["user"],
+      conversations: chatRoom.getConversations(),
+    };
+    res.json(returnObj);
+  } catch (err) {
+    console.log(err);
+
+    res.status(400).json({
+      message: err,
+    });
+  }
+});
+
+chatRoutes.post("/", async (req, res) => {
+  const userId = req.session["user"].id;
+  // const opponentUserId = getOpponentUserId(userId);
+  // const sender = opponentUserId === userId ? opponentUserId : userId
+
+  form.parse(req, (err: any, fields: any, files: Files) => {
+    if (err) {
+      console.log("err:", err);
     }
-}
-chatRoutes.get('/getchatroom', async (req, res) => {
+
     try {
+      const content = fields.content;
+      // const fromSocketId = fields.fromSocketId;
+      let imageFile: any = ""; //因為有可能係null
+      let file = Array.isArray(files.image) ? files.image[0] : files.image; //如果多過一個file upload, file 就會係一串array
+      //upload file都要check, 有機會upload多過一個file(會以array存),
+      //如果係Array就淨係拎第1個file, 即file.image[0],
+      //如果只有一個file, 即files.image
+      if (file) {
+        imageFile = file.newFilename;
+      }
 
-        const userId = req.session['user'].id
-        const opponentUserId = getOpponentUserId(userId)
-        const opponentUserInfo = (await client.query(`SELECT * from users where id = $1`, [opponentUserId])).rows[0]
-        // io.emit('chatroomData', opponentUserInfo)
+      let chatRoom = getChatRoomByUserId(userId);
+      let opponentUserProfile = getOpponentProfileInsideChatroom(
+        chatRoom,
+        userId
+      );
+      let conversation = Chatroom.makeConversationObj(
+        userId,
+        content,
+        imageFile,
+        new Date()
+      );
+      chatRoom.addConversation(conversation);
 
-        let returnObj = {
-            opponentUserInfo,
-            myUserInfo: req.session['user'],
-            conversations: [
-                {
-                    from: userId,
-                    content: "Hi I am Vicky from server demo",
-                    createdAt: moment(new Date()).format('hh:mm A | MMM M')
-                },
-                {
-                    from: opponentUserId,
-                    content: "Cake or pie? I can tell a lot about you by which one you pick. It may seem silly, but cake people and pie people are really different.",
-                    createdAt: moment(new Date()).format('hh:mm A | MMM M')
-                }
-                // 12:00 PM | Aug 13
-            ]
-        }
-        res.json(returnObj)
+      io.to(opponentUserProfile.username).emit("new-message", conversation);
+      res.status(200).json(conversation);
     } catch (err) {
-        console.log(err);
-
-        res.status(400).json({
-            message: err
-        })
-
+      res.status(400).json("internal server error");
+      console.log(err);
     }
-
-})
-
-
+  });
+});
