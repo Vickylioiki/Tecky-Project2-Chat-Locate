@@ -8,7 +8,7 @@ CREATE TABLE users (
     hobby text NULL,
     country text NULL,
     occupation text NULL,
-    icon text NULL,
+    icon text default 'https://cdn.wallpapersafari.com/22/27/fZqLX0.jpg',
     gender bpchar(1) NULL,
     date_of_birth date NULL,
     contact_no int4 NULL,
