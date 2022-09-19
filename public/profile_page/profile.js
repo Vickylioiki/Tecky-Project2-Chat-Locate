@@ -1,3 +1,5 @@
+import { getProfile } from '../js/header.js';
+
 let friendsButton = document.querySelector(".friends-btn");
 let fds_list_session = document.querySelector(".friends-list-session");
 let editButton = document.querySelector(".edit-btn");
@@ -9,9 +11,41 @@ let bioRow = document.querySelectorAll(".bio-row .profile-session");
 // let editButton = document.querySelector(".edit-btn");
 // let bioRow = document.querySelectorAll(".bio-row input");
 
+
+// window.onload(getProfile);
+
+
+// async function getProfile() {
+//   let res = await fetch('/user/me')
+//   let data = await res.json()
+//   dateOfBirth = new Date(data.dateofbirth);
+//   console.log("daya profile: " + dateOfBirth.getFullYear())
+
+//   let profileCard = document.querySelector(".bio-graph-info");
+
+//   document.querySelector(".profile-card__name").value = data.name;
+//   document.querySelector("#header-occupation").innerHTML = toProperCase(data.occupation) + " ";
+//   document.querySelector('#company').innerHTML = data.company;
+//   document.querySelector('.profile-card__name').innerHTML = toProperCase(data.name);
+//   profileCard.querySelector("#name").value = toProperCase(data.name);
+//   profileCard.querySelector("#about-me").value = data.aboutme;
+//   profileCard.querySelector("#date-of-birth").value = [dateOfBirth.getFullYear(), dateOfBirth.getMonth(), dateOfBirth.getDate()].join('-');
+//   profileCard.querySelector("#occupation").value = toProperCase(data.occupation);
+//   profileCard.querySelector("#hobby").value = toProperCase(data.hobby);
+//   profileCard.querySelector("#country").value = toProperCase(data.country);
+
+
+//   console.log(profileCard);
+
+//   if (res.ok) {
+//     document.querySelector('.profile .name').innerText = data.name
+//   }
+// }
+
+
 friendsButton.addEventListener("click", function (event) {
   console.log('friendsButton clicked')
-  friend_board = `<div class="friends-list-session">
+  let friend_board = `<div class="friends-list-session">
     <article class="leaderboard">
         <header>
       
@@ -84,7 +118,7 @@ friendsButton.addEventListener("click", function (event) {
       </div>`
 
   console.log("Clicked friends")
-  console.log(fds_list_session.contains(document.querySelector("article.leaderboard")));
+  // console.log(fds_list_session.contains(document.querySelector("article.leaderboard")));
   //console.log(fds_list_session.querySelector("article.leaderboard"));
   if (!fds_list_session.contains(document.querySelector("article.leaderboard"))) {
     fds_list_session.innerHTML = friend_board;
@@ -97,39 +131,43 @@ friendsButton.addEventListener("click", function (event) {
 editButton.addEventListener("click", async function (event) {
   if (editButton.innerHTML == "Edit") {
     editButton.innerHTML = "Save Changes";
-    for (row of bioRow) {
+    for (let row of bioRow) {
       row.disabled = false;
     }
 
   } else { //Save Changes
     editButton.innerHTML = "Edit";
-    for (row of bioRow) {
+    for (let row of bioRow) {
       row.disabled = true;
     }
-    aboutMe = document.querySelector("#about-me").value;
-    dateOfBirth = document.querySelector("#date-of-birth").value;
-    occupation = document.querySelector("#occupation").value;
-    hobby = document.querySelector("#hobby").value;
-    country = document.querySelector("#country").value;
 
-    let res = await fetch('/profile/update', {
+    let aboutMe = document.querySelector("#about-me").value;
+    let myName = document.querySelector("#name").value;
+    let dateOfBirth = document.querySelector("#date-of-birth").value;
+    let occupation = document.querySelector("#occupation").value;
+    let hobby = document.querySelector("#hobby").value;
+    let country = document.querySelector("#country").value;
+
+    console.log(aboutMe)
+
+    let res = await fetch('/user/profile', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        aboutMe: aboutMe,
-        dateofBirth: dateofBirth,
+        name: myName,
+        aboutme: aboutMe,
+        dateofbirth: dateOfBirth,
         occupation: occupation,
         hobby: hobby,
         country: country
       })
     })
-
-
+    console.log("why")
+    if (res.ok) {
+      getProfile();
+    }
   }
 });
-
-
-
 
 
 

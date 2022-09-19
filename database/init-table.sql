@@ -12,7 +12,7 @@ CREATE TABLE users (
     hobby text,
     country text,
     icon text,
-    
+    company text,
     payme_qr_code text,
     created_at timestamp not null default now(),
     updated_at timestamp default now()

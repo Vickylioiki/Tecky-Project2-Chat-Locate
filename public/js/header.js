@@ -121,19 +121,64 @@ function initHeader() {
   }
 }
 
+async function getFriends() {
+  let res = await fetch('/')
+  let data = await res.json();
+
+}
 
 
-async function getProfile() {
-
+export async function getProfile() {
   let res = await fetch('/user/me')
   let data = await res.json()
-  console.log(data)
+  let dateOfBirth = new Date(data.dateofbirth);
+  console.log("daya profile: " + dateOfBirth.getFullYear())
+
+  let profileCard = document.querySelector(".bio-graph-info");
+
+
+
+
+  document.querySelector(".profile-card__name").value = toProperCase(data.name.split(" ").join[" "]);
+  document.querySelector("#header-occupation").innerHTML = toProperCase(data.occupation) + " ";
+  document.querySelector('#company').innerHTML = data.company;
+  document.querySelector('.profile-card__name').innerHTML = toProperCase(data.name);
+  profileCard.querySelector("#name").value = toProperCase(data.name);
+  profileCard.querySelector("#about-me").value = data.aboutme;
+  profileCard.querySelector("#date-of-birth").value = [dateOfBirth.getFullYear(), dateOfBirth.getMonth(), dateOfBirth.getDate()].join('-');
+  profileCard.querySelector("#occupation").value = toProperCase(data.occupation);
+  profileCard.querySelector("#hobby").value = toProperCase(data.hobby);
+  profileCard.querySelector("#country").value = toProperCase(data.country);
+
+
+  console.log(profileCard);
 
   if (res.ok) {
     document.querySelector('.profile .name').innerText = data.name
   }
-
 }
+
+function toProperCase(str) {
+  for (let chr of str) {
+    let formattedName = "";
+    let name_To_Upper = True;
+    if (name_To_Upper) {
+      formattedName += chr.toUpperCase();
+      name_To_Upper = False;
+    }
+    else if (chr = " ") {
+      formattedName += chr.ToLowerCase();
+      name_To_Upper = True;
+    }
+    else {
+      formattedName += chr.ToLowerCase();
+
+    }
+  }
+  return formattedName
+}
+
+
 
 function getStatusHTML(notificationItem) {
   let status = notificationItem.status
@@ -273,81 +318,81 @@ async function getNotifications() {
   console.log('getNotification after reject friend form event listener')
 }
 
-async function getNotifications() {
+// async function getNotifications() {
 
-  let res = await fetch('/user/notifications?limit=2')
-  let data = await res.json()
-  let notificationItems = data.data
+//   let res = await fetch('/user/notifications?limit=2')
+//   let data = await res.json()
+//   let notificationItems = data.data
 
-  console.log('notificationItems: ', notificationItems)
+//   console.log('notificationItems: ', notificationItems)
 
-  let notificationUlElem = document.querySelector('.notification_ul')
-  notificationUlElem.innerHTML = ''
+//   let notificationUlElem = document.querySelector('.notification_ul')
+//   notificationUlElem.innerHTML = ''
+//   if (notificationItems) {
+//     console.log('getNotifications before for loop', notificationItems)
+//     for (let notificationItem of notificationItems) {
+//       notificationUlElem.innerHTML += `
+//       <li class="baskin_robbins failed" data-notification-id="${notificationItem.id}">
 
-  console.log('getNotifications before for loop', notificationItems)
-  for (let notificationItem of notificationItems) {
-    notificationUlElem.innerHTML += `
-      <li class="baskin_robbins failed" data-notification-id="${notificationItem.id}">
-  
-      ${notificationItem.icon ? `<img class="notify-icon" src="${notificationItem.icon}">` : '    <img class="notify-icon" src="https://randomuser.me/api/portraits/men/84.jpg">'}
-  
-      <div class="notify_data">
-        <div class="title">
-          ${notificationItem.name}
-        </div>
-        <div class="sub_title">
-          Can I add you?
-        </div>
-      </div>
-      <div class="notify_status">
-        <p>${notificationItem.created_at.split('T')[0]}</p>
-      </div>
-      ${getStatusHTML(notificationItem)}
-    </li>
-      `
-  }
+//       ${notificationItem.icon ? `<img class="notify-icon" src="${notificationItem.icon}">` : '    <img class="notify-icon" src="https://randomuser.me/api/portraits/men/84.jpg">'}
 
-  console.log('get notification after for loop')
+//       <div class="notify_data">
+//         <div class="title">
+//           ${notificationItem.name}
+//         </div>
+//         <div class="sub_title">
+//           Can I add you?
+//         </div>
+//       </div>
+//       <div class="notify_status">
+//         <p>${notificationItem.created_at.split('T')[0]}</p>
+//       </div>
+//       ${getStatusHTML(notificationItem)}
+//     </li>
+//       `
+//     }
+//     console.log('get notification after for loop')
 
-  notificationUlElem.innerHTML += `<li class="show_all">
-  <a href="/mailbox/mailbox.html"><p class="link">Show All Activities</p></a>
-  </li>`
+//     notificationUlElem.innerHTML += `<li class="show_all">
+//   <a href="/mailbox/mailbox.html"><p class="link">Show All Activities</p></a>
+//   </li>`
+//   }
 
-  // if (res.ok) {
-  //   document.querySelector('.profile .name').innerText = data.name
-  // }
+//   // if (res.ok) {
+//   //   document.querySelector('.profile .name').innerText = data.name
+//   // }
 
-  let statusBtns = document.querySelectorAll('button.status');
-  for (let statusBtn of statusBtns) {
-    statusBtn.addEventListener('click', async (e) => {
-      e.preventDefault()
+//   let statusBtns = document.querySelectorAll('button.status');
+//   for (let statusBtn of statusBtns) {
+//     statusBtn.addEventListener('click', async (e) => {
+//       e.preventDefault()
 
-      const notificationId = statusBtn.closest('li').dataset.notificationId
-      const status = statusBtn.dataset.status
-      console.log('clicking :', notificationId, status)
+//       const notificationId = statusBtn.closest('li').dataset.notificationId
+//       const status = statusBtn.dataset.status
+//       console.log('clicking :', notificationId, status)
 
-      const res = await fetch('/user/update-relation', {
-        method: 'POST',
-        body: JSON.stringify({
-          status,
-          notificationId
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      if (res.ok) {
-        console.log(status, ' friend success')
-        getNotifications()
-        // window.location.href = "/chatroom/chatroom.html"
-      } else {
-        let { message } = await res.json()
-        alert(message)
-      }
-    })
-  }
-  console.log('getNotification after reject friend form event listener')
-}
+//       const res = await fetch('/user/update-relation', {
+//         method: 'POST',
+//         body: JSON.stringify({
+//           status,
+//           notificationId
+//         }),
+//         headers: {
+//           'Content-Type': 'application/json'
+//         }
+//       })
+//       if (res.ok) {
+//         console.log(status, ' friend success')
+//         getNotifications()
+//         // window.location.href = "/chatroom/chatroom.html"
+//       } else {
+//         let { message } = await res.json()
+//         alert(message)
+//       }
+//     })
+//   }
+//   console.log('getNotification after reject friend form event listener')
+// }
 
 
 

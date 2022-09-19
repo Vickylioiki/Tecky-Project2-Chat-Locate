@@ -15,9 +15,9 @@ userRoutes.get('/', async (req, res) => {
 })
 
 userRoutes.get('/me', async (req, res) => {
-
     res.json(req.session['user'])
 })
+
 
 
 userRoutes.get('/friend-request', async (req, res) => {
@@ -487,19 +487,54 @@ async function logininstagram(req: express.Request, res: express.Response) {
     res.redirect('/')
 }
 
-userRoutes.put('/profile/update', updateProfile);
+userRoutes.put('/profile', updateProfile);
 
 async function updateProfile(req: express.Request, res: express.Response) {
-    const id = req.session.id;
-    const aboutMe = req.body.aboutMe;
-    const dateofBirth = req.body.dateofBirth;
+    const id = parseInt(req.session.user.id);
+    const myName = req.body.name;
+    const aboutMe = req.body.aboutme;
+    const dateOfBirth = moment(req.body.dateofbirth, 'YYYY-MM-DD').toDate();
     const occupation = req.body.occupation;
     const hobby = req.body.hobby;
     const country = req.body.country;
 
+    await client.query(`UPDATE users SET aboutme = $1, name= $2, dateofbirth= $3, occupation= $4, hobby=$5, country=$6 WHERE id = $7
+    `, [aboutMe, myName, dateOfBirth, occupation, hobby, country, id]);
 
-    await client.query(`UPDATE users SET aboutMe = $1, dateofBirth= $2, occupation= $3, hobby=$4, country=$5 WHERE id = $6
-    `, [aboutMe, dateofBirth, occupation, hobby, country, id])
+    let userResult = await client.query(
+        `select * from users where id = $1`,
+        [id]
+    )
+
+    let dbUser = userResult.rows[0]
+
+    let {
+        password: dbUserPassword,
+        created_at,
+        updated_at,
+        ...filterUserProfile
+    } = dbUser
+    req.session['user'] = filterUserProfile
+
+    res.status(200).send("Profile Updated");
+    return
+
+}
+
+userRoutes.get('/profile', loadProfile);
+
+async function loadProfile(req: express.Request, res: express.Response) {
+    const id = req.session.id;
+    // const aboutMe = req.body.aboutMe;
+    // const dateofBirth = req.body.dateofBirth;
+    // const occupation = req.body.occupation;
+    // const hobby = req.body.hobby;
+    // const country = req.body.country;
+
+
+    let profileInfo = await client.query(`SELECT * FROM users id = $1
+    `, [id])
+    res.json(profileInfo.rows);
 
 }
 
@@ -542,5 +577,13 @@ async function addFriends(req: express.Request, res: express.Response) {
 //     const status= req.body.status;
 
 //     await client.query(`UPDATE notifications SET status=$1 WHERE user_id=$2, opponent_user_id=$3`,[id,opponent_user_id,status]);
+
+// }
+
+// userRoutes.put("/profile/update", updateProfile)
+
+// async function updateProfile(req: express.Request, res: express.Response) {
+
+
 
 // }

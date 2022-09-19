@@ -8,7 +8,8 @@ insert into users (
         dateofBirth,
         occupation,
         hobby,
-        country
+        country,
+        company
     )
 VALUES (
         'Peter',
@@ -20,7 +21,8 @@ VALUES (
         '2010-10-10',
         'student',
         'badminton',
-        'Australia'
+        'Australia',
+        'bank'
     ),
     (
         'May',
@@ -32,7 +34,8 @@ VALUES (
         '2010-10-10',
         'student',
         'badminton',
-        'Australia'
+        'Australia',
+        'start up'
     ),
     (
         'John',
@@ -44,7 +47,8 @@ VALUES (
         '2010-10-10',
         'student',
         'badminton',
-        'Australia'
+        'Australia',
+        'start up'
     ),
     (
         'JamesLam',
@@ -56,7 +60,8 @@ VALUES (
         '2010-10-10',
         'student',
         'badminton',
-        'Australia'
+        'Australia',
+        'medical group'
     );
 insert into facebook_profile (
         fb_id,

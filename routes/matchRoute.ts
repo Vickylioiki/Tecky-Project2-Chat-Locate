@@ -128,7 +128,6 @@ matchRoutes.post('/', async (req, res) => {
                 userId: readyUsers[i].userId,
                 distance: response.rows[0].elements[0].distance.value
 
-
             })
         }
         if (distances.length == 0) {
