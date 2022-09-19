@@ -1,6 +1,1 @@
-
-
-
-
-
-
+const socket = io.connect();

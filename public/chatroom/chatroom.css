@@ -90,7 +90,7 @@ li {
     border-radius: 25px 5px 25px 25px;
     background: linear-gradient(#32bc85db, #2babb2db);
     max-width: 350px;
-    padding-left: 12px;
+    padding: 0 15px 20px 15px;
     box-shadow: 2px 2px 3px rgba(83, 80, 80, 0.686);
 }
 
@@ -284,7 +284,7 @@ i:hover {
 
 
 /* typing Area */
-.form-outline {
+.type-wrapper {
     width: 100%;
     height: 42px;
     margin-top: 20px;
@@ -300,8 +300,8 @@ i:hover {
 }
 
 #textArea3 {
-    height: 95%;
-    width: 65%;
+    height: 100%;
+    width: 50%;
     border: none;
     background-color: transparent;
     resize: none;
@@ -314,7 +314,7 @@ i:hover {
 }
 
 .button-group {
-    width: 20%;
+    width: 50%;
     display: flex;
     justify-content: space-around;
     align-items: center;

@@ -171,8 +171,6 @@ editButton.addEventListener("click", async function (event) {
 
 
 
-
-
 $(".profile .icon_wrap").click(function () {
   $(this).parent().toggleClass("active");
   $(".notifications").removeClass("active");
