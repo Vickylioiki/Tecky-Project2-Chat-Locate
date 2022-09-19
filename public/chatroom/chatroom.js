@@ -81,9 +81,9 @@ async function updateProfile() {
                             <h2 class="profile-name">${opponentUserInfo.name}</h2>
                             <div class="profile-occupation">${opponentUserInfo.occupation}, ${opponentUserInfo.country}</div>
                             <label class="profile-title">DOB: </label>
-                            <span class="date-of-birth">${opponentUserInfo.dateofbirth}&ensp;</span>
+                            <span class="date-of-birth">${opponentUserInfo.dateofbirth.split('T')[0]}&ensp;</span>
                             <label class="profile-title">Age: </label>
-                            <span class="age">28<i class="bi bi-gender-${opponentUserInfo.gender}"></i></span>
+                            <span class="age">${2022 - (opponentUserInfo.dateofbirth.split('-')[0])}<i class="bi bi-gender-${opponentUserInfo.gender}"></i></span>
                             <br>
                             <label class="profile-title">My Hobbies: </label>
                             <br>
@@ -105,7 +105,9 @@ async function updateProfile() {
 
 
         `
-
+    $(".heart").on("click", function () {
+        $(this).toggleClass("is-active");
+    });
 }
 
 const messageForm = document.querySelector("#messageForm")
@@ -142,7 +144,7 @@ function updateConversation(conversations, myUserInfo, opponentUserInfo) {
                                 </div>
                                 <p class="small me-3 mb-3 rounded-3 time-self">${conversation.createdAt}</p>
                             </div>
-                            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-2.webp" alt="avatar"
+                            <img src="${myUserInfo.icon}" alt="avatar"
                                 class="rounded-circle chat-icon">
                         </div>
             `
@@ -152,7 +154,7 @@ function updateConversation(conversations, myUserInfo, opponentUserInfo) {
             conversationHTML +=  /*HTML*/ `
             
             <div class="d-flex flex-row justify-content-start">
-            <img src="https://m.media-amazon.com/images/I/61BxjnyB7cL._AC_.jpg" alt="avatar"
+            <img src="${opponentUserInfo.icon}" alt="avatar"
                 class="rounded-circle chat-icon">
             <div>
                 <div class="message-container-other">
