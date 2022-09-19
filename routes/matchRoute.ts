@@ -2,8 +2,10 @@ console.log("match Route 1")
 import { v4 as uuid } from 'uuid';
 import express from 'express'
 console.log("match Route 2")
-import { io } from '../main';
+import { chatRooms, io } from '../main';
 import { DistanceMatrixService } from "distance-matrix-2";
+import { RoomInfomation } from '../main';
+
 
 console.log("match Route 3")
 const service = new DistanceMatrixService(process.env.GOOGLE_MATRIX_API_KEY);
@@ -12,7 +14,8 @@ service.setKey('AIzaSyBLLtLmB3NIKUrPq6vwFSz7IRrdL8pVUNA');
 
 // import { client } from '../main's
 
-let readyUsers: any = [{ userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }];
+const createdRooms: RoomInfomation[] = []
+let readyUsers: any = [];
 // { userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }, { userId: 1, location: { lat: 22.285170575820224, lng: 114.14665642394633 } }, { userId: 2, location: { lat: 22.30933514419831, lng: 114.23787345976665 } }
 // { userId: 1, location: { lat: 22.285170575820224, lng: 114.14665642394633 } }, { userId: 2, location: { lat: 22.30933514419831, lng: 114.23787345976665} }, { userId: 3, location: { lat: 22.28601222944395, lng: 114.14757727141927 } }, { userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }
 //     // const x = [22.30933514419831, 114.23787345976665] // Lam Tin 
@@ -147,39 +150,47 @@ matchRoutes.post('/', async (req, res) => {
         const userIdA = ownerId;
         const userIdB = distances[0].userId
 
-        const roomInfomation = {
+        const roomInfomation: RoomInfomation = {
             userIdA,
             userIdB,
             roomId
 
         }
-
+        chatRooms[roomId] = {
+            userIdA,
+            userIdB,
+        }
         req.session['user'].roomInfomation = roomInfomation;
 
-        console.log(req.session['user'].roomInfomation)
 
-        let chatUrl = `../chatroom/chatroom.html?userA=${userIdA}&userB=${userIdB}&roomId=${roomId}`
+        let chatUrl = `../chatroom/chatroom.html?roomId=${roomId}`
 
         io.sockets.emit('toChatroom', chatUrl)
 
+        // io.on("connection", socket => {
+        //     socket.join(roomId);
+        // });
 
-        res.status(200).json('match success')
+        // io.in(roomId).emit('message', msg)
+
+        res.status(200).json('Matched')
 
     } catch (err) {
         console.log(err)
         res.status(400).json('fail to match')
     }
-})
 
-//get readyUsers Array
-matchRoutes.get('/', async (req, res) => {
-    try {
-        // console.log('[Get] - /match : ', readyUsers)
-        res.status(200).json(readyUsers)
-    } catch (err) {
-        console.log(err)
-        res.status(400).json('fail to get data')
-    }
+
+    //get readyUsers Array
+    matchRoutes.get('/', async (req, res) => {
+        try {
+            // console.log('[Get] - /match : ', readyUsers)
+            res.status(200).json(readyUsers)
+        } catch (err) {
+            console.log(err)
+            res.status(400).json('fail to get data')
+        }
+    })
 })
 
 //     let userResult = await client.query('select * from users')

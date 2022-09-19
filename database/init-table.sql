@@ -7,7 +7,7 @@ CREATE TABLE users (
     gender text null,
     contact_no int,
     aboutMe text,
-    dateofBirth date,
+    dateofbirth date,
     occupation text not null,
     hobby text,
     country text not null,

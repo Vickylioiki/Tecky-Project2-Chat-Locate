@@ -11,9 +11,15 @@ import { chatRoutes } from './routes/chatRoute'
 import { Server as SocketIO } from 'socket.io';
 
 import dotenv from 'dotenv'
-
+export let chatRooms = {}
 
 dotenv.config()
+
+export interface RoomInfomation {
+  userIdA: number,
+  userIdB: number,
+  roomId: string
+}
 
 declare module 'express-session' {
   interface SessionData {

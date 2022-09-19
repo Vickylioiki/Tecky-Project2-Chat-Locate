@@ -25,6 +25,9 @@ async function getLocation() {
             latitude: position.coords.latitude,
             longtitude: position.coords.longitude,
         })
+
+
+
     })
 }
 
@@ -36,3 +39,4 @@ init();
 socket.on("toChatroom", chatroomUrl => {
     window.location = chatroomUrl;
 })
+

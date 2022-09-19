@@ -1,25 +1,14 @@
 
 
 const socket = io.connect();
-
+const messageArea = document.querySelector('.chat-container')
+const textArea = document.querySelector('#textArea3')
 // const emojiBtn = document.querySelector('.emoji');
 
 const emojiBtn = document.querySelector('.emoji');
 const picker = new EmojiButton();
 const addFriendsButton = document.querySelector('.add-friends');
 
-
-// io.on("connection"), socket =>{
-//     socket.emit('chat-message','Hello World');
-
-//     socket.on('goToChatPage', (data) => {
-//         window.location = data;
-//         //"./chatRoom.html?roomId=userA_userB" 
-//     })
-//     socket.on('getMessage', (data) => {
-
-//     })
-// }
 
 async function init() {
     await updateProfile();
@@ -28,17 +17,7 @@ async function init() {
 }
 
 
-// const messageForm = document.querySelector("#messageForm")
-// console.log(messageForm)
 
-// messageForm.addEventListener('submit', (e) => {
-//     e.preventDefault()
-//     const form = e.target
-//     const input = form.textArea3.value
-//     socket.emit("sendMessage", input)
-
-
-// })
 // Emoji selection  
 window.addEventListener('DOMContentLoaded', () => {
 
@@ -62,11 +41,6 @@ if (document.body) {
     }
 }
 
-$(function () {
-    $(".heart").on("click", function () {
-        $(this).toggleClass("is-active");
-    });
-});
 
 if (addFriendsButton) {
     addFriendsButton.addEventListener("click", async (event) => {
@@ -86,46 +60,38 @@ if (addFriendsButton) {
 }
 
 
-
-
 async function updateProfile() {
     const res = await fetch('/chat/getchatroom');
-    const roomInfo = await res.json();
-    const userAId = roomInfo.userA.id;
-    const userA = roomInfo.userA;
-    const userBId = roomInfo.userB.id;
-    const userB = roomInfo.userB;
-    const currentUser = roomInfo.currentUser;
-    console.log('userA :', userAId, 'userB :', userBId, 'currentUser :', currentUser)
-
-
-    const profileData = currentUser === userAId ? userB : userA;
-    const profile = document.querySelector('.profile-info')
+    const { opponentUserInfo, conversations, myUserInfo } = await res.json();
+    // const profileData_age = age(profileData.dateofBirth)
+    updateConversation(conversations, myUserInfo, opponentUserInfo)
+    const profile = document.querySelector('.profile-container')
+    console.table(conversations)
     profile.innerHTML = ' '
     profile.innerHTML += `
+    <div class="icon-circle">
+                            <img src="${opponentUserInfo.icon}" alt="avatar"
+                                class="profile-icon">
+                        </div>
+                        <!-- profile content -->
+                        <div class="card-body profile-info">
         <div class="placement">
                                 <div class="heart add-friends-btn"></div>
                             </div>
-                            <h2 class="profile-name">${profileData.name}</h2>
-                            <div class="profile-occupation">${profileData.occupation}, ${profileData.country}</div>
+                            <h2 class="profile-name">${opponentUserInfo.name}</h2>
+                            <div class="profile-occupation">${opponentUserInfo.occupation}, ${opponentUserInfo.country}</div>
                             <label class="profile-title">DOB: </label>
-                            <span class="date-of-birth">1994-03-01&ensp;</span>
+                            <span class="date-of-birth">${opponentUserInfo.dateofbirth}&ensp;</span>
                             <label class="profile-title">Age: </label>
-                            <span class="age">28<i class="bi bi-gender-male"></i></span>
+                            <span class="age">28<i class="bi bi-gender-${opponentUserInfo.gender}"></i></span>
                             <br>
                             <label class="profile-title">My Hobbies: </label>
                             <br>
-                            <span class="hobbies">Cooking, Hiking,
-                                Reading</span>
+                            <span class="hobbies">${opponentUserInfo.hobby}</span>
                             <br>
                             <label class="profile-title">About Me: </label>
                             <br>
-                            <span class="about-me">
-                                Bieber achieved commercial success with his teen pop-driven debut studio album,
-                                My World
-                                2.0 (2010), which debuted atop the US Billboard 200, making him the youngest
-                                solo male
-                                act to top the chart in 47 years. </span>
+                            <span class="about-me">${opponentUserInfo.aboutme}</span>
                             <div class="social-media">
                                 <div class="social-icon-wrapper instagram">
                                     <i class="fa fa-instagram"></i>
@@ -133,37 +99,75 @@ async function updateProfile() {
                                 <div class="social-icon-wrapper facebook">
                                     <i class=" fa fa-facebook-f"></i>
                                 </div>
-                                <div class="social-icon-wrapper twitter">
-                                    <i class="fa fa-twitter"></i>
-                                </div>
+
                             </div>
-        
-        
-        
-        
-        
+        </div>
+
+
         `
 
-
-
-
 }
+
+const messageForm = document.querySelector("#messageForm")
+console.log(messageForm)
+
+
+
 
 init();
 
 
+$(function () {
+    $(".heart").on("click", function () {
+        $(this).toggleClass("is-active");
+    });
+});
 
 
-// socket.on("connection", function () {
-//     socket.on("roomInfomation", ({ userIdA, userIdB, roomId }) => {
-//         console.log({ roomId })
-//     })
-//     socket.on("getMessage", (data) => {
+function updateConversation(conversations, myUserInfo, opponentUserInfo) {
 
-//         console.log({ messgae: data })
+    let conversationHTML = '';
+    messageArea.innerHTML = ''
+    for (let conversation of conversations) {
+        let isWrittenByMe = conversation.from === myUserInfo.id
 
-//     })
-//     socket.emit("sendMessage", "sendMessage")
-//     console.log('Connected to server');
-// });
+        if (isWrittenByMe) {
 
+            conversationHTML +=  /*HTML*/ `
+            
+                         <div class="d-flex flex-row justify-content-end">
+                            <div>
+                                <div class="message-container-self">
+                                    <p class="small p-2 me-3 mb-1">${conversation.content}</p>
+                                </div>
+                                <p class="small me-3 mb-3 rounded-3 time-self">${conversation.createdAt}</p>
+                            </div>
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-2.webp" alt="avatar"
+                                class="rounded-circle chat-icon">
+                        </div>
+            `
+
+        } else {
+
+            conversationHTML +=  /*HTML*/ `
+            
+            <div class="d-flex flex-row justify-content-start">
+            <img src="https://m.media-amazon.com/images/I/61BxjnyB7cL._AC_.jpg" alt="avatar"
+                class="rounded-circle chat-icon">
+            <div>
+                <div class="message-container-other">
+                    <p class="small p-2 ms-3 mb-1">${conversation.content}
+                </p>
+                </div>
+
+                <p class="small ms-3 mb-3 rounded-3 float-end time-other">${conversation.createdAt}</p>
+            </div>
+        </div>
+`
+        }
+
+    }
+    messageArea.innerHTML = conversationHTML
+
+
+}
