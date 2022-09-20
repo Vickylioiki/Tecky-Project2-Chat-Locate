@@ -175,7 +175,7 @@ VALUES(
         ),
         'good morning!',
         'https://randomuser.me/api/portraits/men/84.jpg',
-        NULL,
+        'pending',
         now(),
         now(),
         'message'
@@ -193,7 +193,7 @@ VALUES(
         ),
         'good morning!',
         'https://randomuser.me/api/portraits/men/84.jpg',
-        NULL,
+        'pending',
         now(),
         now(),
         'message'

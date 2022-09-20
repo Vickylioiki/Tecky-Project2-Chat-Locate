@@ -357,6 +357,7 @@ userRoutes.post("/login", async (req, res) => {
     ...filterUserProfile
   } = dbUser;
   req.session["user"] = filterUserProfile;
+  req.session.isLoggedIn = true;
   // req.session.save()
 
   // console.log(sessionUser)

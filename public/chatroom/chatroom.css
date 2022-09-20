@@ -299,6 +299,7 @@ i:hover {
     border-radius: 1rem;
     justify-content: space-between;
     padding: 0 10px;
+    
 
 
 }
@@ -322,6 +323,7 @@ i:hover {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    position: relative;
 
 }
 
@@ -352,4 +354,11 @@ i:hover {
     text-shadow: 0 0 10px rgb(32, 120, 183),
         0 0 20px rgb(42, 123, 181)
     
+}
+
+#preview {
+    position: absolute;
+    bottom: 120px;
+    
+
 }

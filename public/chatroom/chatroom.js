@@ -1,7 +1,7 @@
 const messageArea = document.querySelector('.chat-container')
 const textArea = document.querySelector('#textArea3')
 // const emojiBtn = document.querySelector('.emoji');
-
+const leaveBtn = document.querySelector('.leave');
 const emojiBtn = document.querySelector('.emoji');
 const picker = new EmojiButton();
 const addFriendsButton = document.querySelector('.add-friends');
@@ -171,7 +171,7 @@ function updateSingleConversation(conversation){
 
 }
 function updateConversations(conversations, myUserInfo, opponentUserInfo) {
-
+    console.log(conversations)
     messageArea.innerHTML = ''
     for (let conversation of conversations) {
         updateSingleConversation(conversation,myUserInfo, opponentUserInfo)
@@ -216,7 +216,6 @@ content_submit.addEventListener('submit', async function submit (e) {
 
 
 
-
 async function init() {
     await updateProfile();
 
@@ -225,3 +224,46 @@ async function init() {
 
 init();
 
+
+function previewImages() {
+
+    let preview = document.querySelector('#preview');
+    
+    if (this.files) {
+      [].forEach.call(this.files, readAndPreview);
+    }
+  
+    function readAndPreview(file) {
+  
+      // Make sure `file.name` matches our extensions criteria
+      if (!/\.(jpe?g|png|gif)$/i.test(file.name)) {
+        return alert(file.name + " is not an image");
+      } // else...
+      
+      var reader = new FileReader();
+      
+      reader.addEventListener("load", function() {
+        var image = new Image();
+        image.height = 100;
+        image.title  = file.name;
+        image.src    = this.result;
+        preview.appendChild(image);
+      });
+      
+      reader.readAsDataURL(file);
+      
+    }
+  
+  }
+  
+  document.querySelector('#file-input').addEventListener("change", previewImages);
+
+
+leaveBtn.addEventListener("click", function() {
+    socket.disconnect();
+})
+
+socket.on("user-leave", user=>{
+    alert(user, "has left the chatroom")
+
+})

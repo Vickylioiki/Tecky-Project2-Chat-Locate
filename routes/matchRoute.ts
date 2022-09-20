@@ -81,9 +81,12 @@ matchRoutes.post("/", async (req, res) => {
         distance: response.rows[0].elements[0].distance.value,
       });
     }
+    // distances.push({
+    //   userId: 1,
+    //   distance: 1,
+    // });
     if (distances.length == 0) {
-      console.log("no user around");
-      return;
+      throw new Error("no user around");
     }
     distances = distances.sort((a, b) => {
       return a.distance - b.distance;
@@ -107,6 +110,19 @@ matchRoutes.post("/", async (req, res) => {
     chatRooms[roomId] = chatRoom;
 
     io.sockets.emit("to-chatroom");
+
+    console.log("readyUsersb4:", readyUsers);
+    //splice users
+    const currentUser = readyUsers.findIndex(
+      (obj: { userId: any }) => obj.userId == userIdA
+    );
+    readyUsers.splice(currentUser, 1);
+    const currentUser2 = readyUsers.findIndex(
+      (obj: { userId: any }) => obj.userId == userIdB
+    );
+    readyUsers.splice(currentUser2, 1);
+
+    console.log("readyUsers After:", readyUsers);
     res.json("Matched");
   } catch (err) {
     console.log(err);

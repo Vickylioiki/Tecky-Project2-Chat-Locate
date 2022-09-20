@@ -25,10 +25,10 @@ async function getLocation() {
             latitude: position.coords.latitude,
             longtitude: position.coords.longitude,
         })
-
-
-
     })
+    if (res.status === 401) {
+        window.location.href = '../login.html'
+    }
 }
 
 
