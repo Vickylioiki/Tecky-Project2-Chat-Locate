@@ -110,23 +110,30 @@ matchRoutes.post("/", async (req, res) => {
     chatRooms[roomId] = chatRoom;
 
     // userA and UserB are currently in the readyUsers
+    for (let user of readyUsers) {
+      const waitingUserId = user.userId;
+      if (waitingUserId === userIdA && waitingUserId === userIdB) {
+        io.to(userA.username).emit("to-chatroom");
+        io.to(userB.username).emit("to-chatroom");
 
-    io.to(userA.username).emit("to-chatroom");
-    io.to(userB.username).emit("to-chatroom");
+        console.log("readyUsersb4:", readyUsers);
+        //splice users
+        const currentUser = readyUsers.findIndex(
+          (obj: { userId: any }) => obj.userId == userIdA
+        );
+        readyUsers.splice(currentUser, 1);
+        const currentUser2 = readyUsers.findIndex(
+          (obj: { userId: any }) => obj.userId == userIdB
+        );
+        readyUsers.splice(currentUser2, 1);
 
-    console.log("readyUsersb4:", readyUsers);
-    //splice users
-    const currentUser = readyUsers.findIndex(
-      (obj: { userId: any }) => obj.userId == userIdA
-    );
-    readyUsers.splice(currentUser, 1);
-    const currentUser2 = readyUsers.findIndex(
-      (obj: { userId: any }) => obj.userId == userIdB
-    );
-    readyUsers.splice(currentUser2, 1);
-
-    console.log("readyUsers After:", readyUsers);
-    res.json("Matched");
+        console.log("readyUsers After:", readyUsers);
+        res.json("Matched");
+        return;
+      } else {
+        res.redirect("/failed.html");
+      }
+    }
   } catch (err) {
     console.log(err);
     res.status(400).json("fail to match");
