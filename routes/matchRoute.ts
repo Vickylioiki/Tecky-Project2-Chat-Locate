@@ -172,21 +172,22 @@ matchRoutes.post('/', async (req, res) => {
 
     io.sockets.emit("to-chatroom");
     res.json("Matched");
-} catch (err) {
-    console.log(err);
-    res.status(400).json("fail to match");
-}
+    // } catch (err) {
+    //     console.log(err);
+    //     res.status(400).json("fail to match");
+    // }
 
-//get readyUsers Array
-matchRoutes.get("/", async (req, res) => {
-    try {
-        // console.log('[Get] - /match : ', readyUsers)
-        res.status(200).json(readyUsers);
-    } catch (err) {
-        console.log(err);
-        res.status(400).json("fail to get data");
-    }
-});
+
+    //get readyUsers Array
+    matchRoutes.get("/", async (req, res) => {
+        try {
+            // console.log('[Get] - /match : ', readyUsers)
+            res.status(200).json(readyUsers);
+        } catch (err) {
+            console.log(err);
+            res.status(400).json("fail to get data");
+        }
+    });
 });
 
 //     let userResult = await client.query('select * from users')

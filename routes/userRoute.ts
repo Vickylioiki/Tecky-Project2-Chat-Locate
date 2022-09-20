@@ -547,7 +547,7 @@ async function logininstagram(req: express.Request, res: express.Response) {
 userRoutes.put('/profile', updateProfile);
 
 async function updateProfile(req: express.Request, res: express.Response) {
-    const id = parseInt(req.session.user.id);
+    const id = parseInt(req.session['user'].id);
     const myName = req.body.name;
     const aboutMe = req.body.aboutme;
     const dateOfBirth = moment(req.body.dateofbirth, 'YYYY-MM-DD').toDate();
@@ -613,7 +613,7 @@ async function loadProfile(req: express.Request, res: express.Response) {
     userRoutes.post("/friend-request", addFriends);
 
     async function addFriends(req: express.Request, res: express.Response) {
-        const id = req.session.user.id;
+        const id = req.session['user'].id;
         const opponent_user_id = req.body.opponentUserId;
         const message = req.body.message;
         const iconResult = (
@@ -630,7 +630,7 @@ async function loadProfile(req: express.Request, res: express.Response) {
             message: "Sent friend request",
         });
     }
-
+}
 // userRoutes.post("/accept-friends",acceptFriends);
 
 // async function acceptFriends(req: express.Request, res: express.Response) {
