@@ -1,9 +1,3 @@
-
-
-const socket = io.connect();
-socket.on('new-message', (conversation) => {
-    updateSingleConversation(conversation, myUserInfo, opponentUserInfo)
-})
 const messageArea = document.querySelector('.chat-container')
 const textArea = document.querySelector('#textArea3')
 // const emojiBtn = document.querySelector('.emoji');
@@ -14,6 +8,14 @@ const addFriendsButton = document.querySelector('.add-friends');
 const content_submit = document.querySelector('#messageForm')
 let opponentUserInfo, myUserInfo
 
+
+const socket = io.connect();
+socket.on('new-message', (conversation) => {
+    updateSingleConversation(conversation, myUserInfo, opponentUserInfo)
+
+    //scroll
+    messageArea.scrollTop = messageArea.scrollHeight;
+});
 
 
 // Emoji selection  
@@ -133,9 +135,16 @@ function updateSingleConversation(conversation) {
                      <div class="d-flex flex-row justify-content-end">
                         <div>
                             <div class="message-container-self">
+<<<<<<< HEAD
                                 <p class="small p-2 me-3 mb-1">${conversation.content}</p>
            ${conversation.image ? `<img src="/upload/${conversation.image}" alt="avatar" class="img-fluid">` : ``}                     
                             </div>
+=======
+                                <p class="small p-2 me-3 mb-1">${conversation.content}
+                                    ${conversation.image ? `<img src="/upload/${conversation.image}" alt="avatar" class="img-fluid">` : ``}                     
+                                 </p>
+                                </div>
+>>>>>>> b0ace7b998dfee765995e51a4495cb931f1d33e6
                             <p class="small me-3 mb-3 rounded-3 time-self">${conversation.createdAt}</p>
                         </div>
                         <img src="${myUserInfo.icon}" alt="avatar"
@@ -152,9 +161,16 @@ function updateSingleConversation(conversation) {
             class="rounded-circle chat-icon">
         <div>
             <div class="message-container-other">
+<<<<<<< HEAD
                 <p class="small p-2 ms-3 mb-1">${conversation.content}
                 ${conversation.image ? `<img src="/upload/${conversation.image}" alt="avatar" class="img-fluid">` : ``}                     
 
+=======
+                    <p class="small p-2 ms-3 mb-1">${conversation.content}
+                
+                    ${conversation.image ? `<img src="/upload/${conversation.image}" alt="avatar" class="img-fluid">` : ``}                     
+                
+>>>>>>> b0ace7b998dfee765995e51a4495cb931f1d33e6
             </p>
             </div>
 
@@ -176,7 +192,7 @@ function updateConversations(conversations, myUserInfo, opponentUserInfo) {
 
 
 
-content_submit.addEventListener('submit', async function (e) {
+content_submit.addEventListener('submit', async function submit(e) {
     e.preventDefault()
 
     const formElement = e.target;
@@ -207,6 +223,9 @@ content_submit.addEventListener('submit', async function (e) {
     }
 
 })
+
+
+
 
 
 

@@ -119,16 +119,20 @@
                     </div>
                     <!-- typing area -->
                     <div class="mb-3">
-                        <div class="form-outline form-white type-wrapper">
-                            <form action="/chat" method="POST" id="messageForm" enctype="multipart/form-data">
+                        
+                        <form action="/chat" method="POST" id="messageForm" enctype="multipart/form-data">
+                            <div id="preview"></div>
+                            <div class="form-outline form-white type-wrapper">
                                 <textarea name="content" class="form-control" id="textArea3"></textarea>
                                 <div class="button-group">
-                                    <input type="file" class="file" name="image"></input>
+                                    <input id="file-input" type="file">
+                                    
                                     <div class="emoji"><i class="bi bi-emoji-smile"></i></div>
-                                    <input type="submit" class="send"><i class="bi bi-send"></i></input>
+                                    <button type="submit" class="send"><i class="bi bi-send"></i></button>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
+                        
                     </div>
 
 

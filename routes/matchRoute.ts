@@ -108,21 +108,21 @@ matchRoutes.post('/', async (req, res) => {
         console.log(err)
         res.status(400).json('fail to match')
     }
-    const latitude = req.body.latitude;
-    const longitude = req.body.longtitude;
-    const location = { lat: latitude, lng: longitude };
-    req.session["user"].location = location;
-    const userLocation = { userId: userId, location: location };
-    readyUsers.push(userLocation);
+    // const latitude = req.body.latitude;
+    // const longitude = req.body.longtitude;
+    // const location = { lat: latitude, lng: longitude };
+    // req.session["user"].location = location;
+    // const userLocation = { userId: userId, location: location };
+    // readyUsers.push(userLocation);
 
-    //Current User Info from session
-    const ownerId = req.session["user"].id;
-    const ownerName = req.session["user"].name;
-    const ownerLocation = req.session["user"].location;
+    // //Current User Info from session
+    // const ownerId = req.session["user"].id;
+    // const ownerName = req.session["user"].name;
+    // const ownerLocation = req.session["user"].location;
 
-    console.log("readyUsers in server: ", readyUsers);
-    console.log("ownerId: ", ownerId);
-    console.log("ownerLocation: ", ownerLocation);
+    // console.log("readyUsers in server: ", readyUsers);
+    // console.log("ownerId: ", ownerId);
+    // console.log("ownerLocation: ", ownerLocation);
 
     let distances = [];
     for (let i = 0; i < readyUsers.length; i++) {

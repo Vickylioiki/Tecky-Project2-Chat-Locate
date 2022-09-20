@@ -90,7 +90,7 @@ li {
     border-radius: 25px 5px 25px 25px;
     background: linear-gradient(#32bc85db, #2babb2db);
     max-width: 350px;
-    padding: 0 15px 20px 15px;
+    padding: 0 15px 0px 15px;
     box-shadow: 2px 2px 3px rgba(83, 80, 80, 0.686);
 }
 
@@ -115,12 +115,16 @@ li {
 }
 
 .time-other {
-    margin-top: -10px;
+    margin-top: -4px;
     color: rgb(229, 223, 223);
     text-shadow: 0 0 10px rgb(166, 52, 222),
         0 0 20px rgb(166, 57, 178),
         0 0 150px rgb(16, 58, 58);
     font-size: 12px;
+}
+
+.mb-1{
+    margin-top: 10px;
 }
 
 /* profile */
@@ -344,6 +348,8 @@ i:hover {
 
 .send {
     color: white;
+    border: none;
     text-shadow: 0 0 10px rgb(32, 120, 183),
         0 0 20px rgb(42, 123, 181)
+    
 }
