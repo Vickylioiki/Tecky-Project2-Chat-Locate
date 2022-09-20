@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+   
     <!-- google font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,34 +39,29 @@
                 <div class="col-md-5 col-lg-5 col-xl-4 mb-4 mb-md-0">
                     <div class="card mask-custom profile-container">
                         <div class="icon-circle">
-                            <img src="https://m.media-amazon.com/images/I/61BxjnyB7cL._AC_.jpg" alt="avatar"
-                                class="profile-icon">
+                            <!-- <img src="https://m.media-amazon.com/images/I/61BxjnyB7cL._AC_.jpg" alt="avatar"
+                                class="profile-icon"> -->
                         </div>
                         <!-- profile content -->
                         <div class="card-body profile-info">
                             <div class="placement">
                                 <div class="heart add-friends-btn"></div>
                             </div>
-                            <h2 class="profile-name">Justin Bieber </h2>
-                            <div class="profile-occupation">Singer at Scooter Braun</div>
+                            <h2 class="profile-name"></h2>
+                            <div class="profile-occupation"></div>
                             <label class="profile-title">DOB: </label>
-                            <span class="date-of-birth">1994-03-01&ensp;</span>
+                            <span class="date-of-birth">&ensp;</span>
                             <label class="profile-title">Age: </label>
-                            <span class="age">28<i class="bi bi-gender-male"></i></span>
+                            <span class="age"></i></span>
                             <br>
                             <label class="profile-title">My Hobbies: </label>
                             <br>
-                            <span class="hobbies">Cooking, Hiking,
-                                Reading</span>
+                            <span class="hobbies"></span>
                             <br>
                             <label class="profile-title">About Me: </label>
                             <br>
                             <span class="about-me">
-                                Bieber achieved commercial success with his teen pop-driven debut studio album,
-                                My World
-                                2.0 (2010), which debuted atop the US Billboard 200, making him the youngest
-                                solo male
-                                act to top the chart in 47 years. </span>
+                                </span>
                             <div class="social-media">
                                 <div class="social-icon-wrapper instagram">
                                     <i class="fa fa-instagram"></i>
@@ -86,7 +82,7 @@
                     <div class="chat-container">
 
                         <!-- self -->
-                        <div class="d-flex flex-row justify-content-end">
+                        <!-- <div class="d-flex flex-row justify-content-end">
                             <div>
                                 <div class="message-container-self">
                                     <p class="small p-2 me-3 mb-1">HI I am Vicky</p>
@@ -95,10 +91,10 @@
                             </div>
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-2.webp" alt="avatar"
                                 class="rounded-circle chat-icon">
-                        </div>
+                        </div> -->
 
                         <!-- other -->
-                        <div class="d-flex flex-row justify-content-start">
+                        <!-- <div class="d-flex flex-row justify-content-start">
                             <img src="https://m.media-amazon.com/images/I/61BxjnyB7cL._AC_.jpg" alt="avatar"
                                 class="rounded-circle chat-icon">
                             <div>
@@ -111,38 +107,49 @@
                                 </p>
                                 <p class="small ms-3 mb-3 rounded-3 float-end time-other">12:00 PM | Aug 13</p>
                             </div>
-                        </div>
+                        </div> -->
 
 
 
 
                     </div>
                     <!-- typing area -->
-                    <li class="mb-3">
-                        <div class="form-outline form-white type-wrapper">
-                            <form id="messageForm">
-                                <textarea name="textArea3" class="form-control" id="textArea3"></textarea>
+                    <div class="mb-3">
+                        
+                        <form action="/chat" method="POST" id="messageForm" enctype="multipart/form-data">
+                            <div class="preview-container">
+                                <div class="cross">
+                                    <i class="bi bi-x"></i>
+                                </div>
+                                <div id="preview"></div>
+                            </div>
+                            <input id="file-input" type="file" name="image">
+                            <div class="form-outline form-white type-wrapper">
+                                <textarea name="content" class="form-control" id="textArea3"></textarea>
                                 <div class="button-group">
-                                    <div class="file"><i class="bi bi-paperclip"></i></div>
+                                    <!-- <input id="file-input" name="image" type="file"> -->
                                     <div class="emoji"><i class="bi bi-emoji-smile"></i></div>
                                     <button type="submit" class="send"><i class="bi bi-send"></i></button>
                                 </div>
-                            </form>
+                            </div>
+                        </form>
+                        
+                    </div>
 
 
-
-                        </div>
-                    </li>
 
 
 
                 </div>
+
                 <!-- chatroom end -->
 
             </div>
 
         </div>
     </section>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://kit.fontawesome.com/523306d2c7.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.1.1/dist/index.min.js"></script>
