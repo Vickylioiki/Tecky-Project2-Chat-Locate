@@ -62,7 +62,10 @@ app.use(
   sessionMiddleware
 )
 
-app.use('/user', userRoutes)
+app.use('/user', (req, res, next)=>{
+  console.log('path match , ', req.path, req.method)
+  next()
+}, userRoutes)
 app.use('/match', matchRoutes)
 app.use('/chat', chatRoutes)
 app.use(express.static('public'))

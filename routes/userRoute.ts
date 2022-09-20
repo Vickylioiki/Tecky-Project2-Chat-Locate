@@ -54,7 +54,7 @@ userRoutes.get('/notifications', async (req, res) => {
     let notificationItems = result.rows.map((notification) => {
         return { ...notification, created_at: moment(notification.created_at).startOf('hour').fromNow() }
     })
-    console.log('notificationItems: ', notificationItems)
+    // console.log('notificationItems: ', notificationItems)
     res.json({
         data: notificationItems
     })
@@ -131,55 +131,60 @@ userRoutes.patch('/notifications', async (req, res) => {
 
 userRoutes.post('/update-relation', async (req, res) => {
     try {
-        let { notificationId } = req.body;
+        let { notificationId, status } = req.body;
 
         // throw error if status is neither approved nor rejected
-        // if (['', 'approved', 'rejected'].indexOf(status) === -1) {
-        //     res.status(400).json({ message: 'Invalid status 123' })
-        //     return
-        // }
+        if (['approved', 'rejected'].indexOf(status) === -1) {
+            res.status(400).json({ message: 'Invalid status' })
+            return
+        }
 
-        console.log('notificationId: ', notificationId);
+        console.log('notificationId: ', [status, notificationId, 'invitation', true]);
 
-        // disable notification
-        let updateResult = (await client.query(
-            `update notifications set enabled = false where id = $1 returning * `, [notificationId])).rows[0];
+            // disable notification
+            let updateResult = (await client.query(
+                `update notifications set status = $1 where id = $2 returning *`, [status, notificationId]
+            )).rows[0];
 
-        console.log('/update-relation updateResult: ', updateResult);
-
+            console.log('/update-relation updateResult: ', updateResult);
         // throw error if notification is currently not enabled, or not invitation
-        // if (!updateResult) {
-        //     res.status(400).json({ message: 'Invalid notification update' })
-        //     return
-        // }
+        if (!updateResult) {
+            res.status(400).json({ message: 'Invalid notification update' })
+            return
+        }
 
         // throw error if identical user id for friend request
-        // if (updateResult.user_id === updateResult.opponent_user_id) {
-        //     res.status(400).json({ message: 'Error: identical user friend add request' })
-        //     return
-        // }
+        if (updateResult.user_id === updateResult.opponent_user_id) {
+            res.status(400).json({ message: 'Error: identical user friend add request' })
+            return
+        }
 
         // check if friend relationship exists
-        // let friendRelationship = (await client.query(`
-        //     select * from friends_list
-        //     where (from_user_id = $1 and to_user_id = $2)
-        //     or (from_user_id = $2 and to_user_id = $1)
-        //     `, [updateResult.user_id, updateResult.opponent_user_id])).rows;
+        let friendRelationship = (await client.query(`
+            select * from friends_list
+            where (from_user_id = $1 and to_user_id = $2)
+            or (from_user_id = $2 and to_user_id = $1)
+            `, [updateResult.user_id, updateResult.opponent_user_id])).rows;
 
-        // if (status === 'approved' && friendRelationship.length == 0) {
-        //     await client.query(`INSERT INTO friends_list (from_user_id, to_user_id)
-        // VALUES ($1, $2)`,
-        //         [updateResult.opponent_user_id, updateResult.user_id]);
-        // }
+        if (status === 'approved' && friendRelationship.length == 0) {
+            await client.query(`INSERT INTO friends_list (from_user_id, to_user_id)
+        VALUES ($1, $2)`,
+                [updateResult.opponent_user_id, updateResult.user_id]);
+        }
 
-        res.json({ status: updateResult})
+        // still need the opponent (friend)'s name
+        let friendUser = (await client.query(`
+            select * from users where id = ${updateResult.opponent_user_id}
+        `)).rows[0];
+        console.log('friendUser Name: ', friendUser.name);
+
+        res.json({...updateResult, created_at: moment(updateResult.created_at).startOf('hour').fromNow(), friendName: friendUser.name})
     } catch (e) {
         res.status(400).json({ message: e })
+
     }
-
-
+    
 })
-
 /** 
  * when current user click "Chat" button, trigger this API call
  * to save the opponent he/she is going to talk to, in request session
@@ -524,24 +529,25 @@ async function addFriends(req: express.Request, res: express.Response) {
 
 }
 
-// userRoutes.post("/accept-friends",acceptFriends);
+userRoutes.post("/accept-friends",acceptFriends);
 
-// async function acceptFriends(req: express.Request, res: express.Response) {
-//     const from_user_id = req.session['user'].id;
-//     const to_user_id=req.body.to_user_id;
-//     const status= req.body.status;
+async function acceptFriends(req: express.Request, res: express.Response) {
+    const from_user_id = req.session['user'].id;
+    const to_user_id=req.body.to_user_id;
+    const status= req.body.status;
 
-//     await client.query(`INSERT INTO friends_list (from_user_id, to_user_id, status) VALUES ($1, $2, $3)`,[from_user_id,to_user_id,status]);
+    await client.query(`INSERT INTO friends_list (from_user_id, to_user_id, status) VALUES ($1, $2, $3)`,[from_user_id,to_user_id,status]);
 
-// }
+}
 
-// userRoutes.patch("/reject-friends",rejectFriends);
+userRoutes.patch("/reject-friends",rejectFriends);
 
-// async function rejectFriends(req: express.Request, res: express.Response) {
-//     const id = req.session.id;
-//     const opponent_user_id= req.body.opponent_user_id;
-//     const status= req.body.status;
+async function rejectFriends(req: express.Request, res: express.Response) {
+    const id = req.session.id;
+    const opponent_user_id= req.body.opponent_user_id;
+    const status= req.body.status;
 
-//     await client.query(`UPDATE notifications SET status=$1 WHERE user_id=$2, opponent_user_id=$3`,[id,opponent_user_id,status]);
+    await client.query(`UPDATE notifications SET status=$1 WHERE user_id=$2, opponent_user_id=$3`,[id,opponent_user_id,status]);
 
-// }
+
+}
