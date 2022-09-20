@@ -1,3 +1,5 @@
+
+
 const messageArea = document.querySelector('.chat-container')
 const textArea = document.querySelector('#textArea3')
 // const emojiBtn = document.querySelector('.emoji');
@@ -6,15 +8,29 @@ const emojiBtn = document.querySelector('.emoji');
 const picker = new EmojiButton();
 const addFriendsButton = document.querySelector('.add-friends');
 const content_submit = document.querySelector('#messageForm')
+const chatContainer = document.querySelector('.chat-container');
+const leavenBtn = document.querySelector('.leaven-btn');
+
+
+
+
 let opponentUserInfo, myUserInfo
 
 
 const socket = io.connect();
     socket.on('new-message', (conversation) => {
         updateSingleConversation(conversation,myUserInfo, opponentUserInfo )
+        
+    });
+    socket.on('leave-room', () => {
+        let ans = confirm('partner gone, i should leave')
+        if (ans){
+            document.querySelector('#messageForm').remove()
+        }else{
+            alert('gone, you cannot speak anymore')
+            document.querySelector('#messageForm').remove()
 
-        //scroll
-        messageArea.scrollTop = messageArea.scrollHeight;
+        }
     });
     
 
@@ -60,6 +76,7 @@ if (addFriendsButton) {
 
 
 async function updateProfile() {
+    try{
     const res = await fetch('/chat/getchatroom');
     let result = await res.json();
     let conversations = result.conversations
@@ -110,6 +127,10 @@ async function updateProfile() {
     $(".heart").on("click", function () {
         $(this).toggleClass("is-active");
     });
+    }catch (err) {
+        window.location.href = "/profile_page/profile.html"
+
+    }   
 }
 
 const messageForm = document.querySelector("#messageForm")
@@ -205,6 +226,7 @@ content_submit.addEventListener('submit', async function submit (e) {
 
         let conversation = await res.json()
         updateSingleConversation(conversation,myUserInfo, opponentUserInfo )
+        chatContainer.scrollTop = chatContainer.scrollHeight;
 
     } else {
         console.log(err)
@@ -218,7 +240,7 @@ content_submit.addEventListener('submit', async function submit (e) {
 
 async function init() {
     await updateProfile();
-
+    chatContainer.scrollTop = chatContainer.scrollHeight;
 
 }
 
@@ -227,7 +249,7 @@ init();
 
 function previewImages() {
 
-    let preview = document.querySelector('#preview');
+    var preview = document.querySelector('#preview');
     
     if (this.files) {
       [].forEach.call(this.files, readAndPreview);
@@ -258,12 +280,23 @@ function previewImages() {
   
   document.querySelector('#file-input').addEventListener("change", previewImages);
 
+  const deleteBtn = document.querySelector('.cross')
 
-leaveBtn.addEventListener("click", function() {
-    socket.disconnect();
-})
+  deleteBtn.addEventListener("click", function() {
+    document.querySelector('#file-input').value = '';
+    document.querySelectorAll('#preview img').remove();
 
-socket.on("user-leave", user=>{
-    alert(user, "has left the chatroom")
+  })
+
+
+leaveBtn.addEventListener("click", async function() {
+   let res = await fetch('/chat/leave',{
+    method: 'delete',
+});
+if (res.ok){
+    window.location.href = "/profile_page/profile.html"
+}
+ 
+
 
 })

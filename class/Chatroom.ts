@@ -35,4 +35,7 @@ export class Chatroom {
   getConversations() {
     return this.conversations;
   }
+  getRoomId() {
+    return this.roomId;
+  }
 }

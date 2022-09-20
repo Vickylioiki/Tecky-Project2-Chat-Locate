@@ -306,7 +306,7 @@ i:hover {
 
 #textArea3 {
     height: 100%;
-    width: 50%;
+    width: 80%;
     border: none;
     background-color: transparent;
     resize: none;
@@ -319,7 +319,7 @@ i:hover {
 }
 
 .button-group {
-    width: 50%;
+    width: 10%;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -342,6 +342,7 @@ i:hover {
 }
 
 .emoji {
+    font-size: 1.3rem;
     color: white;
     margin: 0 5px;
     text-shadow: 0 0 10px rgb(148, 135, 17),
@@ -349,6 +350,7 @@ i:hover {
 }
 
 .send {
+    margin-right: 30px;
     color: white;
     border: none;
     text-shadow: 0 0 10px rgb(32, 120, 183),
@@ -356,9 +358,32 @@ i:hover {
     
 }
 
-#preview {
+
+.profile-container {
+position: absolute;
+
+
+}
+
+
+.cross {
     position: absolute;
-    bottom: 120px;
-    
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bi-x {
+    font-size: 20px;
+    font-weight: bold;
+
+}
+
+.display-none {
+    display: none;
 
 }

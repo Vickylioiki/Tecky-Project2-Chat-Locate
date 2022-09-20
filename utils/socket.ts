@@ -21,12 +21,4 @@ export function setIO(value: SocketIO) {
       console.log(user.username, " room created");
     }
   });
-
-  io.on("disconnect", function (socket) {
-    const socketId = socket.id;
-    console.log("socketId: ", socketId, " is disconnect");
-    let user = socket.request["session"]["user"];
-
-    socket.emit("user-leave", user.name);
-  });
 }

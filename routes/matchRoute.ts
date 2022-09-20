@@ -109,7 +109,10 @@ matchRoutes.post("/", async (req, res) => {
     let chatRoom: Chatroom = new Chatroom(roomId, userA, userB);
     chatRooms[roomId] = chatRoom;
 
-    io.sockets.emit("to-chatroom");
+    // userA and UserB are currently in the readyUsers
+
+    io.to(userA.username).emit("to-chatroom");
+    io.to(userB.username).emit("to-chatroom");
 
     console.log("readyUsersb4:", readyUsers);
     //splice users
@@ -139,6 +142,22 @@ matchRoutes.post("/", async (req, res) => {
       res.status(400).json("fail to get data");
     }
   });
+});
+
+matchRoutes.delete("/stopMatching", async (req, res) => {
+  try {
+    const currentUser = req.session["user"].id;
+
+    const FindcurrentUser = readyUsers.findIndex(
+      (obj: { userId: any }) => obj.userId == currentUser
+    );
+
+    readyUsers.splice(FindcurrentUser, 1);
+
+    console.log("readyUsersDelete: ", readyUsers);
+  } catch (err) {
+    res.status(400).json("internal server");
+  }
 });
 
 //     let userResult = await client.query('select * from users')
