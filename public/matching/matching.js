@@ -1,4 +1,6 @@
 const socket = io.connect();
+const stopMatchingBtn = document.querySelector('.stopMatching')
+
 
 async function init() {
     await getLocation();
@@ -25,12 +27,21 @@ async function getLocation() {
             latitude: position.coords.latitude,
             longtitude: position.coords.longitude,
         })
-
-
-
     })
+    if (res.status === 401) {
+        window.location.href = '../login.html'
+    }
 }
 
+
+stopMatchingBtn.addEventListener('click', async () => {
+    const res = await fetch('/match/stopMatching', {
+        method: 'DELETE'
+
+    })
+
+
+})
 
 
 init();
@@ -39,4 +50,6 @@ init();
 socket.on("to-chatroom", () => {
     window.location = '/chatroom/chatroom.html';
 })
+
+
 

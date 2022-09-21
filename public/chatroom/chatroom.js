@@ -1,11 +1,19 @@
+
+
 const messageArea = document.querySelector('.chat-container')
 const textArea = document.querySelector('#textArea3')
 // const emojiBtn = document.querySelector('.emoji');
-
+const leaveBtn = document.querySelector('.leave');
 const emojiBtn = document.querySelector('.emoji');
 const picker = new EmojiButton();
 const addFriendsButton = document.querySelector('.add-friends');
 const content_submit = document.querySelector('#messageForm')
+const chatContainer = document.querySelector('.chat-container');
+const leavenBtn = document.querySelector('.leaven-btn');
+
+
+
+
 let opponentUserInfo, myUserInfo
 
 
@@ -13,8 +21,16 @@ const socket = io.connect();
 socket.on('new-message', (conversation) => {
     updateSingleConversation(conversation, myUserInfo, opponentUserInfo)
 
-    //scroll
-    messageArea.scrollTop = messageArea.scrollHeight;
+});
+socket.on('leave-room', () => {
+    let ans = confirm('partner gone, i should leave')
+    if (ans) {
+        document.querySelector('#messageForm').remove()
+    } else {
+        alert('gone, you cannot speak anymore')
+        document.querySelector('#messageForm').remove()
+
+    }
 });
 
 
@@ -60,17 +76,18 @@ if (addFriendsButton) {
 
 
 async function updateProfile() {
-    const res = await fetch('/chat/getchatroom');
-    let result = await res.json();
-    let conversations = result.conversations
-    opponentUserInfo = result.opponentUserInfo
-    myUserInfo = result.myUserInfo
-    // const profileData_age = age(profileData.dateofBirth)
-    updateConversations(conversations, myUserInfo, opponentUserInfo)
-    const profile = document.querySelector('.profile-container')
-    console.table(conversations)
-    profile.innerHTML = ' '
-    profile.innerHTML += `
+    try {
+        const res = await fetch('/chat/getchatroom');
+        let result = await res.json();
+        let conversations = result.conversations
+        opponentUserInfo = result.opponentUserInfo
+        myUserInfo = result.myUserInfo
+        // const profileData_age = age(profileData.dateofBirth)
+        updateConversations(conversations, myUserInfo, opponentUserInfo)
+        const profile = document.querySelector('.profile-container')
+        console.table(conversations)
+        profile.innerHTML = ' '
+        profile.innerHTML += `
     <div class="icon-circle">
                             <img src="${opponentUserInfo.icon}" alt="avatar"
                                 class="profile-icon">
@@ -107,9 +124,13 @@ async function updateProfile() {
 
 
         `
-    $(".heart").on("click", function () {
-        $(this).toggleClass("is-active");
-    });
+        $(".heart").on("click", function () {
+            $(this).toggleClass("is-active");
+        });
+    } catch (err) {
+        window.location.href = "/profile_page/profile.html"
+
+    }
 }
 
 const messageForm = document.querySelector("#messageForm")
@@ -135,16 +156,10 @@ function updateSingleConversation(conversation) {
                      <div class="d-flex flex-row justify-content-end">
                         <div>
                             <div class="message-container-self">
-<<<<<<< HEAD
-                                <p class="small p-2 me-3 mb-1">${conversation.content}</p>
-           ${conversation.image ? `<img src="/upload/${conversation.image}" alt="avatar" class="img-fluid">` : ``}                     
-                            </div>
-=======
                                 <p class="small p-2 me-3 mb-1">${conversation.content}
                                     ${conversation.image ? `<img src="/upload/${conversation.image}" alt="avatar" class="img-fluid">` : ``}                     
                                  </p>
                                 </div>
->>>>>>> b0ace7b998dfee765995e51a4495cb931f1d33e6
                             <p class="small me-3 mb-3 rounded-3 time-self">${conversation.createdAt}</p>
                         </div>
                         <img src="${myUserInfo.icon}" alt="avatar"
@@ -161,16 +176,10 @@ function updateSingleConversation(conversation) {
             class="rounded-circle chat-icon">
         <div>
             <div class="message-container-other">
-<<<<<<< HEAD
-                <p class="small p-2 ms-3 mb-1">${conversation.content}
-                ${conversation.image ? `<img src="/upload/${conversation.image}" alt="avatar" class="img-fluid">` : ``}                     
-
-=======
                     <p class="small p-2 ms-3 mb-1">${conversation.content}
                 
                     ${conversation.image ? `<img src="/upload/${conversation.image}" alt="avatar" class="img-fluid">` : ``}                     
                 
->>>>>>> b0ace7b998dfee765995e51a4495cb931f1d33e6
             </p>
             </div>
 
@@ -183,7 +192,7 @@ function updateSingleConversation(conversation) {
 
 }
 function updateConversations(conversations, myUserInfo, opponentUserInfo) {
-
+    console.log(conversations)
     messageArea.innerHTML = ''
     for (let conversation of conversations) {
         updateSingleConversation(conversation, myUserInfo, opponentUserInfo)
@@ -217,6 +226,7 @@ content_submit.addEventListener('submit', async function submit(e) {
 
         let conversation = await res.json()
         updateSingleConversation(conversation, myUserInfo, opponentUserInfo)
+        chatContainer.scrollTop = chatContainer.scrollHeight;
 
     } else {
         console.log(err)
@@ -228,12 +238,65 @@ content_submit.addEventListener('submit', async function submit(e) {
 
 
 
-
 async function init() {
     await updateProfile();
-
+    chatContainer.scrollTop = chatContainer.scrollHeight;
 
 }
 
 init();
 
+
+function previewImages() {
+
+    var preview = document.querySelector('#preview');
+
+    if (this.files) {
+        [].forEach.call(this.files, readAndPreview);
+    }
+
+    function readAndPreview(file) {
+
+        // Make sure `file.name` matches our extensions criteria
+        if (!/\.(jpe?g|png|gif)$/i.test(file.name)) {
+            return alert(file.name + " is not an image");
+        } // else...
+
+        var reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            var image = new Image();
+            image.height = 100;
+            image.title = file.name;
+            image.src = this.result;
+            preview.appendChild(image);
+        });
+
+        reader.readAsDataURL(file);
+
+    }
+
+}
+
+document.querySelector('#file-input').addEventListener("change", previewImages);
+
+const deleteBtn = document.querySelector('.cross')
+
+deleteBtn.addEventListener("click", function () {
+    document.querySelector('#file-input').value = '';
+    document.querySelectorAll('#preview img').remove();
+
+})
+
+
+leaveBtn.addEventListener("click", async function () {
+    let res = await fetch('/chat/leave', {
+        method: 'delete',
+    });
+    if (res.ok) {
+        window.location.href = "/profile_page/profile.html"
+    }
+
+
+
+})

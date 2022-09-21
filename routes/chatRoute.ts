@@ -5,6 +5,7 @@ import { form } from "../utils/formidable";
 import { io } from "../utils/socket";
 import { Chatroom } from "../class/Chatroom";
 import {
+  chatRooms,
   getChatRoomByUserId,
   getOpponentProfileInsideChatroom,
 } from "../utils/chatroom-helper";
@@ -25,7 +26,7 @@ chatRoutes.get("/getchatroom", async (req, res) => {
     console.log(err);
 
     res.status(400).json({
-      message: err,
+      message: err.message,
     });
   }
 });
@@ -71,5 +72,16 @@ chatRoutes.post("/", async (req, res) => {
       res.status(400).json("internal server error");
       console.log(err);
     }
+  });
+});
+
+chatRoutes.delete("/leave", (req, res) => {
+  let userId = req.session["user"].id;
+  let chatRoom = getChatRoomByUserId(userId);
+  let opponentUser = getOpponentProfileInsideChatroom(chatRoom, userId);
+  io.to(opponentUser.username).emit("leave-room");
+  delete chatRooms[chatRoom.getRoomId()];
+  res.json({
+    message: "leave room successfully",
   });
 });

@@ -10,6 +10,7 @@ import { Server as SocketIO } from "socket.io";
 import { setIO } from "./utils/socket";
 import { grantExpress } from "./utils/grant";
 import { connectDB } from "./utils/db";
+import { isLoggedIn } from "./utils/guard";
 
 export interface RoomInfomation {
   userIdA: number;
@@ -53,7 +54,7 @@ app.use(sessionMiddleware);
 setIO(io);
 
 app.use("/user", userRoutes);
-app.use("/match", matchRoutes);
+app.use("/match", isLoggedIn, matchRoutes);
 app.use("/chat", chatRoutes);
 app.use("/upload", express.static("uploads"));
 app.use(express.static("public"));

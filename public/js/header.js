@@ -104,11 +104,7 @@ async function initHeader() {
             <ul class="profile_ul">
               <li class="profile_li"><a class="profile" href="#"><span class="picon"><i class="fas fa-user-alt"></i>
                   </span>Profile</a>
-                <div class="btn">My Account</div>
               </li>
-              <li><a class="address" href="#"><span class="picon"><i class="fas fa-map-marker"></i></span>Address</a>
-              </li>
-              <li><a class="settings" href="#"><span class="picon"><i class="fas fa-cog"></i></span>Settings</a></li>
               <li><a class="logout" href="#"><span class="picon"><i class="fas fa-sign-out-alt"></i></span>Logout</a>
               </li>
             </ul>
@@ -249,79 +245,79 @@ function getStatusHTML(notificationItem) {
 
 }
 
-// async function getNotifications() {
+async function getNotifications() {
 
-//   let res = await fetch('/user/notifications?limit=2')
-//   let data = await res.json()
-//   let notificationItems = data.data
+  let res = await fetch('/user/notifications?limit=2')
+  let data = await res.json()
+  let notificationItems = data.data
 
-//   console.log('notificationItems: ', notificationItems)
+  console.log('notificationItems: ', notificationItems)
 
-//   let notificationUlElem = document.querySelector('.notification_ul')
-//   notificationUlElem.innerHTML = ''
+  let notificationUlElem = document.querySelector('.notification_ul')
+  notificationUlElem.innerHTML = ''
 
-//   console.log('getNotifications before for loop', notificationItems)
-//   for (let notificationItem of notificationItems) {
-//     notificationUlElem.innerHTML += `
-//       <li class="baskin_robbins failed" data-notification-id="${notificationItem.id}">
+  console.log('getNotifications before for loop', notificationItems)
+  for (let notificationItem of notificationItems) {
+    notificationUlElem.innerHTML += `
+      <li class="baskin_robbins failed" data-notification-id="${notificationItem.id}">
 
-//       ${notificationItem.icon ? `<img class="notify-icon" src="${notificationItem.icon}">` : '    <img class="notify-icon" src="https://randomuser.me/api/portraits/men/84.jpg">'}
+      ${notificationItem.icon ? `<img class="notify-icon" src="${notificationItem.icon}">` : '    <img class="notify-icon" src="https://randomuser.me/api/portraits/men/84.jpg">'}
 
-//       <div class="notify_data">
-//         <div class="title">
-//           ${notificationItem.name}
-//         </div>
-//         <div class="sub_title">
-//           Can I add you?
-//         </div>
-//       </div>
-//       <div class="notify_status">
-//         <p>${notificationItem.created_at.split('T')[0]}</p>
-//       </div>
-//       ${getStatusHTML(notificationItem)}
-//     </li>
-//       `;
-//   }
-
-
-//   console.log('get notification after for loop')
-
-//   notificationUlElem.innerHTML += `<li class="show_all">
-//   <a href="/mailbox/mailbox.html"><p class="link">Show All Activities</p></a>
-//   </li>`
+      <div class="notify_data">
+        <div class="title">
+          ${notificationItem.name}
+        </div>
+        <div class="sub_title">
+          Can I add you?
+        </div>
+      </div>
+      <div class="notify_status">
+        <p>${notificationItem.created_at.split('T')[0]}</p>
+      </div>
+      ${getStatusHTML(notificationItem)}
+    </li>
+      `;
+  }
 
 
-//   let statusBtns = document.querySelectorAll('button.status');
-//   for (let statusBtn of statusBtns) {
-//     statusBtn.addEventListener('click', async (e) => {
-//       e.preventDefault()
+  console.log('get notification after for loop')
 
-//       const notificationId = statusBtn.dataset.notificationId
-//       const status = statusBtn.dataset.status
-//       console.log('clicking :', notificationId, status)
+  notificationUlElem.innerHTML += `<li class="show_all">
+  <a href="/mailbox/mailbox.html"><p class="link">Show All Activities</p></a>
+  </li>`
 
-//       const res = await fetch('/user/update-relation', {
-//         method: 'POST',
-//         body: JSON.stringify({
-//           status,
-//           notificationId
-//         }),
-//         headers: {
-//           'Content-Type': 'application/json'
-//         }
-//       })
-//       if (res.ok) {
-//         console.log(status, ' friend success')
-//         getNotifications()
-//         // window.location.href = "/chatroom/chatroom.html"
-//       } else {
-//         let { message } = await res.json()
-//         alert(message)
-//       }
-//     })
-//   }
-//   console.log('getNotification after reject friend form event listener')
-// }
+
+  let statusBtns = document.querySelectorAll('button.status');
+  for (let statusBtn of statusBtns) {
+    statusBtn.addEventListener('click', async (e) => {
+      e.preventDefault()
+
+      const notificationId = statusBtn.dataset.notificationId
+      const status = statusBtn.dataset.status
+      console.log('clicking :', notificationId, status)
+
+      const res = await fetch('/user/update-relation', {
+        method: 'POST',
+        body: JSON.stringify({
+          status,
+          notificationId
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      if (res.ok) {
+        console.log(status, ' friend success')
+        getNotifications()
+        // window.location.href = "/chatroom/chatroom.html"
+      } else {
+        let { message } = await res.json()
+        alert(message)
+      }
+    })
+  }
+  console.log('getNotification after reject friend form event listener')
+}
 
 // async function logout() {
 //   let response = await fetch('/user/logout');
@@ -444,6 +440,9 @@ async function getNotifications() {
   // }
 
 
+  // const notificationId = statusBtn.dataset.notificationId
+  // const status = statusBtn.dataset.status
+  // console.log('clicking :', notificationId, status)
 
   // function remove() {
   //   var elem = document.getElementById('remove');

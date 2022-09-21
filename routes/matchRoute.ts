@@ -81,9 +81,12 @@ matchRoutes.post("/", async (req, res) => {
                 distance: response.rows[0].elements[0].distance.value,
             });
         }
+        // distances.push({
+        //   userId: 1,
+        //   distance: 1,
+        // });
         if (distances.length == 0) {
-            console.log("no user around");
-            return;
+            throw new Error("no user around");
         }
         distances = distances.sort((a, b) => {
             return a.distance - b.distance;
@@ -106,7 +109,23 @@ matchRoutes.post("/", async (req, res) => {
         let chatRoom: Chatroom = new Chatroom(roomId, userA, userB);
         chatRooms[roomId] = chatRoom;
 
-        io.sockets.emit("to-chatroom");
+        // userA and UserB are currently in the readyUsers
+
+        io.to(userA.username).emit("to-chatroom");
+        io.to(userB.username).emit("to-chatroom");
+
+        console.log("readyUsersb4:", readyUsers);
+        //splice users
+        const currentUser = readyUsers.findIndex(
+            (obj: { userId: any }) => obj.userId == userIdA
+        );
+        readyUsers.splice(currentUser, 1);
+        const currentUser2 = readyUsers.findIndex(
+            (obj: { userId: any }) => obj.userId == userIdB
+        );
+        readyUsers.splice(currentUser2, 1);
+
+        console.log("readyUsers After:", readyUsers);
         res.json("Matched");
     } catch (err) {
         console.log(err);
@@ -116,14 +135,107 @@ matchRoutes.post("/", async (req, res) => {
     //get readyUsers Array
     matchRoutes.get("/", async (req, res) => {
         try {
-            // console.log('[Get] - /match : ', readyUsers)
-            res.status(200).json(readyUsers);
+            const userId = req.session["user"]?.id || 10;
+            if (!userId) {
+                res.status(500).json("Please login in first");
+                return;
+            }
+            const latitude = req.body.latitude;
+            const longitude = req.body.longtitude;
+            const location = { lat: latitude, lng: longitude };
+            req.session["user"].location = location;
+            const userLocation = { userId: userId, location: location };
+            readyUsers.push(userLocation);
+
+            //Current User Info from session
+            const ownerId = req.session["user"].id;
+            const ownerName = req.session["user"].name;
+            const ownerLocation = req.session["user"].location;
+
+            console.log("readyUsers in server: ", readyUsers);
+            console.log("ownerId: ", ownerId);
+            console.log("ownerLocation: ", ownerLocation);
+
+            let distances = [];
+            for (let i = 0; i < readyUsers.length; i++) {
+                if (readyUsers[i].userId == ownerId) {
+                    continue;
+                }
+
+                console.log("i :" + i);
+
+                let destinationUser = readyUsers[i].location;
+                const request = {
+                    origins: [ownerLocation],
+                    destinations: [destinationUser],
+                };
+
+                const response = await service.getDistanceMatrix(request);
+                console.log(`response${i}`, response);
+                distances.push({
+                    userId: readyUsers[i].userId,
+                    distance: response.rows[0].elements[0].distance.value,
+                });
+            }
+            if (distances.length == 0) {
+                console.log("no user around");
+                return;
+            }
+            distances = distances.sort((a, b) => {
+                return a.distance - b.distance;
+            });
+
+            const pairUpResult = {
+                CurrentUserId: ownerId,
+                PairUpUserId: distances[0].userId,
+            };
+            console.log(`Owner nearest user: `, distances);
+            console.log(`Pair up result: `, pairUpResult);
+
+            const roomId: string = uuid();
+            const userIdA = ownerId;
+            const userIdB = distances[0].userId;
+
+            const userA = await getUserById(userIdA);
+            const userB = await getUserById(userIdB);
+
+            let chatRoom: Chatroom = new Chatroom(roomId, userA, userB);
+            chatRooms[roomId] = chatRoom;
+
+            io.sockets.emit("to-chatroom");
+            res.json("Matched");
         } catch (err) {
             console.log(err);
-            res.status(400).json("fail to get data");
+            res.status(400).json("fail to match");
+        }
+
+        //get readyUsers Array
+        matchRoutes.get("/", async (req, res) => {
+            try {
+                // console.log('[Get] - /match : ', readyUsers)
+                res.status(200).json(readyUsers);
+            } catch (err) {
+                console.log(err);
+                res.status(400).json("fail to get data");
+            }
+        });
+    });
+
+    matchRoutes.delete("/stopMatching", async (req, res) => {
+        try {
+            const currentUser = req.session["user"].id;
+
+            const FindcurrentUser = readyUsers.findIndex(
+                (obj: { userId: any }) => obj.userId == currentUser
+            );
+
+            readyUsers.splice(FindcurrentUser, 1);
+
+            console.log("readyUsersDelete: ", readyUsers);
+        } catch (err) {
+            res.status(400).json("internal server");
         }
     });
-});
 
 //     let userResult = await client.query('select * from users')
 //     const users = userResult.rows

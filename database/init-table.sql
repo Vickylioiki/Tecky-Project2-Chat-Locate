@@ -56,7 +56,8 @@ CREATE TABLE notifications (
     status varchar(255) not null default 'pending',
     --pending / approved / rejected
     created_at timestamp not null default now(),
-    updated_at timestamp not null default now()
+    updated_at timestamp not null default now(),
+    type text
 );
 -- 2022-09-17 Catherine update
 ALTER TABLE notifications

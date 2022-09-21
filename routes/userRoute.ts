@@ -144,32 +144,29 @@ userRoutes.patch("/notifications", async (req, res) => {
     res.json({ status: "ok" });
 });
 
-userRoutes.post("/update-relation", async (req, res) => {
+
+userRoutes.post('/update-relation', async (req, res) => {
     try {
         let { notificationId, status } = req.body;
 
         // throw error if status is neither approved nor rejected
-        if (["approved", "rejected"].indexOf(status) === -1) {
-            res.status(400).json({ message: "Invalid status" });
-            return;
+        if (['approved', 'rejected'].indexOf(status) === -1) {
+            res.status(400).json({ message: 'Invalid status' })
+            return
         }
 
-        console.log("notificationId: ", notificationId);
+        console.log('notificationId: ', [status, notificationId, 'invitation', true]);
 
         // disable notification
-        let updateResult = (
-            await client.query(
-                `update notifications set status = $1, enabled = false where id = $2 and type = $3 and enabled = $4 returning *`,
-                [status, notificationId, "invitation", true]
-            )
-        ).rows[0];
+        let updateResult = (await client.query(
+            `update notifications set status = $1 where id = $2 returning *`, [status, notificationId]
+        )).rows[0];
 
-        console.log("/update-relation updateResult: ", updateResult);
-
+        console.log('/update-relation updateResult: ', updateResult);
         // throw error if notification is currently not enabled, or not invitation
         if (!updateResult) {
-            res.status(400).json({ message: "Invalid notification update" });
-            return;
+            res.status(400).json({ message: 'Invalid notification update' })
+            return
         }
 
         // throw error if identical user id for friend request
@@ -243,6 +240,37 @@ userRoutes.post("/update-relation", async (req, res) => {
 });
 
 /**
+            res.status(400).json({ message: 'Error: identical user friend add request' })
+            return
+        }
+
+        // check if friend relationship exists
+        let friendRelationship = (await client.query(`
+            select * from friends_list
+            where (from_user_id = $1 and to_user_id = $2)
+            or (from_user_id = $2 and to_user_id = $1)
+            `, [updateResult.user_id, updateResult.opponent_user_id])).rows;
+
+        if (status === 'approved' && friendRelationship.length == 0) {
+            await client.query(`INSERT INTO friends_list (from_user_id, to_user_id)
+        VALUES ($1, $2)`,
+                [updateResult.opponent_user_id, updateResult.user_id]);
+        }
+
+        // still need the opponent (friend)'s name
+        let friendUser = (await client.query(`
+            select * from users where id = ${updateResult.opponent_user_id}
+        `)).rows[0];
+        console.log('friendUser Name: ', friendUser.name);
+
+        res.json({...updateResult, created_at: moment(updateResult.created_at).startOf('hour').fromNow(), friendName: friendUser.name})
+    } catch (e) {
+        res.status(400).json({ message: e })
+
+    }
+    
+})
+/** 
  * when current user click "Chat" button, trigger this API call
  * to save the opponent he/she is going to talk to, in request session
  * */
@@ -373,6 +401,47 @@ userRoutes.post("/login", async (req, res) => {
     res.status(200).json({
         message: "Success login",
     });
+    return;
+}
+  console.log("/login-username and password checking passed!!");
+
+let userResult = await client.query(
+    `select * from users where username = $1`,
+    [username]
+);
+let dbUser = userResult.rows[0];
+
+if (!dbUser) {
+    res.status(400).json({
+        message: "Invalid username",
+    });
+    return;
+}
+console.log("/login-existing username checking passed!!");
+
+let isMatched = await checkPassword(password, dbUser.password);
+if (!isMatched) {
+    res.status(400).json({
+        message: "Invalid username or password",
+    });
+    return;
+}
+console.log("/login-valid password checking passed!!");
+
+let {
+    password: dbUserPassword,
+    created_at,
+    updated_at,
+    ...filterUserProfile
+} = dbUser;
+req.session["user"] = filterUserProfile;
+req.session.isLoggedIn = true;
+// req.session.save()
+
+// console.log(sessionUser)
+res.status(200).json({
+    message: "Success login",
+});
 });
 
 userRoutes.get("/logout", (req, res) => {
@@ -641,35 +710,36 @@ async function loadProfile(req: express.Request, res: express.Response) {
         });
     }
 }
-// userRoutes.post("/accept-friends",acceptFriends);
 
-// async function acceptFriends(req: express.Request, res: express.Response) {
-//     const from_user_id = req.session['user'].id;
-//     const to_user_id=req.body.to_user_id;
-//     const status= req.body.status;
+userRoutes.post("/accept-friends", acceptFriends);
 
-//     await client.query(`INSERT INTO friends_list (from_user_id, to_user_id, status) VALUES ($1, $2, $3)`,[from_user_id,to_user_id,status]);
+async function acceptFriends(req: express.Request, res: express.Response) {
+    const from_user_id = req.session['user'].id;
+    const to_user_id = req.body.to_user_id;
+    const status = req.body.status;
 
-// }
+    await client.query(`INSERT INTO friends_list (from_user_id, to_user_id, status) VALUES ($1, $2, $3)`, [from_user_id, to_user_id, status]);
 
-// userRoutes.patch("/reject-friends",rejectFriends);
+}
 
-// async function rejectFriends(req: express.Request, res: express.Response) {
-//     const id = req.session.id;
-//     const opponent_user_id= req.body.opponent_user_id;
-//     const status= req.body.status;
+userRoutes.patch("/reject-friends", rejectFriends);
 
-//     await client.query(`UPDATE notifications SET status=$1 WHERE user_id=$2, opponent_user_id=$3`,[id,opponent_user_id,status]);
+async function rejectFriends(req: express.Request, res: express.Response) {
+    const id = req.session.id;
+    const opponent_user_id = req.body.opponent_user_id;
+    const status = req.body.status;
 
-// }
+    await client.query(`UPDATE notifications SET status=$1 WHERE user_id=$2, opponent_user_id=$3`, [id, opponent_user_id, status]);
+
+    // }
 
 
-// Get Friends from table: friends_list
+    // Get Friends from table: friends_list
 
-userRoutes.get("/friends", async (req, res) => {
-    const id = req.session['user'].id;
+    userRoutes.get("/friends", async (req, res) => {
+        const id = req.session['user'].id;
 
-    let myFriends = await client.query(/*sql*/ `
+        let myFriends = await client.query(/*sql*/ `
     with 
     active as (
     select 
@@ -692,9 +762,9 @@ userRoutes.get("/friends", async (req, res) => {
     my_friends mf join users on id = mf.my_friend_id;
     `, [id]);
 
-    res.json(myFriends.rows);
+        res.json(myFriends.rows);
 
-});
+    });
 
 
 

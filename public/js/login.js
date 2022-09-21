@@ -21,7 +21,7 @@ async function login() {
         })
         if (res.ok) {
             console.log('Login successful')
-            window.location.href = "./index.html"
+            window.location.href = "/profile_page/profile.html"
         } else {
             let { message } = await res.json()
             alert(message)
