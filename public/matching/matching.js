@@ -29,7 +29,7 @@ async function getLocation() {
         })
     })
     if (res.status === 401) {
-        window.location.href = '../login.html'
+        window.location.href = '../matching/failed.html'
     }
 }
 

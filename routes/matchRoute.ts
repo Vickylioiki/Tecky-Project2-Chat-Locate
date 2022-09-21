@@ -85,6 +85,7 @@ matchRoutes.post("/", async (req, res) => {
     //   userId: 1,
     //   distance: 1,
     // });
+
     if (distances.length == 0) {
       throw new Error("no user around");
     }
@@ -112,7 +113,7 @@ matchRoutes.post("/", async (req, res) => {
     // userA and UserB are currently in the readyUsers
     for (let user of readyUsers) {
       const waitingUserId = user.userId;
-      if (waitingUserId === userIdA && waitingUserId === userIdB) {
+      if (waitingUserId === userIdA || waitingUserId === userIdB) {
         io.to(userA.username).emit("to-chatroom");
         io.to(userB.username).emit("to-chatroom");
 
@@ -129,14 +130,17 @@ matchRoutes.post("/", async (req, res) => {
 
         console.log("readyUsers After:", readyUsers);
         res.json("Matched");
-        return;
       } else {
-        res.redirect("/failed.html");
+        res.redirect("../matching/failed.html");
+        const failedMatchUser = readyUsers.findIndex(
+          (obj: { userId: any }) => obj.userId == ownerId
+        );
+        readyUsers.splice(failedMatchUser, 1);
       }
     }
   } catch (err) {
     console.log(err);
-    res.status(400).json("fail to match");
+    res.redirect("../matching/failed.html");
   }
 
   //get readyUsers Array
