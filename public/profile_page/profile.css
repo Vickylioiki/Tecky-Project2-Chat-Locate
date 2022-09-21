@@ -975,3 +975,8 @@ textarea.profile-session {
 	font-weight: bold;
 
 }
+
+.display-none {
+	display: none;
+
+}

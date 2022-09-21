@@ -16,17 +16,19 @@
   <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
   <div class="wrapper">
     <div class="header"></div>
-    <script src="/js/header.js"></script>
+    <!-- <script src="/js/header.js"></script> -->
     <div class="profile-card js-profile-card">
       <div class="text-box">
         <a href="../matching/matching.html" class="btn btn-white btn-animate">Start Matching</a>
       </div>
       <div class="profile-card__img">
-        <img src="https://m.media-amazon.com/images/I/61BxjnyB7cL._AC_.jpg" alt="profile card">
+        <img src="" alt="profile card">
       </div>
       <div class="profile-card__cnt js-profile-cnt">
-        <div class="profile-card__name">Muhammed Erdem</div>
-        <div class="profile-card__job-title">Software Engineer from <strong>Google</strong></div>
+        <div class="profile-card__name">LaSing Diu</div>
+        <div class="profile-card__job-title"><span id="header-occupation">Software Engineer</span>from
+          <strong><span id="company">FML</span></strong>
+        </div>
         <div class="profile-card-loc">
           <span class="profile-card-loc__icon">
             <svg class="icon">
@@ -49,7 +51,7 @@
           <div class="row">
             <div class="bio-row">
               <p><span class="input-info">About Me</span><br><textarea type="text" id="about-me" class="profile-session"
-                  disabled>I am Curtis. I go to school by bus.</textarea></p>
+                  disabled>I am La Sing Diu. I go to school by bus, sometimes, helicopter</textarea></p>
             </div>
             <br>
 
@@ -66,8 +68,8 @@
                         <p><span>Gender </span> <input type="text" value="M" disabled></input></p>
                     </div> -->
                     <div class="bio-row">
-                      <p><span class="input-info">Name&nbsp;</span> <input type="text" value="Camila Smith" class="profile-session"
-                          disabled></input></p>
+                      <p><span class="input-info">Name&nbsp;</span> <input type="text" value="Camila Smith"
+                          class="profile-session" id="name" disabled></input></p>
                     </div>
 
 
@@ -153,7 +155,7 @@
 
       </div>
       <div class="friends-list-session">
-        <article class="leaderboard">
+        <article class="leaderboard display-none">
           <header>
 
             <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
@@ -201,37 +203,40 @@
           </header>
 
           <main class="leaderboard__profiles">
-            <article class="leaderboard__profile">
-              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mark Zuckerberg"
-                class="leaderboard__picture">
-              <span class="leaderboard__name">Mark Zuckerberg</span>
-              <span class="leaderboard__value">
-                <form id="start-chat-form">
-                  <input type="text" hidden value="99" name="userId">
-                  <button type="submit" class="btn btn-success">Chat</button>
-                </form>
-              </span>
-            </article>
+            <div class="friends_list_inner">
+              <!-- <article class="leaderboard__profile">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mark Zuckerberg"
+                  class="leaderboard__picture">
+                <span class="leaderboard__name">Mark Zuckerberg</span>
+                <span class="leaderboard__value">
+                  <form id="start-chat-form">
+                    <input type="text" hidden value="99" name="userId">
+                    <button type="submit" class="btn btn-success">Chat</button>
+                  </form>
+                </span>
+              </article>
 
-            <article class="leaderboard__profile">
-              <img src="https://randomuser.me/api/portraits/men/97.jpg" alt="Dustin Moskovitz"
-                class="leaderboard__picture">
-              <span class="leaderboard__name">Dustin Moskovitz</span>
-              <span class="leaderboard__value"><button type="button" class="btn btn-success">Chat</button></span>
-            </article>
+              <article class="leaderboard__profile">
+                <img src="https://randomuser.me/api/portraits/men/97.jpg" alt="Dustin Moskovitz"
+                  class="leaderboard__picture">
+                <span class="leaderboard__name">Dustin Moskovitz</span>
+                <span class="leaderboard__value"><button type="button" class="btn btn-success">Chat</button></span>
+              </article>
 
-            <article class="leaderboard__profile">
-              <img src="https://randomuser.me/api/portraits/women/17.jpg" alt="Elizabeth Holmes"
-                class="leaderboard__picture">
-              <span class="leaderboard__name">Elizabeth Holmes</span>
-              <span class="leaderboard__value"><button type="button" class="btn btn-success">Chat</button></span>
-            </article>
+              <article class="leaderboard__profile">
+                <img src="https://randomuser.me/api/portraits/women/17.jpg" alt="Elizabeth Holmes"
+                  class="leaderboard__picture">
+                <span class="leaderboard__name">Elizabeth Holmes</span>
+                <span class="leaderboard__value"><button type="button" class="btn btn-success">Chat</button></span>
+              </article>
 
-            <article class="leaderboard__profile">
-              <img src="https://randomuser.me/api/portraits/men/37.jpg" alt="Evan Spiegel" class="leaderboard__picture">
-              <span class="leaderboard__name">Evan Spiegel</span>
-              <span class="leaderboard__value"><button type="button" class="btn btn-success">Chat</button></span>
-            </article>
+              <article class="leaderboard__profile">
+                <img src="https://randomuser.me/api/portraits/men/37.jpg" alt="Evan Spiegel"
+                  class="leaderboard__picture">
+                <span class="leaderboard__name">Evan Spiegel</span>
+                <span class="leaderboard__value"><button type="button" class="btn btn-success">Chat</button></span>
+              </article> -->
+            </div>
           </main>
       </div>
 
@@ -307,7 +312,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
       integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK"
       crossorigin="anonymous"></script>
-    <script src="profile.js"></script>
+    <script type="module" src="/profile_page/profile.js"></script>
+    <script type="module" src="/js/header.js"></script>
+
 </body>
 
 </html>

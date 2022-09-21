@@ -5,6 +5,7 @@ INSERT INTO users (
         aboutme,
         hobby,
         country,
+        company,
         occupation,
         icon,
         gender,
@@ -19,6 +20,7 @@ VALUES (
         'I am single.',
         'badminton',
         'Australia',
+        'bank',
         'student',
         'https://randomuser.me/api/portraits/men/20.jpg',
         'M',
@@ -33,6 +35,7 @@ VALUES (
         'I go by bus',
         'badminton',
         'Hong Kong',
+        'start up',
         'Teacher',
         'https://randomuser.me/api/portraits/women/63.jpg',
         'F',
@@ -46,7 +49,8 @@ VALUES (
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'I like play football',
         'badminton',
-        'Japan',
+        'Australia',
+        'start up',
         'Programmer',
         'https://randomuser.me/api/portraits/men/62.jpg',
         'M',
@@ -60,13 +64,59 @@ VALUES (
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'I like make friends.',
         'badminton',
-        'Singapore',
+        'Australia',
+        'medical group',
+        'Programmer',
+        'https://randomuser.me/api/portraits/men/62.jpg',
+        'M',
+        '1990-01-10',
+        '99991234',
+        NULL
+    );
+insert into facebook_profile (
+        fb_id,
+        name,
+        user_id,
+        profile_pic
+    )
+VALUES (
+        100004383902955,
+        'Peter',
+        1,
+        'https://www.facebook.com/profile.php?u=Peter'
+    ),
+    (
+        100004383902955,
+        'John',
+        3,
+        'https://www.facebook.com/profile.php?u=John'
+    );
+insert into instagram_profile (
+        ig_id,
+        name,
+        user_id,
+        profile_pic,
+        media_count
+    )
+VALUES (
+        1298719,
+        'Peter',
+        1,
+        'https://www.instagram.com/profile.php?u=Peter',
+        0
+    ),
+    (
+        1298718,
+        'May',
+        2,
+        'https://www.instagram.com/profile.php?u=John',
+        11 == == == = 'Singapore',
         'Doctor',
         'https://randomuser.me/api/portraits/men/88.jpg',
         'M',
         '1989-10-10',
         '99991234',
-        NULL
+        NULL >> >> >> > 3a23f8604ba8caa8528fd97d12a4ea58c95cf199
     );
 -- insert into facebook_profile (
 --         fb_id,

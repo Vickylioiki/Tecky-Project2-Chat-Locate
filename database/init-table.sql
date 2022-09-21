@@ -7,6 +7,7 @@ CREATE TABLE users (
     aboutme text NULL,
     hobby text NULL,
     country text NULL,
+    company text NULL,
     occupation text NULL,
     icon text default 'https://cdn.wallpapersafari.com/22/27/fZqLX0.jpg',
     gender bpchar(1) NULL,

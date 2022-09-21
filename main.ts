@@ -20,11 +20,18 @@ export interface RoomInfomation {
 
 declare module "express-session" {
   interface SessionData {
-    name?: string;
-    isLoggedIn?: boolean;
-    location?: any;
-    user?: any;
-    roomInfomation?: any;
+    name?: string
+    isloggedin?: boolean
+    location?: any
+    user?: any
+    gender?: string
+    contact_no?: string
+    aboutme?: string
+    dateofbirth?: string
+    occupation?: string
+    hobby?: string
+    country?: string
+    icon?: string
   }
 }
 
