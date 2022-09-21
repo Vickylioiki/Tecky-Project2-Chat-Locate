@@ -193,12 +193,8 @@ function updateConversations(conversations, myUserInfo, opponentUserInfo) {
 }
 
 
-<<<<<<< HEAD
-content_submit.addEventListener('submit', async function submit (e) {
-=======
 
 content_submit.addEventListener('submit', async function submit(e) {
->>>>>>> 647bb9a1861d654a706fd51e7ed318c09cf59f9f
     e.preventDefault()
 
     const formElement = e.target;
@@ -223,15 +219,11 @@ content_submit.addEventListener('submit', async function submit(e) {
         document.querySelector('#messageForm').reset();
 
         let conversation = await res.json()
-<<<<<<< HEAD
         updateSingleConversation(conversation,myUserInfo, opponentUserInfo )
         $("#imag").val("");
         $("#ImgPreview").attr("src", "");
         $('.preview1').removeClass('it');
         $('.btn-rmv1').removeClass('rmv');
-=======
-        updateSingleConversation(conversation, myUserInfo, opponentUserInfo)
->>>>>>> 647bb9a1861d654a706fd51e7ed318c09cf59f9f
         chatContainer.scrollTop = chatContainer.scrollHeight;
 
     } else {
@@ -256,49 +248,6 @@ async function init() {
 init();
 
 
-<<<<<<< HEAD
-=======
-function previewImages() {
-
-    var preview = document.querySelector('#preview');
-
-    if (this.files) {
-        [].forEach.call(this.files, readAndPreview);
-    }
-
-    function readAndPreview(file) {
-
-        // Make sure `file.name` matches our extensions criteria
-        if (!/\.(jpe?g|png|gif)$/i.test(file.name)) {
-            return alert(file.name + " is not an image");
-        } // else...
-
-        var reader = new FileReader();
-
-        reader.addEventListener("load", function () {
-            var image = new Image();
-            image.height = 100;
-            image.title = file.name;
-            image.src = this.result;
-            preview.appendChild(image);
-        });
-
-        reader.readAsDataURL(file);
-
-    }
-
-}
-
-document.querySelector('#file-input').addEventListener("change", previewImages);
-
-const deleteBtn = document.querySelector('.cross')
-
-deleteBtn.addEventListener("click", function () {
-    document.querySelector('#file-input').value = '';
-    document.querySelectorAll('#preview img').remove();
-
-})
->>>>>>> 647bb9a1861d654a706fd51e7ed318c09cf59f9f
 
 
 leaveBtn.addEventListener("click", async function () {

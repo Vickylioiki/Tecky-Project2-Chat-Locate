@@ -5,7 +5,7 @@ export const isLoggedIn = (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  if (req.session.isLoggedIn) {
+  if (req.session.isloggedin) {
     next(); //要( )
     return;
   }
