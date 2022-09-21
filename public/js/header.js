@@ -1,4 +1,4 @@
-import {addStartChatFormEvent} from "/profile_page/profile.js"
+import { addStartChatFormEvent } from "/profile_page/profile.js"
 async function initHeader() {
   let headerElm = document.querySelector('.header')
 
@@ -170,6 +170,7 @@ export async function getProfile() {
     console.log(data);
     dateOfBirth = new Date(data.date_of_birth);
     document.querySelector(".edit-btn").remove();
+    document.querySelector(".friends-btn").remove();
   }
 
   console.log(dateOfBirth.getMonth());
@@ -289,7 +290,7 @@ async function getNotifications() {
   </li>`
 
   let bellElm = document.querySelector('.notifications')
-  bellElm.addEventListener('click',()=>{
+  bellElm.addEventListener('click', () => {
     let notificationListElem = bellElm.querySelector('.notification_dd')
     notificationListElem.style.display = notificationListElem.style.display == 'none' ? 'block' : 'none'
   })
@@ -375,91 +376,9 @@ async function logout() {
 //   }
 //   console.log('get notification after for loop')
 
-<<<<<<< HEAD
-  console.log('getNotifications before for loop', notificationItems)
-  for (let notificationItem of notificationItems) {
-    notificationUlElem.innerHTML += /* HTML*/`
-      <li class="baskin_robbins failed" data-notification-id="${notificationItem.id}">
-
-      ${notificationItem.icon ? `<img class="notify-icon" src="${notificationItem.icon}">` : '    <img class="notify-icon" src="https://randomuser.me/api/portraits/men/84.jpg">'}
-
-      <div class="notify_data">
-        <div class="title">
-          ${notificationItem.name}
-        </div>
-        <div class="sub_title">
-          Can I add you?
-        </div>
-      </div>
-      <div class="notify_status">
-        <p>${notificationItem.created_at.split('T')[0]}</p>
-      </div>
-      ${getStatusHTML(notificationItem)}
-    </li>`
-
-  }
-
-  //       <div class="notify_data">
-  //         <div class="title">
-  //           ${notificationItem.name}
-  //         </div>
-  //         <div class="sub_title">
-  //           Can I add you?
-  //         </div>
-  //       </div>
-  //       <div class="notify_status">
-  //         <p>${notificationItem.created_at.split('T')[0]}</p>
-  //       </div>
-  //       ${getStatusHTML(notificationItem)}
-  //     </li>`
-  //       
-  //     }
-  //     console.log('get notification after for loop')
-
-  notificationUlElem.innerHTML += /* HTML*/`<li class="show_all">
-  <a href="/mailbox/mailbox.html"><p class="link">Show All Activities</p></a>
-  </li>`
-
-  //   // if (res.ok) {
-  //   //   document.querySelector('.profile .name').innerText = data.name
-  //   // }
-
-  //   let statusBtns = document.querySelectorAll('button.status');
-  //   for (let statusBtn of statusBtns) {
-  //     statusBtn.addEventListener('click', async (e) => {
-  //       e.preventDefault()
-
-  const notificationId = statusBtn.dataset.notificationId
-  const status = statusBtn.dataset.status
-  console.log('clicking :', notificationId, status)
-
-  //       const res = await fetch('/user/update-relation', {
-  //         method: 'POST',
-  //         body: JSON.stringify({
-  //           status,
-  //           notificationId
-  //         }),
-  //         headers: {
-  //           'Content-Type': 'application/json'
-  //         }
-  //       })
-  //       if (res.ok) {
-  //         console.log(status, ' friend success')
-  //         getNotifications()
-  //         // window.location.href = "/chatroom/chatroom.html"
-  //       } else {
-  //         let { message } = await res.json()
-  //         alert(message)
-  //       }
-  //     })
-  //   }
-  //   console.log('getNotification after reject friend form event listener')
-  // }
-=======
 //   notificationUlElem.innerHTML += /* HTML*/`<li class="show_all">
 //   <a href="/mailbox/mailbox.html"><p class="link">Show All Activities</p></a>
 //   </li>`
->>>>>>> 9e404cb7c4f2cb14d7cb24fe9f339e9708002d57
 
 
 //   const notificationId = statusBtn.dataset.notificationId
@@ -472,7 +391,7 @@ let initPromise = new Promise(function (resolve, reject) {
   reject();
 })
 
-initPromise 
+initPromise
   .then(initHeader, null)
   .then(getFriends, null)
   .then(getProfile, null)

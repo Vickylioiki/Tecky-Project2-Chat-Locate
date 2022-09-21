@@ -448,6 +448,7 @@ userRoutes.post("/login", async (req: any, res: any) => {
 // });
 // });
 
+
 userRoutes.get("/logout", (req, res) => {
     try {
         let destroyedSession = req.session.destroy(() => {
@@ -771,8 +772,8 @@ userRoutes.get("/friends", async (req, res) => {
     
     select users.*, $1 as my_id from 
     my_friends mf join users on id = mf.my_friend_id;
-    `,[
+    `, [
         id
     ])
     res.json(myFriends.rows);
-  });
+});
