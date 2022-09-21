@@ -79,7 +79,7 @@ $(".close, .shadow").click(function () {
 });
 
 
-async function addStartChatFormEvent() {
+export async function addStartChatFormEvent() {
   const startChatForm = document.querySelector('#start-chat-form')
 
   startChatForm.addEventListener('submit', async (e) => {
@@ -106,7 +106,7 @@ async function addStartChatFormEvent() {
   })
 }
 
-addStartChatFormEvent();
+
 
 
 

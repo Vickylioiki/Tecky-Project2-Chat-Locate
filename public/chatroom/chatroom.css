@@ -375,6 +375,7 @@ position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
+    display: none;
 }
 
 .bi-x {
@@ -383,7 +384,61 @@ position: absolute;
 
 }
 
-.display-none {
+.btn_upload {
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+    background-color: #2a72d4;
+    border: 1px solid #166b8a;
+    padding: 5px 10px;
+  }
+  
+  .btn_upload:hover,
+  .btn_upload:focus {
+    background-color: #7ca9e6;
+  }
+  
+  .yes {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 10px !important;
+  }
+  
+  .btn_upload input {
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+    filter: alpha(opacity=1);
+    -moz-opacity: 0;
+    opacity: 0;
+  }
+  
+  .it {
+    height: 100px;
+    margin-left: 10px;
+  }
+  
+  .btn-rmv1 {
     display: none;
-
-}
+  }
+  
+  .rmv {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: #fff;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    display: inline-block;
+    background: rgba(255, 0, 0, 1);
+    margin: -5px -10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .rmv:hover {
+    background: rgba(255, 0, 0, 0.5);
+  }

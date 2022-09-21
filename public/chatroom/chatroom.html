@@ -62,14 +62,14 @@
                             <br>
                             <span class="about-me">
                                 </span>
-                            <div class="social-media">
+                            <!-- <div class="social-media">
                                 <div class="social-icon-wrapper instagram">
                                     <i class="fa fa-instagram"></i>
                                 </div>
                                 <div class="social-icon-wrapper facebook">
                                     <i class=" fa fa-facebook-f"></i>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
 
@@ -117,13 +117,15 @@
                     <div class="mb-3">
                         
                         <form action="/chat" method="POST" id="messageForm" enctype="multipart/form-data">
-                            <div class="preview-container">
-                                <div class="cross">
-                                    <i class="bi bi-x"></i>
-                                </div>
-                                <div id="preview"></div>
-                            </div>
-                            <input id="file-input" type="file" name="image">
+                           
+                            <div class="yes">
+                                <span class="btn_upload">
+                                  <input type="file" id="imag" name="image" class="input-img"/>
+                                  Choose Image
+                                  </span>
+                                <img id="ImgPreview" src="" class="preview1" />
+                                <button id="removeImage1" class="btn-rmv1" ><i class="bi bi-x"></i></button>
+                              </div>
                             <div class="form-outline form-white type-wrapper">
                                 <textarea name="content" class="form-control" id="textArea3"></textarea>
                                 <div class="button-group">

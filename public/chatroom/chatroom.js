@@ -3,13 +3,12 @@
 const messageArea = document.querySelector('.chat-container')
 const textArea = document.querySelector('#textArea3')
 // const emojiBtn = document.querySelector('.emoji');
-const leaveBtn = document.querySelector('.leave');
 const emojiBtn = document.querySelector('.emoji');
 const picker = new EmojiButton();
 const addFriendsButton = document.querySelector('.add-friends');
 const content_submit = document.querySelector('#messageForm')
 const chatContainer = document.querySelector('.chat-container');
-const leavenBtn = document.querySelector('.leaven-btn');
+const leaveBtn = document.querySelector('.leave-btn');
 
 
 
@@ -111,15 +110,7 @@ async function updateProfile() {
                             <label class="profile-title">About Me: </label>
                             <br>
                             <span class="about-me">${opponentUserInfo.aboutme}</span>
-                            <div class="social-media">
-                                <div class="social-icon-wrapper instagram">
-                                    <i class="fa fa-instagram"></i>
-                                </div>
-                                <div class="social-icon-wrapper facebook">
-                                    <i class=" fa fa-facebook-f"></i>
-                                </div>
-
-                            </div>
+             
         </div>
 
 
@@ -139,11 +130,11 @@ console.log(messageForm)
 
 
 
-$(function () {
-    $(".heart").on("click", function () {
-        $(this).toggleClass("is-active");
-    });
-});
+// $(function () {
+//     $(".heart").on("click", function () {
+//         $(this).toggleClass("is-active");
+//     });
+// });
 
 function updateSingleConversation(conversation) {
     let isWrittenByMe = conversation.from === myUserInfo.id
@@ -189,14 +180,16 @@ function updateSingleConversation(conversation) {
 `
     }
     messageArea.innerHTML += conversationHTML
-
+    
 }
+
 function updateConversations(conversations, myUserInfo, opponentUserInfo) {
     console.log(conversations)
     messageArea.innerHTML = ''
     for (let conversation of conversations) {
         updateSingleConversation(conversation, myUserInfo, opponentUserInfo)
     }
+    
 }
 
 
@@ -215,6 +208,7 @@ content_submit.addEventListener('submit', async function submit(e) {
 
     console.log(content)
 
+
     const res = await fetch('/chat', {
         method: 'POST',
         body: formData
@@ -225,17 +219,24 @@ content_submit.addEventListener('submit', async function submit(e) {
         document.querySelector('#messageForm').reset();
 
         let conversation = await res.json()
-        updateSingleConversation(conversation, myUserInfo, opponentUserInfo)
+        updateSingleConversation(conversation,myUserInfo, opponentUserInfo )
+        $("#imag").val("");
+        $("#ImgPreview").attr("src", "");
+        $('.preview1').removeClass('it');
+        $('.btn-rmv1').removeClass('rmv');
         chatContainer.scrollTop = chatContainer.scrollHeight;
 
     } else {
         console.log(err)
-    }
+    }})
 
-})
-
-
-
+  
+    textArea.addEventListener("keyup", function(event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            content_submit.click();
+        }
+    });
 
 
 async function init() {
@@ -247,46 +248,6 @@ async function init() {
 init();
 
 
-function previewImages() {
-
-    var preview = document.querySelector('#preview');
-
-    if (this.files) {
-        [].forEach.call(this.files, readAndPreview);
-    }
-
-    function readAndPreview(file) {
-
-        // Make sure `file.name` matches our extensions criteria
-        if (!/\.(jpe?g|png|gif)$/i.test(file.name)) {
-            return alert(file.name + " is not an image");
-        } // else...
-
-        var reader = new FileReader();
-
-        reader.addEventListener("load", function () {
-            var image = new Image();
-            image.height = 100;
-            image.title = file.name;
-            image.src = this.result;
-            preview.appendChild(image);
-        });
-
-        reader.readAsDataURL(file);
-
-    }
-
-}
-
-document.querySelector('#file-input').addEventListener("change", previewImages);
-
-const deleteBtn = document.querySelector('.cross')
-
-deleteBtn.addEventListener("click", function () {
-    document.querySelector('#file-input').value = '';
-    document.querySelectorAll('#preview img').remove();
-
-})
 
 
 leaveBtn.addEventListener("click", async function () {
@@ -298,5 +259,37 @@ leaveBtn.addEventListener("click", async function () {
     }
 
 
-
 })
+
+
+
+function readURL(input, imgControlName) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        $(imgControlName).attr('src', e.target.result);
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+
+  
+  $("#imag").change(function() {
+    // add your logic to decide which image control you'll use
+    var imgControlName = "#ImgPreview";
+    readURL(this, imgControlName);
+    $('.preview1').addClass('it');
+    $('.btn-rmv1').addClass('rmv');
+    
+  });
+  
+  $("#removeImage1").click(function(e) {
+    e.preventDefault();
+    $("#imag").val("");
+    $("#ImgPreview").attr("src", "");
+    $('.preview1').removeClass('it');
+    $('.btn-rmv1').removeClass('rmv');
+  });
+  
+//   chatContainer.scrollTop = chatContainer.scrollHeight;

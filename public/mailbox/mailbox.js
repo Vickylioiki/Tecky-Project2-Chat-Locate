@@ -48,6 +48,9 @@ function getStatusHTMLMailBox(notificationItem) {
 async function getNotificationsMailbox() {
 
     let res = await fetch('/user/notifications')
+    if(!res.ok){
+        return
+    }
     let data = await res.json()
     let notificationItems = data.data
 
