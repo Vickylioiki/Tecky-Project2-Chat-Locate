@@ -48,7 +48,7 @@ function getStatusHTMLMailBox(notificationItem) {
 async function getNotificationsMailbox() {
 
     let res = await fetch('/user/notifications')
-    if(!res.ok){
+    if (!res.ok) {
         return
     }
     let data = await res.json()
@@ -147,7 +147,7 @@ async function getNotificationsMailbox() {
     }
     /* message notifications ends */
 
-    
+
     /* invitation notifications starts */
     console.log('before invitation notifications status button event listener')
     let statusBtns = document.querySelectorAll('button.status-mailbox');
@@ -232,15 +232,14 @@ let mailBoxInitPromise = new Promise(function (resolve, reject) {
     reject();
 })
 
-// mailBoxInitPromise
-//     .then(getNotifications, null)
-//     // .then(addStartChatFormEvent, null)
-// //     .catch((e) => console.log('initPromise catch error: ', e))
-// getNotifications()
-// addStartChatFormEvent()
+mailBoxInitPromise
+    .then(getNotificationsMailbox, null)
+    // .then(addStartChatFormEvent, null)
+    .catch((e) => console.log('initPromise catch error: ', e))
 
 
-function init() {
-    getNotificationsMailbox()
-}
-init()
+
+// function init() {
+//     getNotificationsMailbox()
+// }
+// init()

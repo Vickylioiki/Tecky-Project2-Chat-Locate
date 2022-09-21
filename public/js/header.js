@@ -1,4 +1,4 @@
-import { addStartChatFormEvent } from "/profile_page/profile.js"
+
 async function initHeader() {
   let headerElm = document.querySelector('.header')
 
@@ -16,7 +16,7 @@ async function initHeader() {
         <div class="notifications">
           <div class="icon_wrap"><i class="far fa-bell"></i></div>
 
-          <div class="notification_dd">
+          <div class="notification_dd" style="display: none;">
             <ul class="notification_ul">
 
               <li class="baskin_robbins failed">
@@ -117,101 +117,6 @@ async function initHeader() {
   }
 }
 
-export async function getFriends() {
-  let res = await fetch('/user/friends');
-  let friends_list = await res.json();
-  let friends_session = document.querySelector('.friends_list_inner');
-
-  console.log(friends_list);
-  friends_session.innerHTML = "";
-
-  if (friends_list.length == 0) {
-    friends_session.innerHTML += /*HTML*/`<article class="leaderboard__profile">
-    
-    <span class="leaderboard__name">No Friends Yet</span>
-    <span class="leaderboard__value">
-      <form id="start-chat-form">
-        
-      </form>
-    </span>
-  </article>`;
-
-
-  }
-
-  for (let friend of friends_list) {
-    friends_session.innerHTML += /*HTML*/`<a href="http://localhost:8080/profile_page/profile.html?userId=${friend.id}"><article class="leaderboard__profile">
-    <img src="${friend.icon}" alt="${friend.name}" userID="${friend.id}"
-      class="leaderboard__picture">
-    <span class="leaderboard__name">${friend.name}</span>
-    <span class="leaderboard__value">
-      <form id="start-chat-form">
-        <button type="submit" class="btn btn-success">Chat</button>
-      </form>
-    </span>
-  </article></a>`;
-  }
-  let friendList = document.querySelectorAll(".friends_list_inner .leaderboard__profile");
-
-  console.log(friendList);
-
-  for (let friend of friendList) {
-    console.log("friend Clicked");
-    friend.addEventListener("click", function (e) {
-      friendID = friend.querySelector('.leaderboard__picture').getAttribute('userid');
-      window.location.href = `/profile_page/profile.html?userId=${friendID}`;
-
-    })
-  }
-
-  getProfile();
-  addStartChatFormEvent()
-
-}
-
-export async function getProfile() {
-  let search = new URLSearchParams(window.location.search);
-  let targetUserId = search.get('userId');
-  let res = await fetch('/user/me');
-  let data = await res.json();
-  let dateOfBirth = new Date(data.date_of_birth);
-
-
-  if (targetUserId) {
-    console.log(targetUserId);
-    res = await fetch(`/user/user-profile/${targetUserId}`);
-    data = await res.json();
-    console.log(data);
-    dateOfBirth = new Date(data.date_of_birth);
-    document.querySelector(".edit-btn").remove();
-    document.querySelector(".friends-btn").remove();
-    document.querySelector(".btn-white.btn-animate").remove();
-  }
-
-  console.log(dateOfBirth.getMonth());
-
-
-  let profileCard = document.querySelector(".bio-graph-info");
-  document.querySelector(".icon_wrap img").setAttribute("src", data.icon);
-  document.querySelector(".profile-card__img img").setAttribute("src", data.icon);
-  document.querySelector(".profile-card__name").value = toProperCase(data.name.split(" ").join[" "]);
-  document.querySelector("#header-occupation").innerHTML = toProperCase(data.occupation) + " ";
-  document.querySelector('#company').innerHTML = data.company;
-  document.querySelector('.profile-card__name').innerHTML = toProperCase(data.name);
-  profileCard.querySelector("#name").value = toProperCase(data.name);
-  profileCard.querySelector("#about-me").value = data.aboutme;
-  profileCard.querySelector("#date-of-birth").value = [dateOfBirth.getFullYear(), dateOfBirth.getMonth() + 1, dateOfBirth.getDate()].join('-');
-  profileCard.querySelector("#occupation").value = toProperCase(data.occupation);
-  profileCard.querySelector("#hobby").value = toProperCase(data.hobby);
-  profileCard.querySelector("#country").value = toProperCase(data.country);
-
-  // console.log(profileCard);
-
-  if (res.ok) {
-    document.querySelector('.profile .name').innerText = data.name
-  }
-}
-
 
 function toProperCase(str) {
   let formattedName = "";
@@ -304,9 +209,9 @@ async function getNotifications() {
   <a href="/mailbox/mailbox.html"><p class="link">Show All Activities</p></a>
   </li>`
 
-  let bellElm = document.querySelector('.notifications')
-  bellElm.addEventListener('click', () => {
-    let notificationListElem = bellElm.querySelector('.notification_dd')
+  let bellBtn = document.querySelector('.notifications .icon_wrap')
+  bellBtn.addEventListener('click', () => {
+    let notificationListElem = bellBtn.parentNode.querySelector('.notification_dd')
     notificationListElem.style.display = notificationListElem.style.display == 'none' ? 'block' : 'none'
   })
   let statusBtns = document.querySelectorAll('button.status');
@@ -330,7 +235,8 @@ async function getNotifications() {
       })
       if (res.ok) {
         console.log(status, ' friend success')
-        getNotifications()
+        await getNotifications();
+        await getFriends();
         // window.location.href = "/chatroom/chatroom.html"
       } else {
         let { message } = await res.json()
@@ -401,6 +307,15 @@ async function logout() {
 //   console.log('clicking :', notificationId, status)
 // }
 
+async function updateHeader(){
+  let res = await fetch(`/user/user-profile`);
+  if(res.ok){
+    let resJson = await res.json();
+    console.log('updateHeader user response: ', resJson);
+    document.querySelector('.profile .name').innerText = resJson.name
+  }
+}
+
 let initPromise = new Promise(function (resolve, reject) {
   resolve();
   reject();
@@ -408,7 +323,12 @@ let initPromise = new Promise(function (resolve, reject) {
 
 initPromise
   .then(initHeader, null)
-  .then(getFriends, null)
-  .then(getProfile, null)
+  .then(async()=>{
+    $(".profile .icon_wrap").click(function () {
+      $(this).parent().toggleClass("active");
+      $(".notifications").removeClass("active");
+    });
+  })
   .then(getNotifications, null)
+  .then(updateHeader, null)
   .then(logout) 
