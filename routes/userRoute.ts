@@ -4,30 +4,48 @@ import fetch from "cross-fetch";
 import crypto from "crypto";
 import moment from "moment";
 import { client } from "../utils/db";
+import { request } from "http";
 // import { request } from 'http'
 // import { Files } from "formidable";
 import { formParse } from "../utils/formidable";
-
-
-
+import formidable from "formidable";
+import { form } from "../utils/formidable";
+import { Files } from "formidable";
 
 export const userRoutes = express.Router();
 
+
+
+
+
+
 userRoutes.get("/", async (req, res) => {
-    let userResult = await client.query("select * from users");
-    res.json(userResult.rows);
+    try {
+        let userResult = await client.query("select * from users");
+        res.status(200).json(userResult.rows);
+    } catch (err) {
+        res.status(400).json(err);
+    }
 });
 
 userRoutes.get("/me", async (req, res) => {
-    res.json(req.session["user"]);
+    try {
+        res.status(200).json(req.session["user"]);
+    } catch (err) {
+        res.status(400).json(err);
+    }
 });
 
 userRoutes.get("/user-profile", async (req, res) => {
+    try {
     const id = req.query.userId ?? req.session["user"].id;
     console.log("id is " + id);
     let getUsers = await client.query("SELECT * FROM users WHERE id = $1", [id]);
 
-    res.json(getUsers.rows[0]);
+        res.status(200).json(getUsers.rows[0]);
+    } catch (err) {
+        res.status(400).json(err);
+    }
 });
 
 userRoutes.get("/friend-request", async (req, res) => {
@@ -35,43 +53,51 @@ userRoutes.get("/friend-request", async (req, res) => {
     // let toUserId = req.body.toUserId
     // let userResult = await client.query('insert into friends ')
     // status = 'PENDING'
-    res.json({
-        message: "Friend request sent.",
-    });
+    try {
+        res.status(200).json({
+            message: "Friend request sent.",
+        });
+    } catch (err) {
+        res.status(400).json(err);
+    }
 });
 
 userRoutes.get("/notifications", async (req, res) => {
-    let userId = req.session["user"]?.id;
-    let limit = req.query.limit;
-    console.log("/notifications req.session['user']", userId);
-    if (!userId) {
-        res.status(403).json({
-            message: "You should login first",
-        });
-        return;
-    }
+    try {
+        let userId = req.session["user"]?.id;
+        let limit = req.query.limit;
+        console.log("/notifications req.session['user']", userId);
+        if (!userId) {
+            res.status(403).json({
+                message: "You should login first",
+            });
+            return;
+        }
 
-    let result = await client.query(
-        `select notifications.*, users.name from notifications 
+        let result = await client.query(
+            `select notifications.*, users.name from notifications 
          inner join users on users.id = notifications.opponent_user_id
          where notifications.user_id = $1 
         ORDER BY notifications.created_at DESC;
         `,
-        [userId]
-    );
+            [userId]
+        );
 
-    // console.log('result.rows:', result.rows)
+        // console.log('result.rows:', result.rows)
 
-    let notificationItems = result.rows.map((notification) => {
-        return {
-            ...notification,
-            created_at: moment(notification.created_at).startOf("hour").fromNow(),
-        };
-    });
-    console.log("notificationItems: ", notificationItems);
-    res.json({
-        data: notificationItems,
-    });
+        let notificationItems = result.rows.map((notification) => {
+            return {
+                ...notification,
+                created_at: moment(notification.created_at).startOf("hour").fromNow(),
+            };
+        });
+        console.log("notificationItems: ", notificationItems);
+        res.json({
+            data: notificationItems,
+        });
+    } catch (err) {
+        res.status(400).json(err);
+    }
 });
 
 userRoutes.post("/notifications", async (req, res) => {
@@ -136,14 +162,18 @@ userRoutes.post("/notifications", async (req, res) => {
 });
 
 userRoutes.patch("/notifications", async (req, res) => {
-    const notificationId = req.body.notificationId;
-    console.log("patch /user/notifications notificationId: " + notificationId);
+    try {
+        const notificationId = req.body.notificationId;
+        console.log("patch /user/notifications notificationId: " + notificationId);
 
-    // disable notifications, so that they will not display on login afterwards
-    await client.query(`UPDATE notifications SET enabled = false WHERE id = ${notificationId}
-    `);
+        // disable notifications, so that they will not display on login afterwards
+        await client.query(`UPDATE notifications SET enabled = false WHERE id = ${notificationId}
+      `);
 
-    res.json({ status: "ok" });
+        res.status(200).json({ status: "ok" });
+    } catch (err) {
+        res.status(400).json(err);
+    }
 });
 
 userRoutes.post("/update-relation", async (req, res) => {
@@ -266,20 +296,28 @@ userRoutes.post("/update-relation", async (req, res) => {
  * or chat history
  */
 userRoutes.get("/get-chat", async (req, res) => {
-    let opponent = req.session["chat_user"];
+    try {
+        let opponent = req.session["chat_user"];
 
-    // if opponent exists
-    if (!opponent) {
-        res.json({ message: "opponent not found" });
+        // if opponent exists
+        if (!opponent) {
+            res.json({ message: "opponent not found" });
+        }
+
+        // sql query for chat history?
+
+        res.json({ userId: opponent });
+    } catch (err) {
+        res.status(400).json(err);
     }
-
-    // sql query for chat history?
-
-    res.json({ userId: opponent });
 });
 
 userRoutes.get("/show-all-activities", async (req, res) => {
-    res.end("ok");
+    try {
+        res.end("ok");
+    } catch (err) {
+        res.status(400).json(err);
+    }
 });
 
 userRoutes.post("/register", async (req, res) => {
@@ -321,52 +359,56 @@ userRoutes.post("/register", async (req, res) => {
 });
 
 userRoutes.post("/login", async (req: any, res: any) => {
-    console.log("userRoutes - /login", req.body);
-    const { username, password } = req.body;
-    if (!username || !password) {
-        res.status(400).json({
-            message: "Invalid username or password",
+    try {
+        console.log("userRoutes - /login", req.body);
+        const { username, password } = req.body;
+        if (!username || !password) {
+            res.status(400).json({
+                message: "Invalid username or password",
+            });
+            return;
+        }
+        console.log("/login-username and password checking passed!!");
+
+        let userResult = await client.query(
+            `select * from users where username = $1`,
+            [username]
+        );
+        let dbUser = userResult.rows[0];
+
+        if (!dbUser) {
+            res.status(400).json({
+                message: "Invalid username",
+            });
+            return;
+        }
+        console.log("/login-existing username checking passed!!");
+
+        let isMatched = await checkPassword(password, dbUser.password);
+        if (!isMatched) {
+            res.status(400).json({
+                message: "Invalid username or password",
+            });
+            return;
+        }
+        console.log("/login-valid password checking passed!!");
+
+        let {
+            password: dbUserPassword,
+            created_at,
+            updated_at,
+            ...filterUserProfile
+        } = dbUser;
+        req.session["user"] = filterUserProfile;
+        // req.session.save()
+
+        // console.log(sessionUser)
+        res.status(200).json({
+            message: "Success login",
         });
-        return;
+    } catch (err) {
+        res.status(400).json(err);
     }
-    console.log("/login-username and password checking passed!!");
-
-    let userResult = await client.query(
-        `select * from users where username = $1`,
-        [username]
-    );
-    let dbUser = userResult.rows[0];
-
-    if (!dbUser) {
-        res.status(400).json({
-            message: "Invalid username",
-        });
-        return;
-    }
-    console.log("/login-existing username checking passed!!");
-
-    let isMatched = await checkPassword(password, dbUser.password);
-    if (!isMatched) {
-        res.status(400).json({
-            message: "Invalid username or password",
-        });
-        return;
-    }
-    console.log("/login-valid password checking passed!!");
-
-    let {
-        password: dbUserPassword,
-        created_at,
-        updated_at,
-        ...filterUserProfile
-    } = dbUser;
-    req.session["user"] = filterUserProfile;
-    // req.session.save()
-
-    // console.log(sessionUser)
-    res.status(200).json({
-        message: "Success login",
-    });
 });
 //   console.log("/login-username and password checking passed!!");
 
@@ -408,7 +450,6 @@ userRoutes.post("/login", async (req: any, res: any) => {
 //     message: "Success login",
 // });
 // });
-
 
 userRoutes.get("/logout", (req, res) => {
     try {
@@ -592,35 +633,39 @@ async function logininstagram(req: express.Request, res: express.Response) {
 userRoutes.put("/profile", updateProfile);
 
 async function updateProfile(req: express.Request, res: express.Response) {
-    const id = parseInt(req.session["user"].id);
-    const myName = req.body.name;
-    const aboutMe = req.body.aboutme;
-    const dateOfBirth = moment(req.body.date_of_birth, "YYYY-MM-DD").toDate();
-    const occupation = req.body.occupation;
-    const hobby = req.body.hobby;
-    const country = req.body.country;
+    try {
+        const id = parseInt(req.session["user"].id);
+        const myName = req.body.name;
+        const aboutMe = req.body.aboutme;
+        const dateOfBirth = moment(req.body.date_of_birth, "YYYY-MM-DD").toDate();
+        const occupation = req.body.occupation;
+        const hobby = req.body.hobby;
+        const country = req.body.country;
 
-    await client.query(
-        `UPDATE users SET aboutme = $1, name= $2, date_of_birth= $3, occupation= $4, hobby=$5, country=$6 WHERE id = $7
+        await client.query(
+            `UPDATE users SET aboutme = $1, name= $2, date_of_birth= $3, occupation= $4, hobby=$5, country=$6 WHERE id = $7
     `,
-        [aboutMe, myName, dateOfBirth, occupation, hobby, country, id]
-    );
+            [aboutMe, myName, dateOfBirth, occupation, hobby, country, id]
+        );
 
-    let userResult = await client.query(`select * from users where id = $1`, [
-        id,
-    ]);
+        let userResult = await client.query(`select * from users where id = $1`, [
+            id,
+        ]);
 
-    let dbUser = userResult.rows[0];
+        let dbUser = userResult.rows[0];
 
-    let {
-        password: dbUserPassword,
-        created_at,
-        updated_at,
-        ...filterUserProfile
-    } = dbUser;
-    req.session["user"] = filterUserProfile;
+        let {
+            password: dbUserPassword,
+            created_at,
+            updated_at,
+            ...filterUserProfile
+        } = dbUser;
+        req.session["user"] = filterUserProfile;
 
-    res.send("Profile Updated");
+        res.send("Profile Updated");
+    } catch (err) {
+        res.status(400).json(err);
+    }
 }
 
 userRoutes.get("/profile", loadProfile);
@@ -657,100 +702,142 @@ async function loadProfile(req: express.Request, res: express.Response) {
 //   );
 // }
 
-userRoutes.post("/upload-image",)
+userRoutes.post("/upload-image", uploadImage);
 
 async function uploadImage(req: express.Request, res: express.Response) {
     const id = req.session["user"].id;
-    const iconURL = req.body.iconURL;
 
+    form.parse(req, async (err: any, fields: any, files: Files) => {
+        if (err) {
+            console.log("err:", err);
+        }
 
-    await client.query(`UPDATE users SET icon=$1 WHERE id = $2
-    `, [iconURL, id])
+        try {
+            const content = fields.content;
+            // const fromSocketId = fields.fromSocketId;
+            let imageFile: any = ""; //因為有可能係null
+            let file = Array.isArray(files.image) ? files.image[0] : files.image; //如果多過一個file upload, file 就會係一串array
+            //upload file都要check, 有機會upload多過一個file(會以array存),
+            //如果係Array就淨係拎第1個file, 即file.image[0],
+            //如果只有一個file, 即files.image
+            if (file) {
+                imageFile = file.newFilename;
+            }
 
-    res.status(200).send("Profile Pic uploaded");
+            await client.query(
+                `UPDATE users SET icon=$1 WHERE id = $2
+            `,
+                [imageFile, id]
+            );
 
+            return;
+            res.status(200).json("Upload image");
+
+        } catch (err) {
+            res.status(400).json("internal server error");
+            console.log(err);
+        }
+    });
 }
-
-
 
 userRoutes.post("/friend-request", addFriends);
 
 async function addFriends(req: express.Request, res: express.Response) {
-    const id = req.session["user"].id;
-    const opponent_user_id = req.body.opponentUserId;
-    const message = req.body.message;
-    const iconResult = (
-        await client.query("SELECT icon FROM users WHERE id=$1", [opponent_user_id])
-    ).rows[0];
+    try {
+        const id = req.session["user"].id;
+        const opponent_user_id = req.body.opponentUserId;
+        const message = req.body.message;
+        const iconResult = (
+            await client.query("SELECT icon FROM users WHERE id=$1", [
+                opponent_user_id,
+            ])
+        ).rows[0];
 
-    await client.query(
-        `INSERT INTO notifications 
-    (user_id, opponent_user_id, message, icon) 
-    VALUES ($1, $2, $3, $4)`,
-        [id, opponent_user_id, message, iconResult.icon]
-    );
-    res.json({
-        message: "Sent friend request",
-    });
+        await client.query(
+            `INSERT INTO notifications 
+      (user_id, opponent_user_id, message, icon) 
+      VALUES ($1, $2, $3, $4)`,
+            [id, opponent_user_id, message, iconResult.icon]
+        );
+        res.status(200).json({
+            message: "Sent friend request",
+        });
+    } catch (err) {
+        res.status(400).json(err);
+    }
 }
-
 
 userRoutes.post("/accept-friends", acceptFriends);
 
 async function acceptFriends(req: express.Request, res: express.Response) {
-    const from_user_id = req.session["user"].id;
-    const to_user_id = req.body.to_user_id;
-    const status = req.body.status;
+    try {
+        const from_user_id = req.session["user"].id;
+        const to_user_id = req.body.to_user_id;
+        const status = req.body.status;
 
-    await client.query(
-        `INSERT INTO friends_list (from_user_id, to_user_id, status) VALUES ($1, $2, $3)`,
-        [from_user_id, to_user_id, status]
-    );
+        await client.query(
+            `INSERT INTO friends_list (from_user_id, to_user_id, status) VALUES ($1, $2, $3)`,
+            [from_user_id, to_user_id, status]
+        );
+
+        res.status(200).json("accepted");
+    } catch (err) {
+        res.status(400).json(err);
+    }
 }
 
 userRoutes.patch("/reject-friends", rejectFriends);
 
 async function rejectFriends(req: express.Request, res: express.Response) {
-    const id = req.session.id;
-    const opponent_user_id = req.body.opponent_user_id;
-    const status = req.body.status;
+    try {
+        const id = req.session.id;
+        const opponent_user_id = req.body.opponent_user_id;
+        const status = req.body.status;
 
-    await client.query(
-        `UPDATE notifications SET status=$1 WHERE user_id=$2, opponent_user_id=$3`,
-        [id, opponent_user_id, status]
-    );
+        await client.query(
+            `UPDATE notifications SET status=$1 WHERE user_id=$2, opponent_user_id=$3`,
+            [id, opponent_user_id, status]
+        );
 
+        res.status(200).json("rejected friend");
+    } catch (err) {
+        res.status(400).json(err);
+    }
 }
 
 // Get Friends from table: friends_list
 
 userRoutes.get("/friends", async (req, res) => {
-    const id = req.session["user"].id;
+    try {
+        const id = req.session["user"].id;
 
-    let myFriends = await client.query(
+        let myFriends = await client.query(
       /*sql*/ `
-    with 
-    active as (
-    select 
-    to_user_id as my_friend_id
-    from friends_list fl where from_user_id  = $1
-    ),
-    
-    passive as (
-    select from_user_id  as my_friend_id 
-    from friends_list fl where to_user_id  = $1
-    ),
-    
-    my_friends as(
-    select * from passive union
-    select * from active 
-    )
-    
-    
-    select users.*, $1 as my_id from 
-    my_friends mf join users on id = mf.my_friend_id;
-    `, [
-        id
-    ])
-    res.json(myFriends.rows);
+      with 
+      active as (
+      select 
+      to_user_id as my_friend_id
+      from friends_list fl where from_user_id  = $1
+      ),
+      
+      passive as (
+      select from_user_id  as my_friend_id 
+      from friends_list fl where to_user_id  = $1
+      ),
+      
+      my_friends as(
+      select * from passive union
+      select * from active 
+      )
+      
+      
+      select users.*, $1 as my_id from 
+      my_friends mf join users on id = mf.my_friend_id;
+      `,
+            [id]
+        );
+        res.status(200).json(myFriends.rows);
+    } catch (err) {
+        res.status(400).json(err);
+    }
 });

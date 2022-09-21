@@ -9,6 +9,7 @@ async function initHeader() {
       <div class="navbar_left">
         <div class="logo">
           <a href="http://localhost:8080/profile_page/profile.html">Chatlocal</a>
+          
         </div>
       </div>
 
@@ -18,7 +19,7 @@ async function initHeader() {
 
           <div class="notification_dd" style="display: none;">
             <ul class="notification_ul">
-
+            
               <li class="baskin_robbins failed">
                 <img class="notify-icon" src="https://randomuser.me/api/portraits/men/84.jpg">
                 <div class="notify_data">
@@ -98,15 +99,15 @@ async function initHeader() {
           <div class="icon_wrap">
             <img src="https://randomuser.me/api/portraits/women/63.jpg" alt="profile_pic">
             <span class="name">John Alex</span>
-            <i class="fas fa-chevron-down"></i>
+            <i class="fas fa-sign-out-alt"></i>
           </div>
-
+          
           <div class="profile_dd">
             <ul class="profile_ul">
               <li class="profile_li"><a class="profile" href="#"><span class="picon"><i class="fas fa-user-alt"></i>
                   </span>Profile</a>
               </li>
-              <li><a class="logout" href="#"><span class="picon"><i class="fas fa-sign-out-alt"></i></span>Logout</a>
+              <li><a class="logout" href="#"><span class="picon"></span>Logout</a>
               </li>
             </ul>
           </div>
@@ -251,6 +252,7 @@ async function getNotifications() {
 //   let response = await fetch('/user/logout');
 //   console.log('header button triggered logout API call!', response)
 // }
+
 
 async function logout() {
   const logoutBtn = document.querySelector('.logout')

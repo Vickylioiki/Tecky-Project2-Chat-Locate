@@ -5,25 +5,9 @@ let friendsButton = document.querySelector(".friends-btn");
 let fds_list_session = document.querySelector(".friends-list-session");
 let editButton = document.querySelector(".edit-btn");
 let bioRow = document.querySelectorAll(".bio-row .profile-session");
+let uploadImage = document.querySelector(".upload-image");
 
-$(".profile .icon_wrap").click(function () {
-  $(this).parent().toggleClass("active");
-  $(".notifications").removeClass("active");
-});
 
-$(".notifications .icon_wrap").click(function () {
-  $(this).parent().toggleClass("active");
-  $(".profile").removeClass("active");
-});
-
-$(".show_all .link").click(function () {
-  $(".notifications").removeClass("active");
-  $(".popup").show();
-});
-
-$(".close, .shadow").click(function () {
-  $(".popup").hide();
-});
 
 async function getFriends() {
   let res = await fetch('/user/friends');
@@ -71,6 +55,30 @@ async function getFriends() {
 
     })
   }
+  uploadImage.addEventListener("submit", async (e) => {
+    e.preventDefault()
+
+    const formElement = e.target;
+    const content = formElement.content.value;
+    const image = formElement.image.files[0];
+
+    const formData = new FormData();
+
+    formData.append('content', content)
+    formData.append('image', image)
+
+    console.log(content)
+
+    const res = await fetch('/user/upload-image', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (res.ok) {
+      document.querySelector('.upload-image').reset();
+    }
+
+  });
 
   await getProfile();
   await addStartChatFormEvent()
@@ -150,7 +158,6 @@ editButton.addEventListener("click", async function (event) {
     let hobby = document.querySelector("#hobby").value;
     let country = document.querySelector("#country").value;
 
-    console.log(aboutMe)
 
     let res = await fetch('/user/profile', {
       method: 'PUT',
@@ -206,46 +213,69 @@ async function addStartChatFormEvent() {
 
 // let startMatching = document.querySelector(""
 
-  // let friendsButton = document.querySelector(".friends-btn");
-  // let fds_list_session = document.querySelector(".friends-list-session");
-  // let editButton = document.querySelector(".edit-btn");
-  // let bioRow = document.querySelectorAll(".bio-row input");
+// let friendsButton = document.querySelector(".friends-btn");
+// let fds_list_session = document.querySelector(".friends-list-session");
+// let editButton = document.querySelector(".edit-btn");
+// let bioRow = document.querySelectorAll(".bio-row input");
 
 
-  // window.onload(getProfile);
+// window.onload(getProfile);
 
 
-  // async function getProfile() {
-  //   let res = await fetch('/user/me')
-  //   let data = await res.json()
-  //   dateOfBirth = new Date(data.dateofbirth);
-  //   console.log("daya profile: " + dateOfBirth.getFullYear())
+// async function getProfile() {
+//   let res = await fetch('/user/me')
+//   let data = await res.json()
+//   dateOfBirth = new Date(data.dateofbirth);
+//   console.log("daya profile: " + dateOfBirth.getFullYear())
 
-  //   let profileCard = document.querySelector(".bio-graph-info");
+//   let profileCard = document.querySelector(".bio-graph-info");
 
-  //   document.querySelector(".profile-card__name").value = data.name;
-  //   document.querySelector("#header-occupation").innerHTML = toProperCase(data.occupation) + " ";
-  //   document.querySelector('#company').innerHTML = data.company;
-  //   document.querySelector('.profile-card__name').innerHTML = toProperCase(data.name);
-  //   profileCard.querySelector("#name").value = toProperCase(data.name);
-  //   profileCard.querySelector("#about-me").value = data.aboutme;
-  //   profileCard.querySelector("#date-of-birth").value = [dateOfBirth.getFullYear(), dateOfBirth.getMonth(), dateOfBirth.getDate()].join('-');
-  //   profileCard.querySelector("#occupation").value = toProperCase(data.occupation);
-  //   profileCard.querySelector("#hobby").value = toProperCase(data.hobby);
-  //   profileCard.querySelector("#country").value = toProperCase(data.country);
+//   document.querySelector(".profile-card__name").value = data.name;
+//   document.querySelector("#header-occupation").innerHTML = toProperCase(data.occupation) + " ";
+//   document.querySelector('#company').innerHTML = data.company;
+//   document.querySelector('.profile-card__name').innerHTML = toProperCase(data.name);
+//   profileCard.querySelector("#name").value = toProperCase(data.name);
+//   profileCard.querySelector("#about-me").value = data.aboutme;
+//   profileCard.querySelector("#date-of-birth").value = [dateOfBirth.getFullYear(), dateOfBirth.getMonth(), dateOfBirth.getDate()].join('-');
+//   profileCard.querySelector("#occupation").value = toProperCase(data.occupation);
+//   profileCard.querySelector("#hobby").value = toProperCase(data.hobby);
+//   profileCard.querySelector("#country").value = toProperCase(data.country);
 
 
-  //   console.log(profileCard);
+//   console.log(profileCard);
 
-  //   if (res.ok) {
-  //     document.querySelector('.profile .name').innerText = data.name
-  //   }
-  // }
+//   if (res.ok) {
+//     document.querySelector('.profile .name').innerText = data.name
+//   }
+// }
 
-  let initProfilePromise = new Promise(function (resolve, reject) {
-    resolve();
-    reject();
+let initProfilePromise = new Promise(function (resolve, reject) {
+  resolve();
+  reject();
+})
+
+initProfilePromise
+  .then(getFriends, null)
+  .then(async()=>{
+    $(".profile .icon_wrap").click(function () {
+      $(this).parent().toggleClass("active");
+      $(".notifications").removeClass("active");
+    });
   })
-  
-  initProfilePromise
-    .then(getFriends, null)
+  .then(async()=>{
+    $(".notifications .icon_wrap").click(function () {
+      $(this).parent().toggleClass("active");
+      $(".profile").removeClass("active");
+    });
+  })
+  .then(async()=>{
+    $(".show_all .link").click(function () {
+      $(".notifications").removeClass("active");
+      $(".popup").show();
+    });
+  })
+  .then(async ()=>{ 
+    $(".close, .shadow").click(function () {
+      $(".popup").hide();
+    });
+  })

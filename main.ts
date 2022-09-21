@@ -20,18 +20,18 @@ export interface RoomInfomation {
 
 declare module "express-session" {
   interface SessionData {
-    name?: string
-    isloggedin?: boolean
-    location?: any
-    user?: any
-    gender?: string
-    contact_no?: string
-    aboutme?: string
-    dateofbirth?: string
-    occupation?: string
-    hobby?: string
-    country?: string
-    icon?: string
+    name?: string;
+    isloggedin?: boolean;
+    location?: any;
+    user?: any;
+    gender?: string;
+    contact_no?: string;
+    aboutme?: string;
+    dateofbirth?: string;
+    occupation?: string;
+    hobby?: string;
+    country?: string;
+    icon?: string;
   }
 }
 
@@ -55,7 +55,7 @@ setIO(io);
 
 app.use("/user", userRoutes);
 app.use("/match", isLoggedIn, matchRoutes);
-app.use("/chat", chatRoutes);
+app.use("/chat", isLoggedIn, chatRoutes);
 app.use("/upload", express.static("uploads"));
 app.use(express.static("public"));
 
