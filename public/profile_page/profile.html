@@ -22,8 +22,12 @@
         <a href="../matching/matching.html" class="btn btn-white btn-animate">Start Matching</a>
       </div>
       <div class="profile-card__img">
-        <img src="" alt="profile card">
+        <img src="" alt="profile card" class="">
       </div>
+      <form action="/user/upload-image" method="POST" id="upload-image" enctype="multipart/form-data">
+        <input type="file" id="myFile" name="filename"><br>
+        <input type="submit">
+      </form>
       <div class="profile-card__cnt js-profile-cnt">
         <div class="profile-card__name">LaSing Diu</div>
         <div class="profile-card__job-title"><span id="header-occupation">Software Engineer</span>from
@@ -204,6 +208,17 @@
 
           <main class="leaderboard__profiles">
             <div class="friends_list_inner">
+              <article class="leaderboard__profile">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mark Zuckerberg"
+                  class="leaderboard__picture">
+                <span class="leaderboard__name">Mark Zuckerberg</span>
+                <span class="leaderboard__value">
+                  <form id="start-chat-form">
+                    <input type="text" hidden value="99" name="userId">
+                    <button type="submit" class="btn btn-success">Chat</button>
+                  </form>
+                </span>
+              </article>
               <!-- <article class="leaderboard__profile">
                 <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mark Zuckerberg"
                   class="leaderboard__picture">

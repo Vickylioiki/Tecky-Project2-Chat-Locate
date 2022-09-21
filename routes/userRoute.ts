@@ -3,10 +3,11 @@ import { checkPassword, hashPassword } from "../hash";
 import fetch from "cross-fetch";
 import crypto from "crypto";
 import moment from "moment";
-// import { request } from "http";
 import { client } from "../utils/db";
 import { request } from "http";
 // import { request } from 'http'
+// import { Files } from "formidable";
+import { formParse } from "../utils/formidable";
 
 export const userRoutes = express.Router();
 
@@ -737,6 +738,21 @@ async function loadProfile(req: express.Request, res: express.Response) {
 //     [aboutMe, dateofBirth, occupation, hobby, country, id]
 //   );
 // }
+
+userRoutes.post("/upload-image");
+
+async function uploadImage(req: express.Request, res: express.Response) {
+  const id = req.session["user"].id;
+  const iconURL = req.body.iconURL;
+
+  await client.query(
+    `UPDATE users SET icon=$1 WHERE id = $2
+    `,
+    [iconURL, id]
+  );
+
+  res.status(200).send("Profile Pic uploaded");
+}
 
 userRoutes.post("/friend-request", addFriends);
 
