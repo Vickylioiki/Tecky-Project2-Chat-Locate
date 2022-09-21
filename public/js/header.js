@@ -7,7 +7,7 @@ async function initHeader() {
     <div class="navbar">
       <div class="navbar_left">
         <div class="logo">
-          <a href="#">Chatlocal</a>
+          <a href="http://localhost:8080/profile_page/profile.html">Chatlocal</a>
         </div>
       </div>
 
@@ -120,58 +120,99 @@ async function initHeader() {
   }
 }
 
-async function getFriends() {
-  let res = await fetch('/')
-  let data = await res.json();
+export async function getFriends() {
+  let res = await fetch('/user/friends');
+  let friends_list = await res.json();
+  let friends_session = document.querySelector('.friends_list_inner');
+
+  console.log(friends_list);
+  friends_session.innerHTML = "";
+
+  for (let friend of friends_list) {
+    friends_session.innerHTML += /*HTML*/`<a href="http://localhost:8080/profile_page/profile.html?userId=${friend.id}"><article class="leaderboard__profile">
+    <img src="${friend.icon}" alt="${friend.name}" userID="${friend.id}"
+      class="leaderboard__picture">
+    <span class="leaderboard__name">${friend.name}</span>
+    <span class="leaderboard__value">
+      <form id="start-chat-form">
+        <button type="submit" class="btn btn-success">Chat</button>
+      </form>
+    </span>
+  </article></a>`;
+  }
+  let friendList = document.querySelectorAll(".friends_list_inner .leaderboard__profile");
+
+  console.log(friendList);
+
+  for (let friend of friendList) {
+    console.log("friend Clicked");
+    friend.addEventListener("click", function (e) {
+      friendID = friend.querySelector('.leaderboard__picture').getAttribute('userid');
+      window.location.href = `/profile_page/profile.html?userId=${friendID}`;
+
+    })
+  }
+
+  getProfile();
 
 }
 
-async function getProfile() {
+export async function getProfile() {
+  let search = new URLSearchParams(window.location.search);
+  let targetUserId = search.get('userId');
+  let res = await fetch('/user/me');
+  let data = await res.json();
+  let dateOfBirth = new Date(data.date_of_birth);
 
-  let res = await fetch('/user/me')
-  let data = await res.json()
-  let dateOfBirth = new Date(data.dateofbirth);
-  console.log("daya profile: " + dateOfBirth.getFullYear())
+
+  if (targetUserId) {
+    console.log(targetUserId);
+    res = await fetch(`/user/user-profile/${targetUserId}`);
+    data = await res.json();
+    console.log(data);
+    dateOfBirth = new Date(data.date_of_birth);
+    document.querySelector(".edit-btn").remove();
+  }
+
+  console.log(dateOfBirth.getMonth());
+
 
   let profileCard = document.querySelector(".bio-graph-info");
-
-
-
-
+  document.querySelector(".icon_wrap img").setAttribute("src", data.icon);
+  document.querySelector(".profile-card__img img").setAttribute("src", data.icon);
   document.querySelector(".profile-card__name").value = toProperCase(data.name.split(" ").join[" "]);
   document.querySelector("#header-occupation").innerHTML = toProperCase(data.occupation) + " ";
   document.querySelector('#company').innerHTML = data.company;
   document.querySelector('.profile-card__name').innerHTML = toProperCase(data.name);
   profileCard.querySelector("#name").value = toProperCase(data.name);
   profileCard.querySelector("#about-me").value = data.aboutme;
-  profileCard.querySelector("#date-of-birth").value = [dateOfBirth.getFullYear(), dateOfBirth.getMonth(), dateOfBirth.getDate()].join('-');
+  profileCard.querySelector("#date-of-birth").value = [dateOfBirth.getFullYear(), dateOfBirth.getMonth() + 1, dateOfBirth.getDate()].join('-');
   profileCard.querySelector("#occupation").value = toProperCase(data.occupation);
   profileCard.querySelector("#hobby").value = toProperCase(data.hobby);
   profileCard.querySelector("#country").value = toProperCase(data.country);
 
-
-  console.log(profileCard);
+  // console.log(profileCard);
 
   if (res.ok) {
     document.querySelector('.profile .name').innerText = data.name
   }
 }
 
+
 function toProperCase(str) {
-  for (let chr of str) {
-    let formattedName = "";
-    let name_To_Upper = True;
+  let formattedName = "";
+  let name_To_Upper = true;
+  for (let index in str) {
     if (name_To_Upper) {
-      formattedName += chr.toUpperCase();
-      name_To_Upper = False;
+      formattedName += str[index].toUpperCase();
+      name_To_Upper = false;
     }
-    else if (chr = " ") {
-      formattedName += chr.ToLowerCase();
-      name_To_Upper = True;
+    else if (str[index] == " ") {
+      formattedName += str[index].toLowerCase();
+      name_To_Upper = true;
     }
     else {
-      formattedName += chr.ToLowerCase();
-
+      formattedName = formattedName + (str[index].toLowerCase());
     }
   }
   return formattedName
@@ -282,10 +323,10 @@ function getStatusHTML(notificationItem) {
 //   console.log('getNotification after reject friend form event listener')
 // }
 
-async function logout() {
-  let response = await fetch('/user/logout');
-  console.log('header button triggered logout API call!', response)
-}
+// async function logout() {
+//   let response = await fetch('/user/logout');
+//   console.log('header button triggered logout API call!', response)
+// }
 
 async function logout() {
   const logoutBtn = document.querySelector('.logout')
@@ -409,14 +450,16 @@ async function getNotifications() {
   //   elem.parentNode.removeChild(elem);
   //   return false;
   // }
+}
 
-  let initPromise = new Promise(function (resolve, reject) {
-    resolve();
-    reject();
-  })
+let initPromise = new Promise(function (resolve, reject) {
+  resolve();
+  reject();
+})
 
-  initPromise
-    .then(initHeader, null)
-    .then(getProfile, null)
-    .then(getNotifications, null)
-    .then(logout)
+initPromise
+  .then(initHeader, null)
+  .then(getFriends, null)
+  .then(getProfile, null)
+  .then(getNotifications, null)
+  .then(logout)

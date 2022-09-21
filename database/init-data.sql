@@ -5,16 +5,13 @@ INSERT INTO users (
         aboutme,
         hobby,
         country,
-<<<<<<< HEAD
-        company
-=======
+        company,
         occupation,
         icon,
         gender,
         date_of_birth,
         contact_no,
         payme_qr_code
->>>>>>> 3a23f8604ba8caa8528fd97d12a4ea58c95cf199
     )
 VALUES (
         'Peter',
@@ -23,16 +20,13 @@ VALUES (
         'I am single.',
         'badminton',
         'Australia',
-<<<<<<< HEAD
-        'bank'
-=======
+        'bank',
         'student',
         'https://randomuser.me/api/portraits/men/20.jpg',
         'M',
         '2000-10-05',
         '99991234',
         NULL
->>>>>>> 3a23f8604ba8caa8528fd97d12a4ea58c95cf199
     ),
     (
         'May',
@@ -40,18 +34,14 @@ VALUES (
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'I go by bus',
         'badminton',
-<<<<<<< HEAD
-        'Australia',
-        'start up'
-=======
         'Hong Kong',
+        'start up',
         'Teacher',
         'https://randomuser.me/api/portraits/women/63.jpg',
         'F',
         '1999-10-10',
         '99991234',
         NULL
->>>>>>> 3a23f8604ba8caa8528fd97d12a4ea58c95cf199
     ),
     (
         'John',
@@ -59,18 +49,14 @@ VALUES (
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'I like play football',
         'badminton',
-<<<<<<< HEAD
         'Australia',
-        'start up'
-=======
-        'Japan',
+        'start up',
         'Programmer',
         'https://randomuser.me/api/portraits/men/62.jpg',
         'M',
         '1990-01-10',
         '99991234',
         NULL
->>>>>>> 3a23f8604ba8caa8528fd97d12a4ea58c95cf199
     ),
     (
         'James Lam',
@@ -78,9 +64,14 @@ VALUES (
         '$2a$10$rezRotmMAxAO02TFAg2g/OA5rRI7JCPLkwuOOy9bzqF0951dS6w22',
         'I like make friends.',
         'badminton',
-<<<<<<< HEAD
         'Australia',
-        'medical group'
+        'medical group',
+        'Programmer',
+        'https://randomuser.me/api/portraits/men/62.jpg',
+        'M',
+        '1990-01-10',
+        '99991234',
+        NULL
     );
 insert into facebook_profile (
         fb_id,
@@ -119,16 +110,13 @@ VALUES (
         'May',
         2,
         'https://www.instagram.com/profile.php?u=John',
-        11
-=======
-        'Singapore',
+        11 == == == = 'Singapore',
         'Doctor',
         'https://randomuser.me/api/portraits/men/88.jpg',
         'M',
         '1989-10-10',
         '99991234',
-        NULL
->>>>>>> 3a23f8604ba8caa8528fd97d12a4ea58c95cf199
+        NULL >> >> >> > 3a23f8604ba8caa8528fd97d12a4ea58c95cf199
     );
 -- insert into facebook_profile (
 --         fb_id,

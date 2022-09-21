@@ -18,6 +18,16 @@ userRoutes.get("/me", async (req, res) => {
     res.json(req.session["user"]);
 });
 
+userRoutes.get("/user-profile/:userId", async (req, res) => {
+    const id = req.params.userId;
+    console.log("id is " + id);
+    let getUsers = await client.query("SELECT * FROM users WHERE id = $1", [id]);
+
+    res.json(getUsers.rows[0]);
+
+
+})
+
 userRoutes.get("/friend-request", async (req, res) => {
     // let fromUserId = req.session['user'].id
     // let toUserId = req.body.toUserId
@@ -550,12 +560,12 @@ async function updateProfile(req: express.Request, res: express.Response) {
     const id = parseInt(req.session['user'].id);
     const myName = req.body.name;
     const aboutMe = req.body.aboutme;
-    const dateOfBirth = moment(req.body.dateofbirth, 'YYYY-MM-DD').toDate();
+    const dateOfBirth = moment(req.body.date_of_birth, 'YYYY-MM-DD').toDate();
     const occupation = req.body.occupation;
     const hobby = req.body.hobby;
     const country = req.body.country;
 
-    await client.query(`UPDATE users SET aboutme = $1, name= $2, dateofbirth= $3, occupation= $4, hobby=$5, country=$6 WHERE id = $7
+    await client.query(`UPDATE users SET aboutme = $1, name= $2, date_of_birth= $3, occupation= $4, hobby=$5, country=$6 WHERE id = $7
     `, [aboutMe, myName, dateOfBirth, occupation, hobby, country, id]);
 
     let userResult = await client.query(
@@ -652,3 +662,39 @@ async function loadProfile(req: express.Request, res: express.Response) {
 //     await client.query(`UPDATE notifications SET status=$1 WHERE user_id=$2, opponent_user_id=$3`,[id,opponent_user_id,status]);
 
 // }
+
+
+// Get Friends from table: friends_list
+
+userRoutes.get("/friends", async (req, res) => {
+    const id = req.session['user'].id;
+
+    let myFriends = await client.query(/*sql*/ `
+    with 
+    active as (
+    select 
+    to_user_id as my_friend_id
+    from friends_list fl where from_user_id  = $1
+    ),
+    
+    passive as (
+    select from_user_id  as my_friend_id 
+    from friends_list fl where to_user_id  = $1
+    ),
+    
+    my_friends as(
+    select * from passive union
+    select * from active 
+    )
+    
+    
+    select users.*, $1 as my_id from 
+    my_friends mf join users on id = mf.my_friend_id;
+    `, [id]);
+
+    res.json(myFriends.rows);
+
+});
+
+
+

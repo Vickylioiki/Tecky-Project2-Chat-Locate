@@ -1,29 +1,13 @@
 -- create database chat_locate;
 CREATE TABLE users (
     id SERIAL primary key,
-<<<<<<< HEAD
-    name varchar(255) not null,
-    username varchar(255) not null,
-    password varchar(255) not null,
-    gender char null,
-    contact_no int,
-    aboutMe text,
-    dateofBirth date,
-    occupation text,
-    hobby text,
-    country text,
-    icon text,
-    company text,
-    payme_qr_code text,
-    created_at timestamp not null default now(),
-    updated_at timestamp default now()
-=======
     name varchar(255) NOT NULL,
     username varchar(255) NOT NULL,
     password varchar(255) NOT NULL,
     aboutme text NULL,
     hobby text NULL,
     country text NULL,
+    company text NULL,
     occupation text NULL,
     icon text default 'https://cdn.wallpapersafari.com/22/27/fZqLX0.jpg',
     gender bpchar(1) NULL,
@@ -32,7 +16,6 @@ CREATE TABLE users (
     payme_qr_code text NULL,
     created_at timestamp NOT NULL DEFAULT now(),
     updated_at timestamp NULL DEFAULT now()
->>>>>>> 3a23f8604ba8caa8528fd97d12a4ea58c95cf199
 );
 CREATE TABLE instagram_profile (
     id SERIAL primary key,
