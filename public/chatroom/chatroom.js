@@ -11,8 +11,6 @@ const chatContainer = document.querySelector('.chat-container');
 const leaveBtn = document.querySelector('.leave-btn');
 
 
-
-
 let opponentUserInfo, myUserInfo
 
 
@@ -58,12 +56,13 @@ if (document.body) {
 
 if (addFriendsButton) {
     addFriendsButton.addEventListener("click", async (event) => {
-        event.preventDefault();
+        let opponent_userId = document.querySelector(".profile-info").getAttribute("userId")
 
-        let res = await fetch('/addFriends', {
+
+        let res = await fetch('/user/friend-request', {
             method: "POST",
             body: JSON.stringify({
-                opponent_user_id: "2",   //HARD CODING NEEDA EDIT BEFORE DEPLOYMENT
+                opponent_user_id: opponent_userId,
                 message: "hello can i add you?",
 
             })
@@ -80,6 +79,8 @@ async function updateProfile() {
         let result = await res.json();
         let conversations = result.conversations
         opponentUserInfo = result.opponentUserInfo
+        console.log(result);
+
         myUserInfo = result.myUserInfo
         // const profileData_age = age(profileData.dateofBirth)
         updateConversations(conversations, myUserInfo, opponentUserInfo)
@@ -92,7 +93,7 @@ async function updateProfile() {
                                 class="profile-icon">
                         </div>
                         <!-- profile content -->
-                        <div class="card-body profile-info">
+                        <div class="card-body profile-info" userId="${opponentUserInfo.id}">
         <div class="placement">
                                 <div class="heart add-friends-btn">Add Friend</div>
                             </div>
@@ -180,7 +181,7 @@ function updateSingleConversation(conversation) {
 `
     }
     messageArea.innerHTML += conversationHTML
-    
+
 }
 
 function updateConversations(conversations, myUserInfo, opponentUserInfo) {
@@ -189,7 +190,7 @@ function updateConversations(conversations, myUserInfo, opponentUserInfo) {
     for (let conversation of conversations) {
         updateSingleConversation(conversation, myUserInfo, opponentUserInfo)
     }
-    
+
 }
 
 
@@ -219,7 +220,7 @@ content_submit.addEventListener('submit', async function submit(e) {
         document.querySelector('#messageForm').reset();
 
         let conversation = await res.json()
-        updateSingleConversation(conversation,myUserInfo, opponentUserInfo )
+        updateSingleConversation(conversation, myUserInfo, opponentUserInfo)
         $("#imag").val("");
         $("#ImgPreview").attr("src", "");
         $('.preview1').removeClass('it');
@@ -228,15 +229,16 @@ content_submit.addEventListener('submit', async function submit(e) {
 
     } else {
         console.log(err)
-    }})
+    }
+})
 
-  
-    textArea.addEventListener("keyup", function(event) {
-        event.preventDefault();
-        if (event.keyCode === 13) {
-            content_submit.click();
-        }
-    });
+
+textArea.addEventListener("keyup", function (event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+        content_submit.click();
+    }
+});
 
 
 async function init() {
@@ -265,31 +267,33 @@ leaveBtn.addEventListener("click", async function () {
 
 function readURL(input, imgControlName) {
     if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        $(imgControlName).attr('src', e.target.result);
-      }
-      reader.readAsDataURL(input.files[0]);
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $(imgControlName).attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
     }
-  }
+}
 
 
-  
-  $("#imag").change(function() {
+
+$("#imag").change(function () {
     // add your logic to decide which image control you'll use
     var imgControlName = "#ImgPreview";
     readURL(this, imgControlName);
     $('.preview1').addClass('it');
     $('.btn-rmv1').addClass('rmv');
-    
-  });
-  
-  $("#removeImage1").click(function(e) {
+
+});
+
+$("#removeImage1").click(function (e) {
     e.preventDefault();
     $("#imag").val("");
     $("#ImgPreview").attr("src", "");
     $('.preview1').removeClass('it');
     $('.btn-rmv1').removeClass('rmv');
-  });
-  
+});
+
 //   chatContainer.scrollTop = chatContainer.scrollHeight;
+
+
