@@ -1,3 +1,4 @@
+import {addStartChatFormEvent} from "/profile_page/profile.js"
 async function initHeader() {
   let headerElm = document.querySelector('.header')
 
@@ -150,6 +151,7 @@ export async function getFriends() {
   }
 
   getProfile();
+  addStartChatFormEvent()
 
 }
 
@@ -286,7 +288,11 @@ async function getNotifications() {
   <a href="/mailbox/mailbox.html"><p class="link">Show All Activities</p></a>
   </li>`
 
-
+  let bellElm = document.querySelector('.notifications')
+  bellElm.addEventListener('click',()=>{
+    let notificationListElem = bellElm.querySelector('.notification_dd')
+    notificationListElem.style.display = notificationListElem.style.display == 'none' ? 'block' : 'none'
+  })
   let statusBtns = document.querySelectorAll('button.status');
   for (let statusBtn of statusBtns) {
     statusBtn.addEventListener('click', async (e) => {
@@ -343,22 +349,33 @@ async function logout() {
 
 
 
-async function getNotifications() {
+// async function getNotifications() {
 
-  //   let res = await fetch('/user/notifications?limit=2')
-  //   let data = await res.json()
-  //   let notificationItems = data.data
+//   console.log('getNotifications before for loop', notificationItems)
+//   for (let notificationItem of notificationItems) {
+//     notificationUlElem.innerHTML += /* HTML*/`
+//       <li class="baskin_robbins failed" data-notification-id="${notificationItem.id}">
 
-  //   console.log('notificationItems: ', notificationItems)
+//       ${notificationItem.icon ? `<img class="notify-icon" src="${notificationItem.icon}">` : '    <img class="notify-icon" src="https://randomuser.me/api/portraits/men/84.jpg">'}
 
-  //   let notificationUlElem = document.querySelector('.notification_ul')
-  //   notificationUlElem.innerHTML = ''
-  //   if (notificationItems) {
-  //     console.log('getNotifications before for loop', notificationItems)
-  //     for (let notificationItem of notificationItems) {
-  //       notificationUlElem.innerHTML += `
-  //       <li class="baskin_robbins failed" data-notification-id="${notificationItem.id}">
+//       <div class="notify_data">
+//         <div class="title">
+//           ${notificationItem.name}
+//         </div>
+//         <div class="sub_title">
+//           Can I add you?
+//         </div>
+//       </div>
+//       <div class="notify_status">
+//         <p>${notificationItem.created_at.split('T')[0]}</p>
+//       </div>
+//       ${getStatusHTML(notificationItem)}
+//     </li>
+//       `
+//   }
+//   console.log('get notification after for loop')
 
+<<<<<<< HEAD
   console.log('getNotifications before for loop', notificationItems)
   for (let notificationItem of notificationItems) {
     notificationUlElem.innerHTML += /* HTML*/`
@@ -438,18 +455,17 @@ async function getNotifications() {
   //   }
   //   console.log('getNotification after reject friend form event listener')
   // }
+=======
+//   notificationUlElem.innerHTML += /* HTML*/`<li class="show_all">
+//   <a href="/mailbox/mailbox.html"><p class="link">Show All Activities</p></a>
+//   </li>`
+>>>>>>> 9e404cb7c4f2cb14d7cb24fe9f339e9708002d57
 
 
-  // const notificationId = statusBtn.dataset.notificationId
-  // const status = statusBtn.dataset.status
-  // console.log('clicking :', notificationId, status)
-
-  // function remove() {
-  //   var elem = document.getElementById('remove');
-  //   elem.parentNode.removeChild(elem);
-  //   return false;
-  // }
-}
+//   const notificationId = statusBtn.dataset.notificationId
+//   const status = statusBtn.dataset.status
+//   console.log('clicking :', notificationId, status)
+// }
 
 let initPromise = new Promise(function (resolve, reject) {
   resolve();
