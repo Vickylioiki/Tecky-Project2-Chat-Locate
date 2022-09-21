@@ -36,13 +36,11 @@ userRoutes.get("/me", async (req, res) => {
     }
 });
 
-userRoutes.get("/user-profile/:userId", async (req, res) => {
+userRoutes.get("/user-profile", async (req, res) => {
     try {
-        const id = req.params.userId;
-        console.log("id is " + id);
-        let getUsers = await client.query("SELECT * FROM users WHERE id = $1", [
-            id,
-        ]);
+    const id = req.query.userId ?? req.session["user"].id;
+    console.log("id is " + id);
+    let getUsers = await client.query("SELECT * FROM users WHERE id = $1", [id]);
 
         res.status(200).json(getUsers.rows[0]);
     } catch (err) {
@@ -183,101 +181,58 @@ userRoutes.post("/update-relation", async (req, res) => {
         let { notificationId, status } = req.body;
 
         // throw error if status is neither approved nor rejected
-        if (["approved", "rejected"].indexOf(status) === -1) {
-            res.status(400).json({ message: "Invalid status" });
-            return;
+        if (['approved', 'rejected'].indexOf(status) === -1) {
+            res.status(400).json({ message: 'Invalid status of approved or rejected' })
+            return
         }
 
-        console.log("notificationId: ", [
-            status,
-            notificationId,
-            "invitation",
-            true,
-        ]);
+        console.log("notificationId: ", notificationId, "going to change to status: ", status);
 
         // disable notification
         let updateResult = (
             await client.query(
-                `update notifications set status = $1 where id = $2 returning *`,
+                `update notifications set status = $1 where id = $2 returning * `,
                 [status, notificationId]
             )
         ).rows[0];
 
         console.log("/update-relation updateResult: ", updateResult);
+
         // throw error if notification is currently not enabled, or not invitation
         if (!updateResult) {
-            res.status(400).json({ message: "Invalid notification update" });
-            return;
+            res.status(400).json({ message: 'Invalid notification update' })
+            return
         }
 
         // throw error if identical user id for friend request
         if (updateResult.user_id === updateResult.opponent_user_id) {
-            res
-                .status(400)
-                .json({ message: "Error: identical user friend add request" });
-            return;
+            res.status(400).json({ message: 'Error: identical user friend add request' })
+            return
         }
 
-        res.json({ status: "ok" });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ status: "Intertal error" });
-    }
-});
-
-userRoutes.post("/update-relation", async (req, res) => {
-    try {
-        let { notificationId } = req.body;
-
-        // throw error if status is neither approved nor rejected
-        // if (['', 'approved', 'rejected'].indexOf(status) === -1) {
-        //     res.status(400).json({ message: 'Invalid status 123' })
-        //     return
-        // }
-
-        console.log("notificationId: ", notificationId);
-
-        // disable notification
-        let updateResult = (
-            await client.query(
-                `update notifications set enabled = false where id = $1 returning * `,
-                [notificationId]
-            )
-        ).rows[0];
-
-        console.log("/update-relation updateResult: ", updateResult);
-
-        // throw error if notification is currently not enabled, or not invitation
-        // if (!updateResult) {
-        //     res.status(400).json({ message: 'Invalid notification update' })
-        //     return
-        // }
-
-        // throw error if identical user id for friend request
-        // if (updateResult.user_id === updateResult.opponent_user_id) {
-        //     res.status(400).json({ message: 'Error: identical user friend add request' })
-        //     return
-        // }
-
         // check if friend relationship exists
-        // let friendRelationship = (await client.query(`
-        //     select * from friends_list
-        //     where (from_user_id = $1 and to_user_id = $2)
-        //     or (from_user_id = $2 and to_user_id = $1)
-        //     `, [updateResult.user_id, updateResult.opponent_user_id])).rows;
+        let friendRelationship = (await client.query(`
+            select * from friends_list
+            where (from_user_id = $1 and to_user_id = $2)
+            or (from_user_id = $2 and to_user_id = $1)
+            `, [updateResult.user_id, updateResult.opponent_user_id])).rows;
 
-        // if (status === 'approved' && friendRelationship.length == 0) {
-        //     await client.query(`INSERT INTO friends_list (from_user_id, to_user_id)
-        // VALUES ($1, $2)`,
-        //         [updateResult.opponent_user_id, updateResult.user_id]);
-        // }
+        if (status === 'approved' && friendRelationship.length == 0) {
+            await client.query(`INSERT INTO friends_list (from_user_id, to_user_id)
+        VALUES ($1, $2)`,
+                [updateResult.opponent_user_id, updateResult.user_id]);
+        }
 
-        res.json({ status: updateResult });
+        // still need the opponent (friend)'s name
+        let friendUser = (await client.query(`
+                select * from users where id = ${updateResult.opponent_user_id}
+            `)).rows[0];
+        console.log('friendUser Name: ', friendUser.name);
+
+        res.json({ ...updateResult, created_at: moment(updateResult.created_at).startOf('hour').fromNow(), friendName: friendUser.name })
     } catch (e) {
         res.status(400).json({ message: e });
     }
-
-    res.json({ status: "ok" });
 });
 
 /**
