@@ -95,11 +95,11 @@ matchRoutes.post("/", async (req, res) => {
       //   );
       //   readyUsers.splice(failedMatchUser, 1);
       // }, 5000);
-      console.log("no user around");
+      // console.log("no user around");
     }
     distances = distances.sort((a, b) => {
       return a.distance - b.distance;
-    });
+    })
 
     const pairUpResult = {
       CurrentUserId: ownerId,
