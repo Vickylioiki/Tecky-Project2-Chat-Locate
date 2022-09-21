@@ -6,6 +6,7 @@ import { io } from "../utils/socket";
 import { Chatroom } from "../class/Chatroom";
 import { getUserById } from "../DAO/user-dao";
 import { chatRooms } from "../utils/chatroom-helper";
+import { sleep } from "../utils/timer";
 
 console.log("match Route 3");
 const service = new DistanceMatrixService(process.env.GOOGLE_MATRIX_API_KEY);
@@ -15,7 +16,9 @@ service.setKey("AIzaSyBLLtLmB3NIKUrPq6vwFSz7IRrdL8pVUNA");
 // import { client } from '../main's
 
 const createdRooms: RoomInfomation[] = [];
-let readyUsers: any = [];
+let readyUsers: any = [
+  { userId: 4, location: { lat: 22.28601222944395, lng: 114.14757727141927 } },
+];
 // { userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }, { userId: 1, location: { lat: 22.285170575820224, lng: 114.14665642394633 } }, { userId: 2, location: { lat: 22.30933514419831, lng: 114.23787345976665 } }
 // { userId: 1, location: { lat: 22.285170575820224, lng: 114.14665642394633 } }, { userId: 2, location: { lat: 22.30933514419831, lng: 114.23787345976665} }, { userId: 3, location: { lat: 22.28601222944395, lng: 114.14757727141927 } }, { userId: 4, location: { lat: 22.286290196846565, lng: 114.14976595398261 } }
 //     // const x = [22.30933514419831, 114.23787345976665] // Lam Tin
@@ -76,10 +79,12 @@ matchRoutes.post("/", async (req, res) => {
 
       const response = await service.getDistanceMatrix(request);
       console.log(`response${i}`, response);
-      distances.push({
-        userId: readyUsers[i].userId,
-        distance: response.rows[0].elements[0].distance.value,
-      });
+      if (response.rows[0].elements[0].distance.value < 200) {
+        distances.push({
+          userId: readyUsers[i].userId,
+          distance: response.rows[0].elements[0].distance.value,
+        });
+      }
     }
     // distances.push({
     //   userId: 1,
@@ -87,19 +92,20 @@ matchRoutes.post("/", async (req, res) => {
     // });
 
     if (distances.length == 0) {
-      throw new Error("no user around");
-      // const setTime = setTimeout(function noUser() {
-      //   res.redirect("../matching/failed.html");
-      //   const failedMatchUser = readyUsers.findIndex(
-      //     (obj: { userId: any }) => obj.userId == ownerId
-      //   );
-      //   readyUsers.splice(failedMatchUser, 1);
-      // }, 5000);
-      // console.log("no user around");
+      // throw new Error("no user around");
+      await sleep(10000);
+      const failedMatchUser = readyUsers.findIndex(
+        (obj: { userId: any }) => obj.userId == ownerId
+      );
+      readyUsers.splice(failedMatchUser, 1);
+      console.log("no user around");
+      res.status(400).json("fail");
+      return;
     }
+
     distances = distances.sort((a, b) => {
       return a.distance - b.distance;
-    })
+    });
 
     const pairUpResult = {
       CurrentUserId: ownerId,
@@ -120,8 +126,10 @@ matchRoutes.post("/", async (req, res) => {
 
     // userA and UserB are currently in the readyUsers
     for (let user of readyUsers) {
+      console.log(user.userId);
+      console.log(userIdB);
       const waitingUserId = user.userId;
-      if (waitingUserId === userIdA || waitingUserId === userIdB) {
+      if (waitingUserId === userIdB) {
         io.to(userA.username).emit("to-chatroom");
         io.to(userB.username).emit("to-chatroom");
 
@@ -138,18 +146,18 @@ matchRoutes.post("/", async (req, res) => {
 
         console.log("readyUsers After:", readyUsers);
         res.json("Matched");
-      } else {
-        res.redirect("../matching/failed.html");
-        const failedMatchUser = readyUsers.findIndex(
-          (obj: { userId: any }) => obj.userId == ownerId
-        );
-        readyUsers.splice(failedMatchUser, 1);
+        return;
       }
     }
+
+    const failedMatchUser = readyUsers.findIndex(
+      (obj: { userId: any }) => obj.userId == ownerId
+    );
+    readyUsers.splice(failedMatchUser, 1);
+    res.status(400).json({ message: "match failed" });
   } catch (err) {
     console.log(err);
-    res.status(400).json(err);
-    // res.redirect("../matching/failed.html");
+    res.status(400).json({ message: "match failed" });
   }
 
   //get readyUsers Array

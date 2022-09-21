@@ -446,6 +446,7 @@ userRoutes.post("/login", async (req: any, res: any) => {
 // });
 // });
 
+
 userRoutes.get("/logout", (req, res) => {
     try {
         let destroyedSession = req.session.destroy(() => {
@@ -693,6 +694,9 @@ async function loadProfile(req: express.Request, res: express.Response) {
 //   );
 // }
 
+
+
+
 userRoutes.post("/friend-request", addFriends);
 
 async function addFriends(req: express.Request, res: express.Response) {
@@ -700,7 +704,7 @@ async function addFriends(req: express.Request, res: express.Response) {
     const opponent_user_id = req.body.opponentUserId;
     const message = req.body.message;
     const iconResult = (
-        await client.query("SELECT icon FROM users WHERE id=$1", [id])
+        await client.query("SELECT icon FROM users WHERE id=$1", [opponent_user_id])
     ).rows[0];
 
     await client.query(
@@ -769,8 +773,8 @@ userRoutes.get("/friends", async (req, res) => {
     
     select users.*, $1 as my_id from 
     my_friends mf join users on id = mf.my_friend_id;
-    `,[
+    `, [
         id
     ])
     res.json(myFriends.rows);
-  });
+});

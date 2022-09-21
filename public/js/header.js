@@ -1,4 +1,4 @@
-import {addStartChatFormEvent} from "/profile_page/profile.js"
+import { addStartChatFormEvent } from "/profile_page/profile.js"
 async function initHeader() {
   let headerElm = document.querySelector('.header')
 
@@ -170,6 +170,7 @@ export async function getProfile() {
     console.log(data);
     dateOfBirth = new Date(data.date_of_birth);
     document.querySelector(".edit-btn").remove();
+    document.querySelector(".friends-btn").remove();
   }
 
   console.log(dateOfBirth.getMonth());
@@ -289,7 +290,7 @@ async function getNotifications() {
   </li>`
 
   let bellElm = document.querySelector('.notifications')
-  bellElm.addEventListener('click',()=>{
+  bellElm.addEventListener('click', () => {
     let notificationListElem = bellElm.querySelector('.notification_dd')
     notificationListElem.style.display = notificationListElem.style.display == 'none' ? 'block' : 'none'
   })
@@ -395,4 +396,4 @@ initPromise
   .then(getFriends, null)
   .then(getProfile, null)
   .then(getNotifications, null)
-  .then(logout)
+  .then(logout) 
