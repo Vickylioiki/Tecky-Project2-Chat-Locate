@@ -76,10 +76,12 @@ matchRoutes.post("/", async (req, res) => {
 
       const response = await service.getDistanceMatrix(request);
       console.log(`response${i}`, response);
-      distances.push({
-        userId: readyUsers[i].userId,
-        distance: response.rows[0].elements[0].distance.value,
-      });
+      if (response.rows[0].elements[0].distance.value < 1000) {
+        distances.push({
+          userId: readyUsers[i].userId,
+          distance: response.rows[0].elements[0].distance.value,
+        });
+      }
     }
     // distances.push({
     //   userId: 1,
@@ -87,7 +89,6 @@ matchRoutes.post("/", async (req, res) => {
     // });
 
     if (distances.length == 0) {
-<<<<<<< HEAD
       // throw new Error("no user around");
       const setTime = setTimeout(function noUser() {
         // window.location.href = "../matching/failed.html";
@@ -97,22 +98,11 @@ matchRoutes.post("/", async (req, res) => {
         readyUsers.splice(failedMatchUser, 1);
         console.log("no user around");
       }, 10000);
-=======
-      throw new Error("no user around");
-      // const setTime = setTimeout(function noUser() {
-      //   res.redirect("../matching/failed.html");
-      //   const failedMatchUser = readyUsers.findIndex(
-      //     (obj: { userId: any }) => obj.userId == ownerId
-      //   );
-      //   readyUsers.splice(failedMatchUser, 1);
-      // }, 5000);
-      // console.log("no user around");
->>>>>>> 9e404cb7c4f2cb14d7cb24fe9f339e9708002d57
     }
 
     distances = distances.sort((a, b) => {
       return a.distance - b.distance;
-    })
+    });
 
     const pairUpResult = {
       CurrentUserId: ownerId,
