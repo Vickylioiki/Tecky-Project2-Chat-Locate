@@ -5,7 +5,32 @@ let friendsButton = document.querySelector(".friends-btn");
 let fds_list_session = document.querySelector(".friends-list-session");
 let editButton = document.querySelector(".edit-btn");
 let bioRow = document.querySelectorAll(".bio-row .profile-session");
+let uploadImage = document.querySelector(".upload-image");
 
+uploadImage.addEventListener("submit", async (e) => {
+  e.preventDefault()
+
+  const formElement = e.target;
+  const content = formElement.content.value;
+  const image = formElement.image.files[0];
+
+  const formData = new FormData();
+
+  formData.append('content', content)
+  formData.append('image', image)
+
+  console.log(content)
+
+  const res = await fetch('/user/upload-image', {
+    method: 'POST',
+    body: formData
+  })
+
+  if (res.ok) {
+    document.querySelector('.upload-image').reset();
+  }
+
+});
 
 
 friendsButton.addEventListener("click", function (event) {
@@ -38,7 +63,6 @@ editButton.addEventListener("click", async function (event) {
     let hobby = document.querySelector("#hobby").value;
     let country = document.querySelector("#country").value;
 
-    console.log(aboutMe)
 
     let res = await fetch('/user/profile', {
       method: 'PUT',
