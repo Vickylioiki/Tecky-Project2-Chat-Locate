@@ -3,7 +3,6 @@ import { checkPassword, hashPassword } from "../hash";
 import fetch from "cross-fetch";
 import crypto from "crypto";
 import moment from "moment";
-// import { request } from "http";
 import { client } from "../utils/db";
 // import { request } from 'http'
 // import { Files } from "formidable";
