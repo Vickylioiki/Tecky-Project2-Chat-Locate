@@ -94,7 +94,7 @@ async function updateProfile() {
                         <!-- profile content -->
                         <div class="card-body profile-info">
         <div class="placement">
-                                <div class="heart add-friends-btn"></div>
+                                <div class="heart add-friends-btn">Add Friend</div>
                             </div>
                             <h2 class="profile-name">${opponentUserInfo.name}</h2>
                             <div class="profile-occupation">${opponentUserInfo.occupation}, ${opponentUserInfo.country}</div>
