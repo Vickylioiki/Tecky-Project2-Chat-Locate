@@ -32,6 +32,9 @@ async function getLocation() {
         alert('Please login in first')
         window.location.href = '../login.html'
     }
+    if (!res.ok) {
+        window.location.href = '/matching/failed.html'
+    }
 }
 
 
