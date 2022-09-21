@@ -29,7 +29,8 @@ async function getLocation() {
         })
     })
     if (res.status === 401) {
-        // window.location.href = '../matching/failed.html'
+        alert('Please login in first')
+        window.location.href = '../login.html'
     }
 }
 

@@ -87,16 +87,17 @@ matchRoutes.post("/", async (req, res) => {
     // });
 
     if (distances.length == 0) {
-      throw new Error("no user around");
-      // const setTime = setTimeout(function noUser() {
-      //   res.redirect("../matching/failed.html");
-      //   const failedMatchUser = readyUsers.findIndex(
-      //     (obj: { userId: any }) => obj.userId == ownerId
-      //   );
-      //   readyUsers.splice(failedMatchUser, 1);
-      // }, 5000);
-      console.log("no user around");
+      // throw new Error("no user around");
+      const setTime = setTimeout(function noUser() {
+        // window.location.href = "../matching/failed.html";
+        const failedMatchUser = readyUsers.findIndex(
+          (obj: { userId: any }) => obj.userId == ownerId
+        );
+        readyUsers.splice(failedMatchUser, 1);
+        console.log("no user around");
+      }, 10000);
     }
+
     distances = distances.sort((a, b) => {
       return a.distance - b.distance;
     });
@@ -138,18 +139,19 @@ matchRoutes.post("/", async (req, res) => {
 
         console.log("readyUsers After:", readyUsers);
         res.json("Matched");
+        return;
       } else {
-        res.redirect("../matching/failed.html");
         const failedMatchUser = readyUsers.findIndex(
           (obj: { userId: any }) => obj.userId == ownerId
         );
         readyUsers.splice(failedMatchUser, 1);
+        res.redirect("../matching/failed.html");
+        return;
       }
     }
   } catch (err) {
     console.log(err);
-    res.status(400).json(err);
-    // res.redirect("../matching/failed.html");
+    res.redirect("../matching/failed.html");
   }
 
   //get readyUsers Array

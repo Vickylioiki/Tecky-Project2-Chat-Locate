@@ -5,7 +5,11 @@ export const isLoggedIn = (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  if (req.session.isloggedin) {
+  if (
+    req.session &&
+    req.session.user &&
+    Object.keys(req.session.user).length > 0
+  ) {
     next(); //要( )
     return;
   }

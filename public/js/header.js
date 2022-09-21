@@ -378,8 +378,8 @@ async function getNotifications() {
         <p>${notificationItem.created_at.split('T')[0]}</p>
       </div>
       ${getStatusHTML(notificationItem)}
-    </li>
-      `
+    </li>`
+
   }
 
   //       <div class="notify_data">
@@ -394,8 +394,8 @@ async function getNotifications() {
   //         <p>${notificationItem.created_at.split('T')[0]}</p>
   //       </div>
   //       ${getStatusHTML(notificationItem)}
-  //     </li>
-  //       `
+  //     </li>`
+  //       
   //     }
   //     console.log('get notification after for loop')
 
@@ -456,9 +456,9 @@ let initPromise = new Promise(function (resolve, reject) {
   reject();
 })
 
-initPromise
+initPromise 
   .then(initHeader, null)
   .then(getFriends, null)
   .then(getProfile, null)
   .then(getNotifications, null)
-  .then(logout)
+  .then(logout) 
