@@ -402,47 +402,48 @@ userRoutes.post("/login", async (req, res) => {
         message: "Success login",
     });
     return;
-}
-  console.log("/login-username and password checking passed!!");
 
-let userResult = await client.query(
-    `select * from users where username = $1`,
-    [username]
-);
-let dbUser = userResult.rows[0];
+    console.log("/login-username and password checking passed!!");
 
-if (!dbUser) {
-    res.status(400).json({
-        message: "Invalid username",
+    let userResult = await client.query(
+        `select * from users where username = $1`,
+        [username]
+    );
+    let dbUser = userResult.rows[0];
+
+    if (!dbUser) {
+        res.status(400).json({
+            message: "Invalid username",
+        });
+        return;
+    }
+    console.log("/login-existing username checking passed!!");
+
+    let isMatched = await checkPassword(password, dbUser.password);
+    if (!isMatched) {
+        res.status(400).json({
+            message: "Invalid username or password",
+        });
+        return;
+    }
+    console.log("/login-valid password checking passed!!");
+
+    let {
+        password: dbUserPassword,
+        created_at,
+        updated_at,
+        ...filterUserProfile
+    } = dbUser;
+    req.session["user"] = filterUserProfile;
+    req.session.isLoggedIn = true;
+    // req.session.save()
+
+    // console.log(sessionUser)
+    res.status(200).json({
+        message: "Success login",
     });
-    return;
-}
-console.log("/login-existing username checking passed!!");
-
-let isMatched = await checkPassword(password, dbUser.password);
-if (!isMatched) {
-    res.status(400).json({
-        message: "Invalid username or password",
-    });
-    return;
-}
-console.log("/login-valid password checking passed!!");
-
-let {
-    password: dbUserPassword,
-    created_at,
-    updated_at,
-    ...filterUserProfile
-} = dbUser;
-req.session["user"] = filterUserProfile;
-req.session.isLoggedIn = true;
-// req.session.save()
-
-// console.log(sessionUser)
-res.status(200).json({
-    message: "Success login",
 });
-});
+
 
 userRoutes.get("/logout", (req, res) => {
     try {
