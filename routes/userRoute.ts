@@ -696,6 +696,9 @@ async function loadProfile(req: express.Request, res: express.Response) {
 //   );
 // }
 
+
+
+
 userRoutes.post("/friend-request", addFriends);
 
 async function addFriends(req: express.Request, res: express.Response) {
@@ -703,7 +706,7 @@ async function addFriends(req: express.Request, res: express.Response) {
     const opponent_user_id = req.body.opponentUserId;
     const message = req.body.message;
     const iconResult = (
-        await client.query("SELECT icon FROM users WHERE id=$1", [id])
+        await client.query("SELECT icon FROM users WHERE id=$1", [opponent_user_id])
     ).rows[0];
 
     await client.query(
