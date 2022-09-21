@@ -25,8 +25,11 @@
         <img src="" alt="profile card" class="profile-img">
       </div>
       <form action="/user/upload-image" method="POST" id="upload-image" enctype="multipart/form-data">
-        <input type="file" id="myFile" name="filename"><br>
-        <input type="submit" class="upload-image">
+        <div class="profile-pic">
+          <label class="ch_profile_icon">Change Profile Picture</label><br>
+          <input type="file" id="myFile" name="filename"><br>
+          <input type="submit" class="upload-image profile-pic-submit ">
+      </div>
       </form>
 
 

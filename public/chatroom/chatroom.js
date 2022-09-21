@@ -20,11 +20,11 @@ socket.on('new-message', (conversation) => {
 
 });
 socket.on('leave-room', () => {
-    let ans = confirm('partner gone, i should leave')
+    let ans = confirm('User has left the chatroom')
     if (ans) {
         document.querySelector('#messageForm').remove()
     } else {
-        alert('gone, you cannot speak anymore')
+        alert('You can only view the message')
         document.querySelector('#messageForm').remove()
 
     }
@@ -94,9 +94,7 @@ async function updateProfile() {
                         </div>
                         <!-- profile content -->
                         <div class="card-body profile-info" userId="${opponentUserInfo.id}">
-        <div class="placement">
-                                <div class="heart add-friends-btn">Add Friend</div>
-                            </div>
+       
                             <h2 class="profile-name">${opponentUserInfo.name}</h2>
                             <div class="profile-occupation">${opponentUserInfo.occupation}, ${opponentUserInfo.country}</div>
                             <label class="profile-title">DOB: </label>
@@ -112,13 +110,26 @@ async function updateProfile() {
                             <br>
                             <span class="about-me">${opponentUserInfo.aboutme}</span>
              
-        </div>
+                            <div class="placement">
+                            <div class="heart add-friends-btn"><span class="add_friend">Add Friend</span></div>
+                        </div>
+                            </div>
 
 
         `
         $(".heart").on("click", function () {
             $(this).toggleClass("is-active");
+            myFunction();
         });
+
+        function myFunction() {
+            let x = document.querySelector(".add_friend");
+            if (x.innerHTML === "Requested!") {
+              x.innerHTML = "Add friend";
+            } else {
+              x.innerHTML = "Requested!";
+            }
+          }
     } catch (err) {
         window.location.href = "/profile_page/profile.html"
 
