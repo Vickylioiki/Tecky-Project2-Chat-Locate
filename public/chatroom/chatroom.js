@@ -110,15 +110,7 @@ async function updateProfile() {
                             <label class="profile-title">About Me: </label>
                             <br>
                             <span class="about-me">${opponentUserInfo.aboutme}</span>
-                            <div class="social-media">
-                                <div class="social-icon-wrapper instagram">
-                                    <i class="fa fa-instagram"></i>
-                                </div>
-                                <div class="social-icon-wrapper facebook">
-                                    <i class=" fa fa-facebook-f"></i>
-                                </div>
-
-                            </div>
+             
         </div>
 
 
@@ -214,7 +206,7 @@ content_submit.addEventListener('submit', async function submit (e) {
     formData.append('image', image)
 
     console.log(content)
-    
+
 
     const res = await fetch('/chat', {
         method: 'POST',
