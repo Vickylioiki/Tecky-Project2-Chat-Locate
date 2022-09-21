@@ -7,6 +7,9 @@ import moment from "moment";
 import { client } from "../utils/db";
 // import { request } from 'http'
 
+
+
+
 export const userRoutes = express.Router();
 
 userRoutes.get("/", async (req, res) => {
@@ -696,6 +699,19 @@ async function loadProfile(req: express.Request, res: express.Response) {
 //   );
 // }
 
+userRoutes.post("/upload-image",)
+
+async function uploadImage(req: express.Request, res: express.Response) {
+    const id = req.session["user"].id;
+    const iconURL = req.body.iconURL;
+
+
+    await client.query(`UPDATE users SET icon=$1 WHERE id = $2
+    `, [iconURL, id])
+
+    res.status(200).send("Profile Pic uploaded");
+
+}
 
 
 

@@ -1,9 +1,11 @@
 import { getProfile, getFriends } from '../js/header.js';
 
+
 let friendsButton = document.querySelector(".friends-btn");
 let fds_list_session = document.querySelector(".friends-list-session");
 let editButton = document.querySelector(".edit-btn");
 let bioRow = document.querySelectorAll(".bio-row .profile-session");
+
 
 
 friendsButton.addEventListener("click", function (event) {
@@ -56,7 +58,6 @@ editButton.addEventListener("click", async function (event) {
     }
   }
 });
-
 
 
 $(".profile .icon_wrap").click(function () {

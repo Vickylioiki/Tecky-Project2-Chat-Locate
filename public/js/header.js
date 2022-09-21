@@ -125,6 +125,20 @@ export async function getFriends() {
   console.log(friends_list);
   friends_session.innerHTML = "";
 
+  if (friends_list.length == 0) {
+    friends_session.innerHTML += /*HTML*/`<article class="leaderboard__profile">
+    
+    <span class="leaderboard__name">No Friends Yet</span>
+    <span class="leaderboard__value">
+      <form id="start-chat-form">
+        
+      </form>
+    </span>
+  </article>`;
+
+
+  }
+
   for (let friend of friends_list) {
     friends_session.innerHTML += /*HTML*/`<a href="http://localhost:8080/profile_page/profile.html?userId=${friend.id}"><article class="leaderboard__profile">
     <img src="${friend.icon}" alt="${friend.name}" userID="${friend.id}"
@@ -171,6 +185,7 @@ export async function getProfile() {
     dateOfBirth = new Date(data.date_of_birth);
     document.querySelector(".edit-btn").remove();
     document.querySelector(".friends-btn").remove();
+    document.querySelector(".btn-white.btn-animate").remove();
   }
 
   console.log(dateOfBirth.getMonth());
