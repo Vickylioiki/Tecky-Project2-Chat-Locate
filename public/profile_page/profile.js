@@ -256,12 +256,12 @@ let initProfilePromise = new Promise(function (resolve, reject) {
 
 initProfilePromise
   .then(getFriends, null)
-  .then(async()=>{
-    $(".profile .icon_wrap").click(function () {
-      $(this).parent().toggleClass("active");
-      $(".notifications").removeClass("active");
-    });
-  })
+  // .then(async()=>{
+  //   $(".profile .icon_wrap").click(function () {
+  //     $(this).parent().toggleClass("active");
+  //     $(".notifications").removeClass("active");
+  //   });
+  // })
   .then(async()=>{
     $(".notifications .icon_wrap").click(function () {
       $(this).parent().toggleClass("active");
