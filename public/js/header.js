@@ -8,7 +8,7 @@ async function initHeader() {
     <div class="navbar">
       <div class="navbar_left">
         <div class="logo">
-          <a href="http://localhost:8080/profile_page/profile.html">Chatlocal</a>
+          <a href="http://localhost:8080/profile_page/profile.html">Chat Locate</a>
           
         </div>
       </div>

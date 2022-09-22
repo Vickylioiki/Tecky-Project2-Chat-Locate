@@ -178,6 +178,8 @@ li {
     position: absolute;
     right: 8px;
     top: 22px;
+    text-align: center;
+
 }
 
 .heart {
@@ -188,6 +190,13 @@ li {
     cursor: pointer;
     transition: background-position 1s steps(28);
     transition-duration: 0s;
+    font-size: 0.8rem;
+
+}
+
+.add_friend {
+
+
 }
 
 .is-active {
