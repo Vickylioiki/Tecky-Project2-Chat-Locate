@@ -248,3 +248,14 @@ VALUES(
         now(),
         'message'
     );
+
+    INSERT INTO public.notifications (user_id,opponent_user_id,message,icon,status,created_at,updated_at,"type",enabled) VALUES
+	 (2,3,'hello, can I add you?','https://randomuser.me/api/portraits/men/32.jpg','pending','2022-09-16 11:26:23.621206','2022-09-16 11:26:23.621206','invitation',true),
+	 (2,3,'hello, can I add you?','https://randomuser.me/api/portraits/men/32.jpg','approved','2022-09-18 10:48:04.655938','2022-09-18 10:48:04.655938','invitation',true),
+	 (2,3,'hello, can I add you?','https://randomuser.me/api/portraits/men/32.jpg','rejected','2022-09-17 15:20:54.206783','2022-09-17 15:20:54.206783','invitation',true),
+	 (4,2,'hello, can I add you?','https://randomuser.me/api/portraits/men/84.jpg','pending','2022-09-16 11:26:23.621206','2022-09-16 11:26:23.621206','invitation',true),
+	 (3,2,'hello, can I add you?','https://randomuser.me/api/portraits/men/84.jpg','pending','2022-09-16 11:22:23.621','2022-09-16 11:26:23.621206','invitation',true),
+	 (1,2,'hello, can I add you?','https://randomuser.me/api/portraits/women/63.jpg','pending','2022-09-17 17:48:27.211728','2022-09-17 17:48:27.211728','invitation',true),
+	 (2,4,'hello, can I add you?','https://randomuser.me/api/portraits/men/84.jpg','pending','2022-09-16 11:12:23.621','2022-09-16 11:26:23.621206','invitation',true),
+	 (2,3,'hello, can I add you?','https://randomuser.me/api/portraits/men/32.jpg','pending','2022-09-17 15:20:54.206783','2022-09-17 15:20:54.206783','invitation',true),
+	 (2,3,'hello, can I add you?','https://randomuser.me/api/portraits/men/32.jpg','pending','2022-09-16 11:26:23.621206','2022-09-16 11:26:23.621206','invitation',true);
