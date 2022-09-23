@@ -104,24 +104,13 @@ VALUES (
         1,
         'https://www.instagram.com/profile.php?u=Peter',
         0
-    ),
-    (
-        1298718,
-        'May',
-        2,
-        'https://www.instagram.com/profile.php?u=John',
-        11 == == == = 'Singapore',
-        'Doctor',
-        'https://randomuser.me/api/portraits/men/88.jpg',
-        'M',
-        '1989-10-10',
-        '99991234',
-        NULL >> >> >> > 3a23f8604ba8caa8528fd97d12a4ea58c95cf199
     );
 -- insert into facebook_profile (
 --         fb_id,
 --         name,
 --         user_id,
+
+
 --         profile_pic
 --     )
 -- VALUES (

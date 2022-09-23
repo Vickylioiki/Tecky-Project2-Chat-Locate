@@ -5,7 +5,7 @@ const textArea = document.querySelector('#textArea3')
 // const emojiBtn = document.querySelector('.emoji');
 const emojiBtn = document.querySelector('.emoji');
 const picker = new EmojiButton();
-const addFriendsButton = document.querySelector('.add-friends');
+const addFriendsButton = document.querySelector('.add-friends-btn');
 const content_submit = document.querySelector('#messageForm')
 const chatContainer = document.querySelector('.chat-container');
 const leaveBtn = document.querySelector('.leave-btn');
@@ -54,28 +54,29 @@ if (document.body) {
 }
 
 
-if (addFriendsButton) {
-    addFriendsButton.addEventListener("click", async (event) => {
-        let opponent_userId = document.querySelector(".profile-info").getAttribute("userId")
+async function addFriend() {
+    console.log('addFriendsButton clicked');
+    let opponent_userId = document.querySelector(".profile-info").getAttribute("userId")
 
 
-        let res = await fetch('/user/friend-request', {
-            method: "POST",
-            body: JSON.stringify({
-                opponent_user_id: opponent_userId,
-                message: "hello can i add you?",
+    let res = await fetch('/user/friend-request', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            opponent_user_id: opponent_userId,
+            message: "hello can i add you?",
 
-            })
         })
     })
-} else {
-    console.log('cannot find addFriendsButton')
 }
 
 
 async function updateProfile() {
     try {
         const res = await fetch('/chat/getchatroom');
+
         let result = await res.json();
         let conversations = result.conversations
         opponentUserInfo = result.opponentUserInfo
@@ -98,7 +99,7 @@ async function updateProfile() {
                             <h2 class="profile-name">${opponentUserInfo.name}</h2>
                             <div class="profile-occupation">${opponentUserInfo.occupation}, ${opponentUserInfo.country}</div>
                             <label class="profile-title">DOB: </label>
-                            <span class="date-of-birth">${opponentUserInfo.date_of_birth.split('T')[0]}&ensp;</span>
+                            <span class="date-of-birth">${opponentUserInfo.date_of_birth ? opponentUserInfo.date_of_birth.split('T')[0] : "N/A"}&ensp;</span>
                             <label class="profile-title">Age: </label>
                             <span class="age">${2022 - (opponentUserInfo.date_of_birth.split('-')[0])}</span>
                             <br>
@@ -117,21 +118,24 @@ async function updateProfile() {
 
 
         `
-        $(".heart").on("click", function () {
-            $(this).toggleClass("is-active");
+        document.querySelector(".heart").addEventListener("click", function () {
+            document.querySelector(".heart").classList.toggle("is-active");
             myFunction();
+            addFriend()
+
         });
 
         function myFunction() {
             let x = document.querySelector(".add_friend");
             if (x.innerHTML === "Requested!") {
-              x.innerHTML = "Add friend";
+                x.innerHTML = "Add friend";
             } else {
-              x.innerHTML = "Requested!";
+                x.innerHTML = "Requested!";
             }
-          }
+        }
     } catch (err) {
-        window.location.href = "/profile_page/profile.html"
+        console.log(err)
+        // window.location.href = "/profile_page/profile.html"
 
     }
 }

@@ -5,19 +5,20 @@ let friendsButton = document.querySelector(".friends-btn");
 let fds_list_session = document.querySelector(".friends-list-session");
 let editButton = document.querySelector(".edit-btn");
 let bioRow = document.querySelectorAll(".bio-row .profile-session");
-let uploadImage = document.querySelector(".upload-image");
+let uploadImage = document.querySelector("#upload-image");
 
 
 
 async function getFriends() {
   let res = await fetch('/user/friends');
-  let friends_list = await res.json();
+  let data = await res.json();
+  let friendsList = data.data.myFriends
   let friends_session = document.querySelector('.friends_list_inner');
 
-  console.log(friends_list);
+  console.log(friendsList);
   friends_session.innerHTML = "";
 
-  if (friends_list.length == 0) {
+  if (friendsList.length == 0) {
     friends_session.innerHTML += /*HTML*/`<article class="leaderboard__profile">
     
     <span class="leaderboard__name">No Friends Yet</span>
@@ -31,7 +32,7 @@ async function getFriends() {
 
   }
 
-  for (let friend of friends_list) {
+  for (let friend of friendsList) {
     friends_session.innerHTML += /*HTML*/`<a href="http://localhost:8080/profile_page/profile.html?userId=${friend.id}"><article class="leaderboard__profile">
     <img src="${friend.icon}" alt="${friend.name}" userID="${friend.id}"
       class="leaderboard__picture">
@@ -57,25 +58,16 @@ async function getFriends() {
   }
   uploadImage.addEventListener("submit", async (e) => {
     e.preventDefault()
-
     const formElement = e.target;
-    const content = formElement.content.value;
-    const image = formElement.image.files[0];
-
-    const formData = new FormData();
-
-    formData.append('content', content)
-    formData.append('image', image)
-
-    console.log(content)
-
+    const formData = new FormData(formElement);
     const res = await fetch('/user/upload-image', {
       method: 'POST',
       body: formData
     })
 
     if (res.ok) {
-      document.querySelector('.upload-image').reset();
+      formElement.reset();
+      getProfile()
     }
 
   });
@@ -109,7 +101,7 @@ async function getProfile() {
 
   let profileCard = document.querySelector(".bio-graph-info");
   document.querySelector(".icon_wrap img").setAttribute("src", data.icon);
-  document.querySelector(".profile-card__img img").setAttribute("src", data.icon);
+  document.querySelector(".profile-card__img img").setAttribute("src", '/upload/' + data.icon);
   document.querySelector(".profile-card__name").value = toProperCase(data.name.split(" ").join[" "]);
   document.querySelector("#header-occupation").innerHTML = toProperCase(data.occupation) + " ";
   document.querySelector('#company').innerHTML = data.company;
@@ -262,20 +254,34 @@ initProfilePromise
   //     $(".notifications").removeClass("active");
   //   });
   // })
-  .then(async()=>{
+  .then(async () => {
     $(".notifications .icon_wrap").click(function () {
       $(this).parent().toggleClass("active");
       $(".profile").removeClass("active");
     });
   })
-  .then(async()=>{
+  .then(async () => {
     $(".show_all .link").click(function () {
       $(".notifications").removeClass("active");
       $(".popup").show();
     });
   })
-  .then(async ()=>{ 
+  .then(async () => {
     $(".close, .shadow").click(function () {
       $(".popup").hide();
     });
   })
+
+
+
+async function getImg() {
+  const myImage = document.querySelector('.my-image')
+  const res = await fetch(
+    '/upload/5b3eddb82d5c930aeca3f1300.webp',
+  )
+  const result = await res.blob()
+  const objectURL = URL.createObjectURL(result)
+  myImage.src = objectURL
+
+  if (!res.ok) myImage, remove()
+}

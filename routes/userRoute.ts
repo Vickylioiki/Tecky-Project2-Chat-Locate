@@ -4,20 +4,17 @@ import fetch from "cross-fetch";
 import crypto from "crypto";
 import moment from "moment";
 import { client } from "../utils/db";
-import { request } from "http";
-// import { request } from 'http'
-// import { Files } from "formidable";
-import { formParse } from "../utils/formidable";
-import formidable from "formidable";
 import { form } from "../utils/formidable";
 import { Files } from "formidable";
+import { Notification } from "../utils/model";
+import { createUser, getUserByUsername } from "../dao/user-dao";
 
 export const userRoutes = express.Router();
 
-
-
-
-
+userRoutes.get("/login/google", loginGoogle);
+userRoutes.put("/profile", updateProfile);
+userRoutes.get("/login/instagram", logininstagram);
+userRoutes.post("/accept-friends", acceptFriends);
 
 userRoutes.get("/", async (req, res) => {
     try {
@@ -38,9 +35,9 @@ userRoutes.get("/me", async (req, res) => {
 
 userRoutes.get("/user-profile", async (req, res) => {
     try {
-    const id = req.query.userId ?? req.session["user"].id;
-    console.log("id is " + id);
-    let getUsers = await client.query("SELECT * FROM users WHERE id = $1", [id]);
+        const id = req.query.userId ?? req.session["user"].id;
+        console.log("id is " + id);
+        let getUsers = await client.query("SELECT * FROM users WHERE id = $1", [id]);
 
         res.status(200).json(getUsers.rows[0]);
     } catch (err) {
@@ -65,8 +62,7 @@ userRoutes.get("/friend-request", async (req, res) => {
 userRoutes.get("/notifications", async (req, res) => {
     try {
         let userId = req.session["user"]?.id;
-        let limit = req.query.limit;
-        console.log("/notifications req.session['user']", userId);
+
         if (!userId) {
             res.status(403).json({
                 message: "You should login first",
@@ -76,9 +72,9 @@ userRoutes.get("/notifications", async (req, res) => {
 
         let result = await client.query(
             `select notifications.*, users.name from notifications 
-         inner join users on users.id = notifications.opponent_user_id
-         where notifications.user_id = $1 
-        ORDER BY notifications.created_at DESC;
+            inner join users on users.id = notifications.opponent_user_id
+            where notifications.user_id = $1 
+            ORDER BY notifications.created_at DESC;
         `,
             [userId]
         );
@@ -99,10 +95,9 @@ userRoutes.get("/notifications", async (req, res) => {
         res.status(400).json(err);
     }
 });
-
 userRoutes.post("/notifications", async (req, res) => {
     try {
-        const { user_id, message, type } = req.body;
+        const { user_id, message, type }: Notification = req.body;
         console.log("req.body", req.body);
         if (!user_id || !message || !type) {
             res.status(400).json({
@@ -138,10 +133,7 @@ userRoutes.post("/notifications", async (req, res) => {
         console.log("user icon selectResult:", selectResult);
 
         // if user icon is null, use facebook icon, else use google icon
-        let currentUserIcon =
-            selectResult.icon ??
-            selectResult.fb_profile_pic ??
-            selectResult.ggl_profile_pic;
+        let currentUserIcon = selectResult.icon ?? selectResult.fb_profile_pic ?? selectResult.ggl_profile_pic;
 
         // create notification record
         let insertResult = (
@@ -181,115 +173,69 @@ userRoutes.post("/update-relation", async (req, res) => {
         let { notificationId, status } = req.body;
 
         // throw error if status is neither approved nor rejected
-        if (['approved', 'rejected'].indexOf(status) === -1) {
-            res.status(400).json({ message: 'Invalid status of approved or rejected' })
-            return
+        if (["approved", "rejected"].indexOf(status) === -1) {
+            res.status(400).json({ message: "Invalid status of approved or rejected" });
+            return;
         }
 
         console.log("notificationId: ", notificationId, "going to change to status: ", status);
 
         // disable notification
         let updateResult = (
-            await client.query(
-                `update notifications set status = $1 where id = $2 returning * `,
-                [status, notificationId]
-            )
+            await client.query(`update notifications set status = $1 where id = $2 returning * `, [status, notificationId])
         ).rows[0];
 
         console.log("/update-relation updateResult: ", updateResult);
 
         // throw error if notification is currently not enabled, or not invitation
         if (!updateResult) {
-            res.status(400).json({ message: 'Invalid notification update' })
-            return
+            res.status(400).json({ message: "Invalid notification update" });
+            return;
         }
 
         // throw error if identical user id for friend request
         if (updateResult.user_id === updateResult.opponent_user_id) {
-            res.status(400).json({ message: 'Error: identical user friend add request' })
-            return
+            res.status(400).json({ message: "Error: identical user friend add request" });
+            return;
         }
 
         // check if friend relationship exists
-        let friendRelationship = (await client.query(`
+        let friendRelationship = (
+            await client.query(
+                `
             select * from friends_list
             where (from_user_id = $1 and to_user_id = $2)
             or (from_user_id = $2 and to_user_id = $1)
-            `, [updateResult.user_id, updateResult.opponent_user_id])).rows;
+            `,
+                [updateResult.user_id, updateResult.opponent_user_id]
+            )
+        ).rows;
 
-        if (status === 'approved' && friendRelationship.length == 0) {
-            await client.query(`INSERT INTO friends_list (from_user_id, to_user_id)
+        if (status === "approved" && friendRelationship.length == 0) {
+            await client.query(
+                `INSERT INTO friends_list (from_user_id, to_user_id)
         VALUES ($1, $2)`,
-                [updateResult.opponent_user_id, updateResult.user_id]);
+                [updateResult.opponent_user_id, updateResult.user_id]
+            );
         }
 
         // still need the opponent (friend)'s name
-        let friendUser = (await client.query(`
+        let friendUser = (
+            await client.query(`
                 select * from users where id = ${updateResult.opponent_user_id}
-            `)).rows[0];
-        console.log('friendUser Name: ', friendUser.name);
+            `)
+        ).rows[0];
+        console.log("friendUser Name: ", friendUser.name);
 
-        res.json({ ...updateResult, created_at: moment(updateResult.created_at).startOf('hour').fromNow(), friendName: friendUser.name })
+        res.json({
+            ...updateResult,
+            created_at: moment(updateResult.created_at).startOf("hour").fromNow(),
+            friendname: friendUser.name,
+        });
     } catch (e) {
         res.status(400).json({ message: e });
     }
 });
-
-/**
-            res.status(400).json({ message: 'Error: identical user friend add request' })
-            return
-        }
-
-        // check if friend relationship exists
-        let friendRelationship = (await client.query(`
-            select * from friends_list
-            where (from_user_id = $1 and to_user_id = $2)
-            or (from_user_id = $2 and to_user_id = $1)
-            `, [updateResult.user_id, updateResult.opponent_user_id])).rows;
-
-        if (status === 'approved' && friendRelationship.length == 0) {
-            await client.query(`INSERT INTO friends_list (from_user_id, to_user_id)
-        VALUES ($1, $2)`,
-                [updateResult.opponent_user_id, updateResult.user_id]);
-        }
-
-        // still need the opponent (friend)'s name
-        let friendUser = (await client.query(`
-            select * from users where id = ${updateResult.opponent_user_id}
-        `)).rows[0];
-        console.log('friendUser Name: ', friendUser.name);
-
-        res.json({...updateResult, created_at: moment(updateResult.created_at).startOf('hour').fromNow(), friendName: friendUser.name})
-    } catch (e) {
-        res.status(400).json({ message: e })
-
-    }
-    
-})
-/** 
- * when current user click "Chat" button, trigger this API call
- * to save the opponent he/she is going to talk to, in request session
- * */
-// userRoutes.post('/start-chat', async (req, res) => {
-//     // the opponent user id
-//     try {
-//         let userId = req.body.userId;
-//         // sql save/initiate chat history?
-
-//         // save into request session
-//         req.session['chat_user'] = userId;
-
-//         console.log("/start-chat saved req.session['chat_user']", req.session['chat_user'])
-
-//         // res.redirect('/chatroom/chatroom.html')
-//         res.json({ status: "ok" })
-//     }
-//     catch (error) {
-//         console.log(error)
-//         res.status(500).json({ message: 'Internal server error' })
-//     }
-
-// })
 
 /**
  * after enter chatroom, call this function to get chat opponent,
@@ -332,25 +278,17 @@ userRoutes.post("/register", async (req, res) => {
         }
         console.log("username and password checking passed!!");
 
-        let userResult = await client.query(
-            `select * from users where username = $1`,
-            [username]
-        );
+        await getUserByUsername(username);
 
-        if (userResult.rows.length > 0) {
-            res.status(400).json({
-                message: "username already exists",
-            });
-            return;
-        }
         console.log("existing username checking passed!!");
 
         let hashedPassword = await hashPassword(password);
         console.log("hashedPassword", hashedPassword);
-        await client.query(
-            `insert into users (username, password, name) values ($1, $2, $3)`,
-            [username, hashedPassword, name]
-        );
+        await client.query(`insert into users (username, password, name) values ($1, $2, $3)`, [
+            username,
+            hashedPassword,
+            name,
+        ]);
         res.json({ message: "User created" });
     } catch (error) {
         console.log(error);
@@ -370,11 +308,7 @@ userRoutes.post("/login", async (req: any, res: any) => {
         }
         console.log("/login-username and password checking passed!!");
 
-        let userResult = await client.query(
-            `select * from users where username = $1`,
-            [username]
-        );
-        let dbUser = userResult.rows[0];
+        const dbUser = await getUserByUsername(username);
 
         if (!dbUser) {
             res.status(400).json({
@@ -393,12 +327,7 @@ userRoutes.post("/login", async (req: any, res: any) => {
         }
         console.log("/login-valid password checking passed!!");
 
-        let {
-            password: dbUserPassword,
-            created_at,
-            updated_at,
-            ...filterUserProfile
-        } = dbUser;
+        let { password: dbUserPassword, created_at, updated_at, ...filterUserProfile } = dbUser;
         req.session["user"] = filterUserProfile;
         // req.session.save()
 
@@ -410,46 +339,6 @@ userRoutes.post("/login", async (req: any, res: any) => {
         res.status(400).json(err);
     }
 });
-//   console.log("/login-username and password checking passed!!");
-
-// let userResult = await client.query(
-//     `select * from users where username = $1`,
-//     [username]
-// );
-// let dbUser = userResult.rows[0];
-
-// if (!dbUser) {
-//     res.status(400).json({
-//         message: "Invalid username",
-//     });
-//     return;
-// }
-// console.log("/login-existing username checking passed!!");
-
-// let isMatched = await checkPassword(password, dbUser.password);
-// if (!isMatched) {
-//     res.status(400).json({
-//         message: "Invalid username or password",
-//     });
-//     return;
-// }
-// console.log("/login-valid password checking passed!!");
-
-// let {
-//     password: dbUserPassword,
-//     created_at,
-//     updated_at,
-//     ...filterUserProfile
-// } = dbUser;
-// req.session["user"] = filterUserProfile;
-// req.session.isLoggedIn = true;
-// // req.session.save()
-
-// // console.log(sessionUser)
-// res.status(200).json({
-//     message: "Success login",
-// });
-// });
 
 userRoutes.get("/logout", (req, res) => {
     try {
@@ -466,43 +355,27 @@ userRoutes.get("/logout", (req, res) => {
     }
 });
 
-userRoutes.get("/login/google", loginGoogle);
-
 async function loginGoogle(req: express.Request, res: express.Response) {
     const accessToken = req.session?.["grant"].response.access_token;
 
     console.log("accessToken", accessToken);
 
-    const fetchRes = await fetch(
-        "https://www.googleapis.com/oauth2/v2/userinfo",
-        {
-            method: "get",
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        }
-    );
+    const fetchRes = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+        method: "get",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
     const googleProfile = await fetchRes.json();
     console.log(googleProfile);
 
-    const users = (
-        await client.query(`SELECT * FROM users WHERE username = $1`, [
-            googleProfile.email,
-        ])
-    ).rows;
-    let user = users[0];
+    let user = await getUserByUsername(googleProfile.email);
 
     if (!user) {
         const randomString = crypto.randomBytes(32).toString("hex");
         let hashedPassword = await hashPassword(randomString);
 
-        user = (
-            await client.query(
-                `INSERT INTO users (name,username,password)
-                VALUES ($1, $2, $3) RETURNING *`,
-                [googleProfile.name, googleProfile.email, hashedPassword]
-            )
-        ).rows[0];
+        user = await createUser(googleProfile.name, googleProfile.email, hashedPassword);
         console.log(user);
         await client.query(
             `INSERT INTO google_profile(user_id,profile_pic,google_id,name)
@@ -523,9 +396,7 @@ async function loginfacebook(req: express.Request, res: express.Response) {
     console.log("accessToken:", accessToken);
 
     // retrieve user ID
-    const userIdRes = await fetch(
-        `https://graph.facebook.com/me?access_token=${accessToken}`
-    );
+    const userIdRes = await fetch(`https://graph.facebook.com/me?access_token=${accessToken}`);
 
     const facebookuserId = await userIdRes.json();
     console.log("facebookuserId: ", facebookuserId);
@@ -536,34 +407,18 @@ async function loginfacebook(req: express.Request, res: express.Response) {
     const facebookProfile = await userfields.json();
     console.log("facebookProfile", facebookProfile);
 
-    const users = (
-        await client.query(`SELECT * FROM users WHERE username = $1`, [
-            facebookProfile.email,
-        ])
-    ).rows;
-    let user = users[0];
+    let user = await getUserByUsername(facebookProfile.email);
 
     if (!user) {
         const randomString = crypto.randomBytes(32).toString("hex");
         let hashedPassword = await hashPassword(randomString);
 
-        user = (
-            await client.query(
-                `INSERT INTO users (name,username,password)
-                VALUES ($1, $2, $3) RETURNING *`,
-                [facebookProfile.name, facebookProfile.email, hashedPassword]
-            )
-        ).rows[0];
+        user = await createUser(facebookProfile.name, facebookProfile.email, hashedPassword);
         console.log(user);
         await client.query(
             `INSERT INTO facebook_profile (user_id,profile_pic,fb_id,name)
             VALUES ($1, $2, $3, $4) RETURNING *`,
-            [
-                user.id,
-                facebookProfile.picture.data.url,
-                facebookProfile.id,
-                facebookProfile.name,
-            ]
+            [user.id, facebookProfile.picture.data.url, facebookProfile.id, facebookProfile.name]
         );
     }
     if (req.session) {
@@ -572,16 +427,13 @@ async function loginfacebook(req: express.Request, res: express.Response) {
     res.redirect("/");
 }
 
-userRoutes.get("/login/instagram", logininstagram);
 async function logininstagram(req: express.Request, res: express.Response) {
     const accessToken = req.session?.["grant"].response.access_token;
 
     console.log("accessToken:", accessToken);
 
     // retrieve user ID
-    const userIdRes = await fetch(
-        `https://graph.instagram.com/me?access_token=${accessToken}`
-    );
+    const userIdRes = await fetch(`https://graph.instagram.com/me?access_token=${accessToken}`);
 
     const instagramuserId = await userIdRes.json();
     console.log("instagram: ", instagramuserId);
@@ -592,36 +444,19 @@ async function logininstagram(req: express.Request, res: express.Response) {
     const instagramProfile = await userfields.json();
     console.log("instagramProfile", instagramProfile);
 
-    const users = (
-        await client.query(`SELECT * FROM users WHERE username = $1`, [
-            instagramProfile.email,
-        ])
-    ).rows;
-    let user = users[0];
+    let user = await getUserByUsername(instagramProfile.email);
 
     if (!user) {
         const randomString = crypto.randomBytes(32).toString("hex");
         let hashedPassword = await hashPassword(randomString);
 
-        user = (
-            await client.query(
-                `INSERT INTO users (username,password)
-                VALUES ($1, $2) RETURNING *`,
-                [instagramProfile.email, hashedPassword]
-            )
-        ).rows[0];
+        user = await createUser(instagramProfile.name, instagramProfile.email, hashedPassword);
         console.log(user);
 
         await client.query(
             `INSERT INTO instagram_profile(user_id,profile_pic,ig_id,name,media_count)
                 VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-            [
-                user.id,
-                instagramProfile.picture,
-                instagramProfile.id,
-                instagramProfile.name,
-                instagramProfile.media_count,
-            ]
+            [user.id, instagramProfile.picture, instagramProfile.id, instagramProfile.name, instagramProfile.media_count]
         );
     }
     if (req.session) {
@@ -629,8 +464,6 @@ async function logininstagram(req: express.Request, res: express.Response) {
     }
     res.redirect("/");
 }
-
-userRoutes.put("/profile", updateProfile);
 
 async function updateProfile(req: express.Request, res: express.Response) {
     try {
@@ -648,18 +481,11 @@ async function updateProfile(req: express.Request, res: express.Response) {
             [aboutMe, myName, dateOfBirth, occupation, hobby, country, id]
         );
 
-        let userResult = await client.query(`select * from users where id = $1`, [
-            id,
-        ]);
+        let userResult = await client.query(`select * from users where id = $1`, [id]);
 
         let dbUser = userResult.rows[0];
 
-        let {
-            password: dbUserPassword,
-            created_at,
-            updated_at,
-            ...filterUserProfile
-        } = dbUser;
+        let { password: dbUserPassword, created_at, updated_at, ...filterUserProfile } = dbUser;
         req.session["user"] = filterUserProfile;
 
         res.send("Profile Updated");
@@ -713,9 +539,9 @@ async function uploadImage(req: express.Request, res: express.Response) {
         }
 
         try {
-            const content = fields.content;
             // const fromSocketId = fields.fromSocketId;
             let imageFile: any = ""; //因為有可能係null
+            console.log("files = ", files);
             let file = Array.isArray(files.image) ? files.image[0] : files.image; //如果多過一個file upload, file 就會係一串array
             //upload file都要check, 有機會upload多過一個file(會以array存),
             //如果係Array就淨係拎第1個file, 即file.image[0],
@@ -724,15 +550,15 @@ async function uploadImage(req: express.Request, res: express.Response) {
                 imageFile = file.newFilename;
             }
 
-            await client.query(
-                `UPDATE users SET icon=$1 WHERE id = $2
+            let userResult = await client.query(
+                `UPDATE users SET icon=$1 WHERE id = $2 returning *
             `,
                 [imageFile, id]
             );
 
-            return;
-            res.status(200).json("Upload image");
+            req.session["user"] = userResult.rows[0];
 
+            res.status(200).json("Upload image");
         } catch (err) {
             res.status(400).json("internal server error");
             console.log(err);
@@ -745,13 +571,11 @@ userRoutes.post("/friend-request", addFriends);
 async function addFriends(req: express.Request, res: express.Response) {
     try {
         const id = req.session["user"].id;
-        const opponent_user_id = req.body.opponentUserId;
+        const opponent_user_id = req.body.opponent_user_id;
+        console.log("opponent_user_id = ", opponent_user_id);
         const message = req.body.message;
-        const iconResult = (
-            await client.query("SELECT icon FROM users WHERE id=$1", [
-                opponent_user_id,
-            ])
-        ).rows[0];
+        const iconResult = (await client.query("SELECT icon FROM users WHERE id=$1", [opponent_user_id])).rows[0];
+        console.log("iconResult = ", iconResult);
 
         await client.query(
             `INSERT INTO notifications 
@@ -763,11 +587,11 @@ async function addFriends(req: express.Request, res: express.Response) {
             message: "Sent friend request",
         });
     } catch (err) {
+        console.log(err);
+
         res.status(400).json(err);
     }
 }
-
-userRoutes.post("/accept-friends", acceptFriends);
 
 async function acceptFriends(req: express.Request, res: express.Response) {
     try {
@@ -775,10 +599,11 @@ async function acceptFriends(req: express.Request, res: express.Response) {
         const to_user_id = req.body.to_user_id;
         const status = req.body.status;
 
-        await client.query(
-            `INSERT INTO friends_list (from_user_id, to_user_id, status) VALUES ($1, $2, $3)`,
-            [from_user_id, to_user_id, status]
-        );
+        await client.query(`INSERT INTO friends_list (from_user_id, to_user_id, status) VALUES ($1, $2, $3)`, [
+            from_user_id,
+            to_user_id,
+            status,
+        ]);
 
         res.status(200).json("accepted");
     } catch (err) {
@@ -794,10 +619,11 @@ async function rejectFriends(req: express.Request, res: express.Response) {
         const opponent_user_id = req.body.opponent_user_id;
         const status = req.body.status;
 
-        await client.query(
-            `UPDATE notifications SET status=$1 WHERE user_id=$2, opponent_user_id=$3`,
-            [id, opponent_user_id, status]
-        );
+        await client.query(`UPDATE notifications SET status=$1 WHERE user_id=$2, opponent_user_id=$3`, [
+            id,
+            opponent_user_id,
+            status,
+        ]);
 
         res.status(200).json("rejected friend");
     } catch (err) {
@@ -812,7 +638,7 @@ userRoutes.get("/friends", async (req, res) => {
         const id = req.session["user"].id;
 
         let myFriends = await client.query(
-      /*sql*/ `
+            /*sql*/ `
       with 
       active as (
       select 
@@ -836,8 +662,27 @@ userRoutes.get("/friends", async (req, res) => {
       `,
             [id]
         );
-        res.status(200).json(myFriends.rows);
+
+        res.json(
+            responseWrapper({
+                myFriends: myFriends.rows,
+            })
+        );
+        // res.json({
+        //     message: "success",
+        //     data: {
+        //         myFriends: myFriends.rows,
+        //     },
+        // });
     } catch (err) {
-        res.status(400).json(err);
+        res.status(400).json(responseWrapper(null, err));
     }
 });
+function responseWrapper(data: any, error: any = null) {
+    let responseObj = {
+        message: error ? "fail" : "success",
+        data,
+    };
+
+    return responseObj;
+}
