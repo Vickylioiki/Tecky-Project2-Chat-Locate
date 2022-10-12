@@ -3,7 +3,7 @@ import express from "express";
 import { DistanceMatrixService } from "distance-matrix-2";
 import { io } from "../utils/socket";
 import { Chatroom } from "../class/Chatroom";
-import { getUserById } from "../dao/user-dao";
+import { getUserById } from "../DAO/user-dao";
 import { chatRooms } from "../utils/chatroom-helper";
 import { sleep } from "../utils/timer";
 import { RoomInfomation } from "../utils/model";
