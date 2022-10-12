@@ -7,7 +7,7 @@ import { client } from "../utils/db";
 import { form } from "../utils/formidable";
 import { Files } from "formidable";
 import { Notification } from "../utils/model";
-import { createUser, getUserByUsername } from "../dao/user-dao";
+import { createUser, getUserByUsername } from "../DAO/user-dao";
 
 export const userRoutes = express.Router();
 
